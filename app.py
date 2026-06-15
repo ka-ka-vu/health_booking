@@ -7,6 +7,7 @@ from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from flask_socketio import SocketIO, emit, join_room
 from apscheduler.schedulers.background import BackgroundScheduler
+from config import MONGO_URI, EMAIL_ADDRESS, EMAIL_PASSWORD
 import smtplib
 import os
 import bcrypt
@@ -70,14 +71,6 @@ def handle_message(data):
         },
         room=room
     )
-
-# ==========================
-# EMAIL CONFIG
-# ==========================
-
-EMAIL_ADDRESS = "kka81049@gmail.com"
-
-EMAIL_PASSWORD = "unkanepmkjxmccgt"
 
 # ==========================
 # GỬI EMAIL
