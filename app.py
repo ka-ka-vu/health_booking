@@ -12,7 +12,8 @@ import os
 import bcrypt
 
 app = Flask(__name__)
-app.secret_key = "health_booking_secret"
+from config import SECRET_KEY
+app.secret_key = SECRET_KEY
 
 socketio = SocketIO(
 app,

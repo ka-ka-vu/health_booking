@@ -1,1 +1,9 @@
-MONGO_URI = "mongodb+srv://admin:admin123456@cluster0.ymeadco.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+import os
+
+MONGO_URI = os.getenv("MONGO_URI")
+
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+
+SECRET_KEY = os.getenv("SECRET_KEY")
