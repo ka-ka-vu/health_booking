@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-5">
+
+    <h2 class="mb-3">
+        Xin chào Admin {{ fullname }}
+    </h2>
+
+    <div class="alert alert-danger">
+        Bạn đang đăng nhập với quyền ADMIN
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body text-center">
+                    <h2>{{ doctor_count }}</h2>
+                    <p class="mb-0">Bác sĩ</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body text-center">
+                    <h2>{{ clinic_count }}</h2>
+                    <p class="mb-0">Phòng khám</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body text-center">
+                    <h2>{{ appointment_count }}</h2>
+                    <p class="mb-0">Lịch khám</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-danger text-white shadow">
+                <div class="card-body text-center">
+                    <h2>{{ today_appointments }}</h2>
+                    <p class="mb-0">Lịch hôm nay</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h4 class="mb-3">
+        Thống kê lịch khám theo tháng
+    </h4>
+
+    <div class="card shadow p-3 mb-4">
+        <canvas id="appointmentChart"></canvas>
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4 mb-3">
+            <a href="/specialties" class="btn btn-primary w-100 p-3">
+                Quản lý chuyên khoa
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="/clinics" class="btn btn-success w-100 p-3">
+                Quản lý phòng khám
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="/doctors" class="btn btn-warning w-100 p-3">
+                Quản lý bác sĩ
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="/appointments" class="btn btn-info w-100 p-3">
+                Quản lý lịch khám
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="/doctor-requests"
+               class="btn btn-secondary w-100 p-3">
+                Duyệt tài khoản bác sĩ
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="/map" class="btn btn-dark w-100 p-3">
+                Bản đồ phòng khám
+            </a>
+        </div>
+
+<div class="col-md-4 mb-3">
+    <a href="/admin-orders"
+       class="btn btn-warning w-100 p-3">
+        Quản lý đơn hàng
+    </a>
+</div>
+
+
+        <div class="col-md-4 mb-3">
+            <a href="/logout" class="btn btn-danger w-100 p-3">
+                Đăng xuất
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('appointmentChart');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: [
+            'T1','T2','T3','T4',
+            'T5','T6','T7','T8',
+            'T9','T10','T11','T12'
+        ],
+
+        datasets: [{
+
+            label: 'Số lịch khám',
+
+            data: {{ months|tojson }},
+
+            borderWidth: 1
+
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+                beginAtZero: true
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

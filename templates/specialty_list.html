@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách chuyên khoa</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h2>Danh sách chuyên khoa</h2>
+
+        <div>
+            <a href="/specialties/add" class="btn btn-success">
+                Thêm chuyên khoa
+            </a>
+
+            <a href="/dashboard" class="btn btn-secondary">
+                Quay lại
+            </a>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Tên chuyên khoa</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for specialty in specialties %}
+
+            <tr>
+
+                <td>{{ specialty.name }}</td>
+
+                <td>
+
+                    <a href="/specialties/edit/{{ specialty._id }}"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/specialties/delete/{{ specialty._id }}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa?')">
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

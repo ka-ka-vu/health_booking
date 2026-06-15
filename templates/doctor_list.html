@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách bác sĩ</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+<div class="d-flex justify-content-between mb-3">
+
+    <h2>Danh sách bác sĩ</h2>
+
+    <div>
+
+        <a href="/doctors/add" class="btn btn-success">
+            Thêm bác sĩ
+        </a>
+
+        <a href="/dashboard" class="btn btn-secondary">
+            Quay lại
+        </a>
+
+    </div>
+
+</div>
+
+<table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+
+        <tr>
+            <th>Họ tên</th>
+            <th>Chuyên khoa</th>
+            <th>Địa chỉ phòng khám</th>
+            <th>SĐT</th>
+            <th>Email</th>
+            <th>Kinh nghiệm</th>
+            <th>Thao tác</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for doctor in doctors %}
+
+        <tr>
+
+            <td>{{ doctor.name }}</td>
+
+            <td>{{ doctor.specialty }}</td>
+
+            <td>
+                {% if doctor.clinic %}
+                    {{ doctor.clinic }}
+                {% else %}
+                    Chưa cập nhật
+                {% endif %}
+            </td>
+
+            <td>{{ doctor.phone }}</td>
+
+            <td>{{ doctor.email }}</td>
+
+            <td>{{ doctor.experience }}</td>
+
+            <td>
+
+                <a href="/doctors/edit/{{ doctor._id }}"
+                   class="btn btn-warning btn-sm">
+                    Sửa
+                </a>
+
+                <a href="/doctors/delete/{{ doctor._id }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc muốn xóa bác sĩ này?')">
+                    Xóa
+                </a>
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+</body>
+</html>

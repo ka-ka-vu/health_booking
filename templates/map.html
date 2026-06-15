@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bản đồ phòng khám</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+>
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
+>
+
+<style>
+
+    #map{
+        height:700px;
+        border-radius:10px;
+    }
+
+</style>
+```
+
+</head>
+<body>
+
+<div class="container mt-4">
+
+```
+<div class="d-flex justify-content-between mb-3">
+
+    <h2>Bản đồ phòng khám</h2>
+
+    <a href="/dashboard" class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</div>
+
+<div class="alert alert-info">
+
+    <b>Phòng khám gần nhất:</b>
+
+    <span id="nearestClinic">
+        Đang xác định...
+    </span>
+
+</div>
+
+<div id="map"></div>
+
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<script>
+
+let map = L.map('map').setView(
+    [21.0285,105.8542],
+    12
+);
+
+L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        attribution:'© OpenStreetMap'
+    }
+).addTo(map);
+
+let clinics = [];
+
+{% for clinic in clinics %}
+
+{% if clinic.lat and clinic.lng %}
+
+clinics.push({
+
+    name:"{{ clinic.name }}",
+
+    address:"{{ clinic.address }}",
+
+    phone:"{{ clinic.phone }}",
+
+    lat:parseFloat("{{ clinic.lat }}"),
+
+    lng:parseFloat("{{ clinic.lng }}")
+
+});
+
+{% endif %}
+
+{% endfor %}
+
+console.log("Danh sách phòng khám:", clinics);
+
+let markers = [];
+
+clinics.forEach(c => {
+
+    let marker = L.marker(
+        [c.lat,c.lng]
+    ).addTo(map);
+
+    marker.bindPopup(
+        "<b>"+c.name+"</b><br>"
+        + c.address + "<br>"
+        + c.phone
+    );
+
+    markers.push(
+        [c.lat,c.lng]
+    );
+
+});
+
+if(markers.length > 0){
+
+    map.fitBounds(markers);
+
+}
+
+function distance(lat1,lon1,lat2,lon2){
+
+    let R = 6371;
+
+    let dLat =
+        (lat2-lat1)*Math.PI/180;
+
+    let dLon =
+        (lon2-lon1)*Math.PI/180;
+
+    let a =
+        Math.sin(dLat/2) *
+        Math.sin(dLat/2)
+        +
+        Math.cos(lat1*Math.PI/180)
+        *
+        Math.cos(lat2*Math.PI/180)
+        *
+        Math.sin(dLon/2)
+        *
+        Math.sin(dLon/2);
+
+    let c =
+        2 *
+        Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1-a)
+        );
+
+    return R*c;
+}
+
+navigator.geolocation.getCurrentPosition(
+
+function(position){
+
+    let userLat =
+        position.coords.latitude;
+
+    let userLng =
+        position.coords.longitude;
+
+    let userMarker = L.marker(
+        [userLat,userLng]
+    ).addTo(map);
+
+    userMarker.bindPopup(
+        "Vị trí của bạn"
+    );
+
+    let nearest = null;
+
+    let minDistance = 999999;
+
+    clinics.forEach(c => {
+
+        let d = distance(
+            userLat,
+            userLng,
+            c.lat,
+            c.lng
+        );
+
+        if(d < minDistance){
+
+            minDistance = d;
+
+            nearest = c;
+
+        }
+
+    });
+
+    if(nearest){
+
+        document.getElementById(
+            "nearestClinic"
+        ).innerHTML =
+            nearest.name
+            +
+            " ("
+            +
+            minDistance.toFixed(2)
+            +
+            " km)";
+
+        L.Routing.control({
+
+            waypoints:[
+                L.latLng(
+                    userLat,
+                    userLng
+                ),
+
+                L.latLng(
+                    nearest.lat,
+                    nearest.lng
+                )
+            ],
+
+            routeWhileDragging:false
+
+        }).addTo(map);
+
+    }
+
+},
+
+function(){
+
+    document.getElementById(
+        "nearestClinic"
+    ).innerHTML =
+        "Không lấy được vị trí hiện tại";
+
+}
+
+);
+
+</script>
+
+</body>
+</html>

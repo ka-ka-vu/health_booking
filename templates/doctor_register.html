@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký tài khoản bác sĩ</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4 mx-auto" style="max-width:700px">
+
+<h2 class="text-center mb-4">
+    Đăng ký tài khoản bác sĩ
+</h2>
+
+<form method="POST">
+
+    <input
+        type="text"
+        name="fullname"
+        class="form-control mb-3"
+        placeholder="Họ và tên"
+        required>
+
+    <input
+        type="email"
+        name="email"
+        class="form-control mb-3"
+        placeholder="Email"
+        required>
+
+    <input
+        type="password"
+        name="password"
+        class="form-control mb-3"
+        placeholder="Mật khẩu"
+        required>
+
+    <select
+        name="specialty"
+        class="form-control mb-3"
+        required>
+
+        <option value="">
+            -- Chọn chuyên khoa --
+        </option>
+
+        {% for specialty in specialties %}
+        <option value="{{ specialty.name }}">
+            {{ specialty.name }}
+        </option>
+        {% endfor %}
+
+    </select>
+
+    <input
+        type="text"
+        name="phone"
+        class="form-control mb-3"
+        placeholder="Số điện thoại"
+        required>
+
+    <input
+        type="text"
+        name="clinic_address"
+        class="form-control mb-3"
+        placeholder="Địa chỉ phòng khám"
+        required>
+
+    <input
+        type="number"
+        name="experience"
+        class="form-control mb-3"
+        placeholder="Số năm kinh nghiệm"
+        min="0"
+        required>
+
+    <button
+        type="submit"
+        class="btn btn-primary w-100">
+        Đăng ký bác sĩ
+    </button>
+
+</form>
+
+<hr>
+
+<a href="/login"
+   class="btn btn-secondary w-100">
+    Quay lại đăng nhập
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

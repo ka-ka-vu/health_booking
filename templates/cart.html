@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Giỏ hàng</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+<h2 class="mb-4">
+    Giỏ hàng của bạn
+</h2>
+
+{% if carts %}
+
+<table class="table table-bordered table-hover align-middle">
+
+<thead class="table-dark">
+<tr>
+    <th>Ảnh</th>
+    <th>Tên thuốc</th>
+    <th>Giá</th>
+    <th>Số lượng</th>
+    <th>Thành tiền</th>
+    <th>Thao tác</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for item in carts %}
+
+<tr>
+
+    <td>
+
+        {% if item.image %}
+        <img src="{{ item.image }}"
+             width="80"
+             class="rounded">
+        {% endif %}
+
+    </td>
+
+    <td>{{ item.medicine_name }}</td>
+
+    <td>
+        {{ "{:,}".format(item.price) }} VNĐ
+    </td>
+
+    <td>
+
+        <a href="/cart/decrease/{{ item._id }}"
+           class="btn btn-warning btn-sm">
+            -
+        </a>
+
+        <span class="mx-2 fw-bold">
+            {{ item.quantity }}
+        </span>
+
+        <a href="/cart/increase/{{ item._id }}"
+           class="btn btn-success btn-sm">
+            +
+        </a>
+
+    </td>
+
+    <td>
+
+        <span class="text-danger fw-bold">
+            {{ "{:,}".format(item.price * item.quantity) }}
+            VNĐ
+        </span>
+
+    </td>
+
+    <td>
+
+        <a href="/cart/delete/{{ item._id }}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Xóa sản phẩm này?')">
+            Xóa
+        </a>
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<h4 class="text-danger mt-4">
+    Tổng tiền:
+    {{ "{:,}".format(total) }} VNĐ
+</h4>
+
+{% else %}
+
+<div class="alert alert-info">
+    Giỏ hàng đang trống
+</div>
+
+{% endif %}
+
+<hr>
+
+<div class="d-flex gap-2">
+
+    <a href="/dashboard"
+       class="btn btn-secondary">
+        Quay lại Dashboard
+    </a>
+
+    <a href="/checkout"
+       class="btn btn-success">
+        Thanh toán
+    </a>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

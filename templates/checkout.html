@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Thanh toán</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+<h2>Thanh toán đơn hàng</h2>
+
+<hr>
+
+<h4 class="text-danger">
+Tổng tiền:
+{{ "{:,}".format(total) }} VNĐ
+</h4>
+
+<hr>
+
+<h5>Thông tin chuyển khoản</h5>
+
+<p>
+Ngân hàng:
+<b>MB BANK</b>
+</p>
+
+<p>
+Số tài khoản:
+<b>191421072006</b>
+</p>
+
+<p>
+Chủ tài khoản:
+<b>NGUYEN VIET HOANG VU</b>
+</p>
+
+<hr>
+
+<h5>Quét mã QR để thanh toán</h5>
+
+<img
+src="{{ url_for('static', filename='uploads/QR.jpg') }}"
+class="img-fluid border rounded"
+style="max-width:350px;">
+
+<p class="mt-3">
+
+Nội dung chuyển khoản:
+
+<br>
+
+<b>
+THANHTOANTHUOC
+</b>
+
+</p>
+
+<div class="alert alert-warning">
+Sau khi chuyển khoản xong hãy nhấn nút
+<b>Đã thanh toán</b>
+</div>
+
+<form action="/confirm-payment" method="POST">
+
+<button
+    type="submit"
+    class="btn btn-success">
+    Tôi đã thanh toán
+</button>
+
+<a href="/cart"
+   class="btn btn-secondary">
+    Quay lại giỏ hàng
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

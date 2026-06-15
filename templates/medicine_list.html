@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách thuốc</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+    <h2 class="mb-4">
+        Danh sách thuốc
+    </h2>
+
+    {% if medicines %}
+
+    <div class="row">
+
+        {% for medicine in medicines %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card h-100 shadow-sm">
+
+                <img src="{{ medicine.image }}"
+                     class="card-img-top"
+                     style="height:250px; object-fit:cover;">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ medicine.name }}
+                    </h5>
+
+                    <p>
+                        <b>Giá:</b>
+                        {{ "{:,}".format(medicine.price) }} VNĐ
+                    </p>
+
+                    <p>
+                        <b>Số lượng:</b>
+                        {{ medicine.quantity }}
+                    </p>
+
+                    <p>
+                        <b>Mô tả:</b>
+                        {{ medicine.description }}
+                    </p>
+
+                    <p>
+                        <b>Bác sĩ:</b>
+                        {{ medicine.doctor_name }}
+                    </p>
+
+                </div>
+
+                <div class="card-footer bg-white">
+
+                    <div class="d-grid gap-2">
+
+                        <a href="/buy-medicine/{{ medicine._id }}"
+                           class="btn btn-success">
+                            Mua ngay
+                        </a>
+
+                        <a href="/add-cart/{{ medicine._id }}"
+                           class="btn btn-warning">
+                            Thêm vào giỏ hàng
+                        </a>
+
+                        <a href="/medicine-consult/{{ medicine._id }}"
+                           class="btn btn-info">
+                            Tư vấn bác sĩ
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-info">
+        Chưa có thuốc nào được đăng.
+    </div>
+
+    {% endif %}
+
+    <a href="/dashboard"
+       class="btn btn-secondary mt-3">
+        Quay lại
+    </a>
+
+</div>
+</div>
+</body>
+</html>

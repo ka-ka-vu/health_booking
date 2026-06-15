@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa phòng khám</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h2>Sửa phòng khám</h2>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="name"
+                class="form-control mb-3"
+                value="{{ clinic.name }}"
+                required>
+
+            <input
+                type="text"
+                name="address"
+                class="form-control mb-3"
+                value="{{ clinic.address }}"
+                required>
+
+            <input
+                type="text"
+                name="phone"
+                class="form-control mb-3"
+                value="{{ clinic.phone }}"
+                required>
+
+            <button class="btn btn-primary">
+                Cập nhật
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

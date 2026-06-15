@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhắn tin bác sĩ</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+<h2 class="mb-4">
+    Chọn bác sĩ để nhắn tin
+</h2>
+
+{% if consult_medicine %}
+
+<div class="alert alert-info">
+
+    <h5>Tư vấn sản phẩm</h5>
+
+    <p>
+        <b>Thuốc:</b>
+        {{ consult_medicine.medicine_name }}
+    </p>
+
+    <p>
+        <b>Bác sĩ:</b>
+        {{ consult_medicine.doctor_name }}
+    </p>
+
+    <a href="/chat/{{ consult_medicine.doctor_id }}"
+       class="btn btn-primary">
+        Chat ngay với bác sĩ
+    </a>
+
+</div>
+
+<hr>
+
+{% endif %}
+
+{% if doctors %}
+
+    {% for doctor in doctors %}
+
+    <div class="mb-3">
+
+        <a href="/chat/{{ doctor._id }}"
+           class="btn btn-outline-primary w-100 p-3">
+
+            <b>{{ doctor.name }}</b>
+
+            <br>
+
+            {{ doctor.specialty }}
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="alert alert-warning">
+        Chưa có bác sĩ nào trong hệ thống
+    </div>
+
+{% endif %}
+
+<hr>
+
+<a href="/dashboard"
+   class="btn btn-secondary">
+    Quay lại
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

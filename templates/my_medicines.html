@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thuốc của tôi</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+<div class="container mt-5">
+<div class="card shadow p-4">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Thuốc của tôi</h2>
+
+    <a href="/add-medicine"
+       class="btn btn-success">
+        + Thêm thuốc
+    </a>
+
+</div>
+
+{% if medicines %}
+
+<table class="table table-bordered table-hover align-middle">
+
+    <thead class="table-dark">
+        <tr>
+            <th>Hình ảnh</th>
+            <th>Tên thuốc</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Mô tả</th>
+            <th>Ngày đăng</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for medicine in medicines %}
+
+    <tr>
+
+        <td width="120">
+
+            {% if medicine.image %}
+
+            <img src="{{ medicine.image }}"
+                 class="img-fluid rounded"
+                 style="max-height:100px;object-fit:cover;">
+
+            {% else %}
+
+            <span class="text-muted">
+                Không có ảnh
+            </span>
+
+            {% endif %}
+
+        </td>
+
+        <td>
+            <b>{{ medicine.name }}</b>
+        </td>
+
+        <td>
+            {{ "{:,}".format(medicine.price) }} VNĐ
+        </td>
+
+        <td>
+            {{ medicine.quantity }}
+        </td>
+
+        <td>
+            {{ medicine.description }}
+        </td>
+
+        <td>
+
+            {% if medicine.created_at %}
+
+                {{ medicine.created_at.strftime('%d/%m/%Y') }}
+
+            {% else %}
+
+                -
+
+            {% endif %}
+
+        </td>
+
+        <td>
+
+            <div class="d-grid gap-1">
+
+                <a href="/edit-medicine/{{ medicine._id }}"
+                   class="btn btn-warning btn-sm">
+                    Sửa
+                </a>
+
+                <a href="/delete-medicine/{{ medicine._id }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc muốn xóa thuốc này?')">
+                    Xóa
+                </a>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% else %}
+
+<div class="alert alert-info">
+    Bạn chưa đăng thuốc nào.
+</div>
+
+{% endif %}
+
+<hr>
+
+<div class="d-flex gap-2">
+
+    <a href="/doctor-dashboard"
+       class="btn btn-secondary">
+        Quay lại Dashboard
+    </a>
+
+    <a href="/add-medicine"
+       class="btn btn-success">
+        Đăng thuốc mới
+    </a>
+
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa thuốc</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+<div class="container mt-5">
+<div class="card shadow p-4 mx-auto" style="max-width:700px;">
+
+<h2 class="mb-4">
+    Sửa thuốc
+</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+    <div class="mb-3">
+        <label class="form-label">
+            Tên thuốc
+        </label>
+
+        <input type="text"
+               name="name"
+               class="form-control"
+               value="{{ medicine.name }}"
+               required>
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">
+            Ảnh hiện tại
+        </label>
+
+        <br>
+
+        {% if medicine.image %}
+
+        <img src="{{ medicine.image }}"
+             class="img-thumbnail mb-3"
+             width="250">
+
+        {% else %}
+
+        <div class="alert alert-warning">
+            Chưa có ảnh thuốc
+        </div>
+
+        {% endif %}
+
+        <input type="file"
+               name="image"
+               class="form-control">
+
+        <small class="text-muted">
+            Chọn ảnh mới nếu muốn thay đổi ảnh thuốc
+        </small>
+
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Giá bán
+        </label>
+
+        <input type="number"
+               name="price"
+               class="form-control"
+               value="{{ medicine.price }}"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Số lượng
+        </label>
+
+        <input type="number"
+               name="quantity"
+               class="form-control"
+               value="{{ medicine.quantity }}"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Mô tả
+        </label>
+
+        <textarea name="description"
+                  rows="4"
+                  class="form-control">{{ medicine.description }}</textarea>
+    </div>
+
+    <button type="submit"
+            class="btn btn-success">
+        Lưu thay đổi
+    </button>
+
+    <a href="/my-medicines"
+       class="btn btn-secondary">
+        Hủy
+    </a>
+
+</form>
+</div>
+</div>
+</body>
+</html>

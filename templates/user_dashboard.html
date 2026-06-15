@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-5">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+<h2>
+    Xin chào {{ fullname }}
+</h2>
+
+{% if notification_count > 0 %}
+
+<div class="badge bg-danger fs-6 p-3">
+    🔔 {{ notification_count }} thông báo
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="alert alert-success">
+    Bạn đang đăng nhập với quyền USER
+</div>
+
+{% if reminders %}
+
+<div class="card border-warning mb-4">
+<div class="card-header bg-warning">
+
+    <b>🔔 Thông báo lịch khám</b>
+
+</div>
+
+<div class="card-body">
+
+    <ul class="mb-0">
+
+        {% for r in reminders %}
+
+        <li class="mb-2">
+
+            {% if r.days_left == 0 %}
+
+            Hôm nay bạn có lịch khám với bác sĩ
+            <b>{{ r.doctor }}</b>
+
+            lúc
+
+            <b>{{ r.time }}</b>
+
+            {% elif r.days_left == 1 %}
+
+            Ngày mai bạn có lịch khám với bác sĩ
+            <b>{{ r.doctor }}</b>
+
+            lúc
+
+            <b>{{ r.time }}</b>
+
+            {% else %}
+
+            Còn
+
+            <b>{{ r.days_left }}</b>
+
+            ngày nữa bạn có lịch khám với bác sĩ
+
+            <b>{{ r.doctor }}</b>
+
+            lúc
+
+            <b>{{ r.time }}</b>
+
+            {% endif %}
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+</div>
+
+{% endif %}
+
+<div class="row mt-4">
+
+<div class="col-md-4 mb-3">
+    <a href="/doctor-list"
+       class="btn btn-warning w-100 p-3">
+        Xem danh sách bác sĩ
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/appointments"
+       class="btn btn-info w-100 p-3">
+        Đặt lịch khám
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/map"
+       class="btn btn-success w-100 p-3">
+        Bản đồ phòng khám
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/symptom-checker"
+       class="btn btn-primary w-100 p-3">
+        Tư vấn chuyên khoa
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/medicines"
+       class="btn btn-warning w-100 p-3">
+        Mua thuốc
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/cart"
+       class="btn btn-dark w-100 p-3">
+        Giỏ hàng
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/chat-doctor"
+       class="btn btn-secondary w-100 p-3">
+        Nhắn tin bác sĩ
+    </a>
+</div>
+
+<div class="col-md-4 mb-3">
+    <a href="/order-history"
+       class="btn btn-primary w-100 p-3">
+        Lịch sử đơn hàng
+    </a>
+</div>
+
+
+<div class="col-md-4 mb-3">
+    <a href="/logout"
+       class="btn btn-danger w-100 p-3">
+        Đăng xuất
+    </a>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

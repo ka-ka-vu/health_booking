@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tin nhắn bệnh nhân</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+    <h2 class="mb-4">
+        Tin nhắn bệnh nhân
+    </h2>
+
+    {% if conversations %}
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Bệnh nhân</th>
+                <th>Tin nhắn gần nhất</th>
+                <th>Thời gian</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for c in conversations %}
+
+            <tr>
+
+                <td>
+                    {{ c.sender_name }}
+                </td>
+
+                <td>
+                    {{ c.last_message }}
+                </td>
+
+                <td>
+                    {{ c.created_at }}
+                </td>
+
+                <td>
+
+                    <a href="/doctor-chat/{{ c._id }}"
+                       class="btn btn-primary btn-sm">
+                        Mở chat
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="alert alert-info">
+        Chưa có tin nhắn nào.
+    </div>
+
+    {% endif %}
+
+    <hr>
+
+    <a href="/doctor-dashboard"
+       class="btn btn-secondary">
+        Quay lại Dashboard
+    </a>
+
+    <a href="/logout"
+       class="btn btn-danger">
+        Đăng xuất
+    </a>
+
+</div>
+
+</div>
+
+</body>
+</html>
