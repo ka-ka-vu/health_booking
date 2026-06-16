@@ -1121,179 +1121,53 @@ Giờ:
 
             print("Lỗi lịch khám:", e)
 
-# ==========================
-# THÊM LỊCH KHÁM
-# ==========================
-@app.route("/appointments/add", methods=["GET", "POST"])
-def add_appointment():
+        # ==========================
+        # LẤY THÔNG TIN BÁC SĨ
+        # ==========================
 
-    if request.method == "POST":
+        doctor_info = db.doctors.find_one({
+            "name": doctor
+        })
 
-        patient = request.form["patient"]
-        doctor = request.form["doctor"]
-        date = request.form["date"]
-        time = request.form["time"]
+        # ==========================
+        # LƯU LỊCH KHÁM
+        # ==========================
 
-        # Kiểm tra ngày
-        today = datetime.now().date()
+        db.appointments.insert_one({
 
-        selected_date = datetime.strptime(
-            date,
-            "%Y-%m-%d"
-        ).date()
+            "patient": patient,
 
-        if selected_date < today:
-            return """
-            <h3>Không thể đặt lịch trước ngày hiện tại!</h3>
-            <a href='/appointments/add'>Quay lại</a>
-            """
+            "doctor": doctor,
 
-        # Kiểm tra giờ hành chính
-        hour, minute = map(int, time.split(":"))
+            "doctor_email": (
+                doctor_info["email"]
+                if doctor_info and "email" in doctor_info
+                else ""
+            ),
 
-        valid_time = (
-            (7 <= hour < 11) or
-            (hour == 11 and minute <= 30) or
-            (13 <= hour < 18)
-        )
+            "date": date,
 
-        if not valid_time:
-            return """
-            <h3>Chỉ được đặt lịch từ 07:00 - 11:30 và 13:00 - 18:00</h3>
-            <a href='/appointments/add'>Quay lại</a>
-            """
+            "time": time,
 
-        # Kiểm tra bác sĩ có lịch trong vòng 1 giờ hay không
-        doctor_appointments = list(
-            db.appointments.find({
-                "doctor": doctor,
-                "date": date
-            })
-        )
+            "user_id": session.get("user_id"),
 
-        selected_time = datetime.strptime(
-            time,
-            "%H:%M"
-        )
+            "doctor_reminder_sent": False,
 
-        conflict = False
+            "user_reminder_sent": False,
 
-        for appointment in doctor_appointments:
+            "created_at": datetime.now()
 
-            booked_time = datetime.strptime(
-                appointment["time"],
-                "%H:%M"
-            )
+        })
 
-            diff_minutes = abs(
-                (selected_time - booked_time).total_seconds()
-            ) / 60
+        return redirect("/appointments")
 
-            if diff_minutes < 60:
-                conflict = True
-                break
+    doctors = list(db.doctors.find())
 
-        if conflict:
-
-            booked_times = [
-                item["time"]
-                for item in doctor_appointments
-            ]
-
-            available_times = [
-                "07:00", "08:00", "09:00",
-                "10:00", "11:00",
-                "13:00", "14:00", "15:00",
-                "16:00", "17:00"
-            ]
-
-            free_times = []
-
-            for slot in available_times:
-
-                slot_time = datetime.strptime(
-                    slot,
-                    "%H:%M"
-                )
-
-                valid = True
-
-                for booked in booked_times:
-
-                    booked_time = datetime.strptime(
-                        booked,
-                        "%H:%M"
-                    )
-
-                    diff_minutes = abs(
-                        (slot_time - booked_time).total_seconds()
-                    ) / 60
-
-                    if diff_minutes < 60:
-                        valid = False
-                        break
-
-                if valid:
-                    free_times.append(slot)
-
-            doctors = list(db.doctors.find())
-
-            return render_template(
-                "add_appointment.html",
-                doctors=doctors,
-                today=today,
-                error=f"Bác sĩ {doctor} đã có lịch khám gần thời gian {time} ngày {date}. Mỗi ca khám kéo dài 1 giờ nên vui lòng chọn khung giờ khác.",
-                suggestions=free_times
-            )
-
-# ==========================
-# LẤY THÔNG TIN BÁC SĨ
-# ==========================
-
-    doctor_info = db.doctors.find_one({
-        "name": doctor
-    })
-
-# ==========================
-# LƯU LỊCH KHÁM
-# ==========================
-
-    db.appointments.insert_one({
-
-        # Tên bệnh nhân
-        "patient": patient,
-
-        # Tên bác sĩ
-        "doctor": doctor,
-
-        # Email bác sĩ
-        "doctor_email": (
-            doctor_info["email"]
-            if doctor_info and "email" in doctor_info
-            else ""
-        ),
-
-        # Ngày khám
-        "date": date,
-
-        # Giờ khám
-        "time": time,
-
-        # Người đặt lịch
-        "user_id": session["user_id"],
-
-        # Trạng thái gửi mail
-        "doctor_reminder_sent": False,
-
-        "user_reminder_sent": False,
-
-        # Ngày tạo
-        "created_at": datetime.now()
-
-    })
-
-    return redirect("/appointments")
-
+    return render_template(
+        "add_appointment.html",
+        doctors=doctors,
+        today=datetime.now().date()
+    )
 
 # ==========================
 # SỬA LỊCH KHÁM
