@@ -1121,54 +1121,6 @@ Giờ:
 
             print("Lỗi lịch khám:", e)
 
-        # ==========================
-        # LẤY THÔNG TIN BÁC SĨ
-        # ==========================
-
-        doctor_info = db.doctors.find_one({
-            "name": doctor
-        })
-
-        # ==========================
-        # LƯU LỊCH KHÁM
-        # ==========================
-
-        db.appointments.insert_one({
-
-            "patient": patient,
-
-            "doctor": doctor,
-
-            "doctor_email": (
-                doctor_info["email"]
-                if doctor_info and "email" in doctor_info
-                else ""
-            ),
-
-            "date": date,
-
-            "time": time,
-
-            "user_id": session.get("user_id"),
-
-            "doctor_reminder_sent": False,
-
-            "user_reminder_sent": False,
-
-            "created_at": datetime.now()
-
-        })
-
-        return redirect("/appointments")
-
-    doctors = list(db.doctors.find())
-
-    return render_template(
-        "add_appointment.html",
-        doctors=doctors,
-        today=datetime.now().date()
-    )
-
 # ==========================
 # SỬA LỊCH KHÁM
 # ==========================
