@@ -989,6 +989,120 @@ def delete_doctor(id):
 
     return redirect("/doctors")
 
+# ==========================
+# THÊM LỊCH KHÁM
+# ==========================
+
+@app.route("/appointments/add", methods=["GET", "POST"])
+def add_appointment():
+
+    # Kiểm tra đăng nhập
+    if "user_id" not in session:
+        return redirect("/login")
+
+    # Khi người dùng bấm đặt lịch
+    if request.method == "POST":
+
+        # Lấy dữ liệu từ form
+        patient = request.form["patient"]
+
+        doctor = request.form["doctor"]
+
+        date = request.form["date"]
+
+        time = request.form["time"]
+
+        # ==========================
+        # KIỂM TRA NGÀY KHÁM
+        # ==========================
+
+        today = datetime.now().date()
+
+        selected_date = datetime.strptime(
+            date,
+            "%Y-%m-%d"
+        ).date()
+
+        # Không cho đặt lịch quá khứ
+        if selected_date < today:
+
+            return """
+            <h3>Không thể đặt lịch trước ngày hiện tại!</h3>
+            <a href='/appointments/add'>Quay lại</a>
+            """
+
+        # ==========================
+        # LẤY THÔNG TIN BÁC SĨ
+        # ==========================
+
+        doctor_info = db.doctors.find_one({
+
+            "name": doctor
+
+        })
+
+        # ==========================
+        # LƯU LỊCH KHÁM
+        # ==========================
+
+        db.appointments.insert_one({
+
+            # Tên bệnh nhân
+            "patient": patient,
+
+            # Tên bác sĩ
+            "doctor": doctor,
+
+            # Email bác sĩ
+            "doctor_email": (
+                doctor_info["email"]
+                if doctor_info and "email" in doctor_info
+                else ""
+            ),
+
+            # Ngày khám
+            "date": date,
+
+            # Giờ khám
+            "time": time,
+
+            # Người đặt lịch
+            "user_id": str(session["user_id"]),
+
+            # Đánh dấu đã gửi email nhắc chưa
+            "doctor_reminder_sent": False,
+
+            "user_reminder_sent": False,
+
+            # Thời gian tạo lịch
+            "created_at": datetime.now()
+
+        })
+
+        # Quay lại danh sách lịch khám
+        return redirect("/appointments")
+
+    # ==========================
+    # HIỂN THỊ FORM ĐẶT LỊCH
+    # ==========================
+
+    doctors = list(
+        db.doctors.find()
+    )
+
+    today = datetime.now().strftime(
+        "%Y-%m-%d"
+    )
+
+    return render_template(
+
+        "add_appointment.html",
+
+        doctors=doctors,
+
+        today=today
+
+    )
 
 # ==========================
 # DANH SÁCH LỊCH KHÁM
