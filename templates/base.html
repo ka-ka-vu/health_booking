@@ -60,75 +60,71 @@
 
     <div class="collapse navbar-collapse"
          id="menu">
+<ul class="navbar-nav ms-auto">
 
-        <ul class="navbar-nav ms-auto">
+{% if session.get('user_id') %}
 
-            <li class="nav-item">
+    <li class="nav-item">
+        <a class="nav-link" href="/dashboard">
+            <i class="bi bi-house-door"></i>
+            Dashboard
+        </a>
+    </li>
 
-                <a class="nav-link"
-                   href="/dashboard">
+    <li class="nav-item">
+        <a class="nav-link" href="/appointments">
+            <i class="bi bi-calendar-check"></i>
+            Lịch khám
+        </a>
+    </li>
 
-                    <i class="bi bi-house-door"></i>
+    <li class="nav-item">
+        <a class="nav-link" href="/doctor-list">
+            <i class="bi bi-person-badge"></i>
+            Bác sĩ
+        </a>
+    </li>
 
-                    Dashboard
+    <li class="nav-item">
+        <a class="nav-link text-warning" href="/cart">
+            <i class="bi bi-cart3"></i>
+            Giỏ hàng
+        </a>
+    </li>
 
-                </a>
+    <li class="nav-item">
+        <a class="nav-link text-danger" href="/logout">
+            <i class="bi bi-box-arrow-right"></i>
+            Đăng xuất
+        </a>
+    </li>
 
-            </li>
+{% else %}
 
-            <li class="nav-item">
+    <li class="nav-item">
+        <a class="nav-link" href="/">
+            <i class="bi bi-house"></i>
+            Trang chủ
+        </a>
+    </li>
 
-                <a class="nav-link"
-                   href="/appointments">
+    <li class="nav-item">
+        <a class="nav-link text-light" href="/login">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Đăng nhập
+        </a>
+    </li>
 
-                    <i class="bi bi-calendar-check"></i>
+    <li class="nav-item">
+        <a class="nav-link text-warning" href="/register">
+            <i class="bi bi-person-plus"></i>
+            Đăng ký
+        </a>
+    </li>
 
-                    Lịch khám
+{% endif %}
 
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link"
-                   href="/doctor-list">
-
-                    <i class="bi bi-person-badge"></i>
-
-                    Bác sĩ
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link text-warning"
-                   href="/cart">
-
-                    <i class="bi bi-cart3"></i>
-
-                    Giỏ hàng
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link text-danger"
-                   href="/logout">
-
-                    <i class="bi bi-box-arrow-right"></i>
-
-                    Đăng xuất
-
-                </a>
-
-            </li>
-
-        </ul>
+</ul>
 
     </div>
 
