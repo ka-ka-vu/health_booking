@@ -1,113 +1,206 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Sửa bác sĩ</title>
+{% extends "base.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block title %}
+Sửa bác sĩ
+{% endblock %}
 
-</head>
-<body>
+{% block content %}
 
-<div class="container mt-5">
-<div class="card shadow p-4">
+<div class="container py-5">
 
-    <h2>Sửa thông tin bác sĩ</h2>
+<div class="row justify-content-center">
 
-    <form method="POST">
+    <div class="col-lg-8">
 
-        <input
-            type="text"
-            name="name"
-            class="form-control mb-3"
-            value="{{ doctor.name }}"
-            placeholder="Họ tên"
-            required>
+        <div class="card border-0 shadow-lg rounded-4">
 
-        <label class="form-label">
-            Chuyên khoa
-        </label>
+            <div class="card-header bg-warning text-dark p-4 rounded-top-4">
 
-        <select
-            name="specialty"
-            class="form-control mb-3"
-            required>
+                <h2 class="mb-0">
 
-            {% for specialty in specialties %}
+                    👨‍⚕️ Sửa thông tin bác sĩ
 
-            <option
-                value="{{ specialty.name }}"
-                {% if specialty.name == doctor.specialty %}
-                selected
-                {% endif %}
-            >
-                {{ specialty.name }}
-            </option>
+                </h2>
 
-            {% endfor %}
+                <small>
 
-        </select>
+                    Cập nhật hồ sơ bác sĩ trong hệ thống
 
-        <label class="form-label">
-            Phòng khám
-        </label>
+                </small>
 
-        <select
-            name="clinic"
-            class="form-control mb-3"
-            required>
+            </div>
 
-            {% for clinic in clinics %}
+            <div class="card-body p-4">
 
-            <option
-                value="{{ clinic.name }}"
-                {% if clinic.name == doctor.clinic %}
-                selected
-                {% endif %}
-            >
-                {{ clinic.name }}
-            </option>
+                <form method="POST">
 
-            {% endfor %}
+                    <div class="mb-3">
 
-        </select>
+                        <label class="form-label fw-semibold">
 
-        <input
-            type="text"
-            name="phone"
-            class="form-control mb-3"
-            value="{{ doctor.phone }}"
-            placeholder="Số điện thoại"
-            required>
+                            Họ và tên
 
-        <input
-            type="email"
-            name="email"
-            class="form-control mb-3"
-            value="{{ doctor.email }}"
-            placeholder="Email"
-            required>
+                        </label>
 
-        <input
-            type="number"
-            name="experience"
-            class="form-control mb-3"
-            value="{{ doctor.experience }}"
-            placeholder="Số năm kinh nghiệm"
-            min="0"
-            required>
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control form-control-lg"
+                            value="{{ doctor.name }}"
+                            required>
 
-        <button class="btn btn-primary">
-            Cập nhật
-        </button>
+                    </div>
 
-        <a href="/doctors" class="btn btn-secondary">
-            Quay lại
-        </a>
+                    <div class="mb-3">
 
-    </form>
+                        <label class="form-label fw-semibold">
+
+                            Chuyên khoa
+
+                        </label>
+
+                        <select
+                            name="specialty"
+                            class="form-select form-select-lg"
+                            required>
+
+                            {% for specialty in specialties %}
+
+                            <option
+                                value="{{ specialty.name }}"
+                                {% if specialty.name == doctor.specialty %}
+                                selected
+                                {% endif %}>
+
+                                {{ specialty.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            🏥 Phòng khám
+
+                        </label>
+
+                        <select
+                            name="clinic"
+                            class="form-select form-select-lg"
+                            required>
+
+                            {% for clinic in clinics %}
+
+                            <option
+                                value="{{ clinic.name }}"
+                                {% if clinic.name == doctor.clinic %}
+                                selected
+                                {% endif %}>
+
+                                {{ clinic.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            📞 Số điện thoại
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            class="form-control form-control-lg"
+                            value="{{ doctor.phone }}"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            📧 Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control form-control-lg"
+                            value="{{ doctor.email }}"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            ⭐ Kinh nghiệm (năm)
+
+                        </label>
+
+                        <input
+                            type="number"
+                            name="experience"
+                            class="form-control form-control-lg"
+                            value="{{ doctor.experience }}"
+                            min="0"
+                            required>
+
+                    </div>
+
+                    <div class="alert alert-info">
+
+                        💡 Kiểm tra kỹ thông tin trước khi cập nhật.
+
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+
+                        <button
+                            type="submit"
+                            class="btn btn-warning btn-lg">
+
+                            💾 Cập nhật
+
+                        </button>
+
+                        <a
+                            href="/doctors"
+                            class="btn btn-outline-secondary btn-lg">
+
+                            ⬅ Quay lại
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
+
 </div>
-</body>
-</html>
+
+{% endblock %}

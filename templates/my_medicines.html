@@ -4,17 +4,26 @@
     <meta charset="UTF-8">
     <title>Thuốc của tôi</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
-<div class="container mt-5">
-<div class="card shadow p-4">
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container py-5">
 
-    <h2>Thuốc của tôi</h2>
+<div class="row justify-content-center">
+
+<div class="col-lg-11">
+
+<div class="card border-0 shadow-lg rounded-4">
+
+<div class="card-header bg-warning text-dark p-4 rounded-top-4">
+
+<div class="d-flex justify-content-between align-items-center">
+
+    <h2 class="mb-0">
+        💊 Thuốc của tôi
+    </h2>
 
     <a href="/add-medicine"
        class="btn btn-success">
@@ -23,11 +32,18 @@
 
 </div>
 
+</div>
+
+<div class="card-body p-4">
+
 {% if medicines %}
+
+<div class="table-responsive">
 
 <table class="table table-bordered table-hover align-middle">
 
-    <thead class="table-dark">
+    <thead class="table-primary">
+
         <tr>
             <th>Hình ảnh</th>
             <th>Tên thuốc</th>
@@ -37,6 +53,7 @@
             <th>Ngày đăng</th>
             <th>Thao tác</th>
         </tr>
+
     </thead>
 
     <tbody>
@@ -50,7 +67,7 @@
             {% if medicine.image %}
 
             <img src="{{ medicine.image }}"
-                 class="img-fluid rounded"
+                 class="img-fluid rounded shadow-sm"
                  style="max-height:100px;object-fit:cover;">
 
             {% else %}
@@ -67,7 +84,7 @@
             <b>{{ medicine.name }}</b>
         </td>
 
-        <td>
+        <td class="text-danger fw-bold">
             {{ "{:,}".format(medicine.price) }} VNĐ
         </td>
 
@@ -120,17 +137,21 @@
 
 </table>
 
+</div>
+
 {% else %}
 
 <div class="alert alert-info">
+
     Bạn chưa đăng thuốc nào.
+
 </div>
 
 {% endif %}
 
 <hr>
 
-<div class="d-flex gap-2">
+<div class="d-flex gap-2 mt-4">
 
     <a href="/doctor-dashboard"
        class="btn btn-secondary">
@@ -143,7 +164,16 @@
     </a>
 
 </div>
+
 </div>
+
 </div>
+
+</div>
+
+</div>
+
+</div>
+
 </body>
 </html>

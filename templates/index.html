@@ -1,227 +1,306 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Health Booking</title>
+{% block title %}
+Health Booking System
+{% endblock %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block content %}
 
-    <style>
-        body{
-            background:#f8f9fa;
-        }
+<!-- HERO -->
 
-        .hero{
-            min-height:500px;
-            display:flex;
-            align-items:center;
-            background:linear-gradient(135deg,#0d6efd,#0dcaf0);
-            color:white;
-        }
+<section class="py-5">
 
-        .feature-card{
-            transition:0.3s;
-        }
+<div class="row align-items-center">
 
-        .feature-card:hover{
-            transform:translateY(-5px);
-        }
+    <div class="col-lg-6">
 
-        footer{
-            background:#212529;
-            color:white;
-        }
-    </style>
+        <span class="badge bg-primary fs-6 mb-3">
 
-</head>
-<body>
+            🏥 Hệ thống đặt lịch khám trực tuyến
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        </span>
 
-    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">
 
-        <a class="navbar-brand fw-bold" href="/">
-            🏥 Health Booking
-        </a>
+            Đặt lịch khám bệnh nhanh chóng và tiện lợi
 
-        <div>
-
-            <a href="/login" class="btn btn-light me-2">
-                Đăng nhập
-            </a>
-
-            <a href="/register" class="btn btn-warning">
-                Đăng ký
-            </a>
-
-        </div>
-
-    </div>
-
-</nav>
-
-<!-- Hero -->
-<section class="hero">
-
-    <div class="container text-center">
-
-        <h1 class="display-4 fw-bold">
-            HỆ THỐNG ĐẶT LỊCH KHÁM BỆNH ONLINE
         </h1>
 
-        <p class="lead mt-4">
-            Tìm phòng khám gần nhất, lựa chọn bác sĩ phù hợp và đặt lịch khám chỉ trong vài phút.
+        <p class="lead text-muted mb-4">
+
+            Tìm bác sĩ, phòng khám gần nhất, nhận tư vấn trực tuyến
+            và đặt lịch khám chỉ trong vài phút.
+
         </p>
 
-        <a href="/register" class="btn btn-warning btn-lg mt-3">
-            Đặt lịch ngay
-        </a>
+        <div class="d-flex gap-3">
+
+            <a href="/register"
+               class="btn btn-primary btn-lg">
+
+                Đăng ký ngay
+
+            </a>
+
+            <a href="/login"
+               class="btn btn-outline-primary btn-lg">
+
+                Đăng nhập
+
+            </a>
+
+        </div>
 
     </div>
+
+    <div class="col-lg-6 text-center">
+
+        <img
+            src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
+            class="img-fluid"
+            style="max-height:350px;">
+
+    </div>
+
+</div>
 
 </section>
 
-<!-- Features -->
-<section class="container py-5">
+<!-- THỐNG KÊ -->
 
-    <div class="text-center mb-5">
+<section class="row g-4 py-4">
 
-        <h2 class="fw-bold">
-            Chức năng chính
-        </h2>
+<div class="col-md-3">
 
-        <p class="text-muted">
-            Hệ thống hỗ trợ đặt lịch khám bệnh trực tuyến nhanh chóng.
-        </p>
+    <div class="card border-0 shadow text-center h-100">
 
-    </div>
+        <div class="card-body">
 
-    <div class="row g-4">
+            <h1>👨‍⚕️</h1>
 
-        <div class="col-md-4">
+            <h4>Bác sĩ</h4>
 
-            <div class="card shadow feature-card h-100">
+            <p class="text-muted">
 
-                <div class="card-body text-center">
+                Đội ngũ bác sĩ giàu kinh nghiệm
 
-                    <h1>👨‍⚕️</h1>
-
-                    <h4>Bác sĩ</h4>
-
-                    <p>
-                        Tìm kiếm bác sĩ theo chuyên khoa phù hợp với triệu chứng bệnh.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow feature-card h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>🏥</h1>
-
-                    <h4>Phòng khám</h4>
-
-                    <p>
-                        Tìm phòng khám gần nhất dựa trên vị trí người dùng.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow feature-card h-100">
-
-                <div class="card-body text-center">
-
-                    <h1>📅</h1>
-
-                    <h4>Đặt lịch</h4>
-
-                    <p>
-                        Đặt lịch khám nhanh chóng và tránh trùng lịch hẹn.
-                    </p>
-
-                </div>
-
-            </div>
+            </p>
 
         </div>
 
     </div>
+
+</div>
+
+<div class="col-md-3">
+
+    <div class="card border-0 shadow text-center h-100">
+
+        <div class="card-body">
+
+            <h1>🏥</h1>
+
+            <h4>Phòng khám</h4>
+
+            <p class="text-muted">
+
+                Hệ thống phòng khám uy tín
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-md-3">
+
+    <div class="card border-0 shadow text-center h-100">
+
+        <div class="card-body">
+
+            <h1>📅</h1>
+
+            <h4>Đặt lịch</h4>
+
+            <p class="text-muted">
+
+                Đặt lịch mọi lúc mọi nơi
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-md-3">
+
+    <div class="card border-0 shadow text-center h-100">
+
+        <div class="card-body">
+
+            <h1>💬</h1>
+
+            <h4>Tư vấn</h4>
+
+            <p class="text-muted">
+
+                Chat trực tiếp với bác sĩ
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
 
 </section>
 
-<!-- Quy trình -->
-<section class="bg-light py-5">
+<!-- QUY TRÌNH -->
 
-    <div class="container">
+<section class="py-5">
 
-        <div class="text-center mb-5">
+<div class="text-center mb-5">
 
-            <h2 class="fw-bold">
-                Quy trình đặt lịch
-            </h2>
+    <h2 class="fw-bold">
 
-        </div>
+        Quy trình đặt lịch khám
 
-        <div class="row text-center">
+    </h2>
 
-            <div class="col-md-3">
+    <p class="text-muted">
+
+        Chỉ với 4 bước đơn giản
+
+    </p>
+
+</div>
+
+<div class="row text-center">
+
+    <div class="col-md-3">
+
+        <div class="card border-0 shadow h-100">
+
+            <div class="card-body">
+
                 <h1>1️⃣</h1>
+
                 <h5>Đăng ký</h5>
-                <p>Tạo tài khoản người dùng.</p>
-            </div>
 
-            <div class="col-md-3">
-                <h1>2️⃣</h1>
-                <h5>Chọn phòng khám</h5>
-                <p>Tìm phòng khám gần nhất.</p>
-            </div>
+                <p>
 
-            <div class="col-md-3">
-                <h1>3️⃣</h1>
-                <h5>Chọn bác sĩ</h5>
-                <p>Lựa chọn chuyên khoa phù hợp.</p>
-            </div>
+                    Tạo tài khoản miễn phí
 
-            <div class="col-md-3">
-                <h1>4️⃣</h1>
-                <h5>Đặt lịch</h5>
-                <p>Nhận xác nhận lịch khám.</p>
+                </p>
+
             </div>
 
         </div>
 
     </div>
 
-</section>
+    <div class="col-md-3">
 
-<!-- Footer -->
-<footer class="py-4">
+        <div class="card border-0 shadow h-100">
 
-    <div class="container text-center">
+            <div class="card-body">
 
-        <p class="mb-0">
-            © 2026 Health Booking System - Đại học Đại Nam
-        </p>
+                <h1>2️⃣</h1>
+
+                <h5>Tìm bác sĩ</h5>
+
+                <p>
+
+                    Lựa chọn chuyên khoa phù hợp
+
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
-</footer>
+    <div class="col-md-3">
 
-</body>
-</html>
+        <div class="card border-0 shadow h-100">
+
+            <div class="card-body">
+
+                <h1>3️⃣</h1>
+
+                <h5>Đặt lịch</h5>
+
+                <p>
+
+                    Chọn ngày và giờ khám
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card border-0 shadow h-100">
+
+            <div class="card-body">
+
+                <h1>4️⃣</h1>
+
+                <h5>Khám bệnh</h5>
+
+                <p>
+
+                    Nhận thông báo và đi khám
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- CTA -->
+
+<section class="card border-0 shadow-lg bg-primary text-white p-5 text-center mb-5">
+
+<h2>
+
+    Sẵn sàng chăm sóc sức khỏe của bạn?
+
+</h2>
+
+<p class="mb-4">
+
+    Đăng ký tài khoản ngay hôm nay để sử dụng toàn bộ chức năng.
+
+</p>
+
+<div>
+
+    <a href="/register"
+       class="btn btn-warning btn-lg">
+
+        Bắt đầu ngay
+
+    </a>
+
+</div>
+
+</section>
+
+{% endblock %}

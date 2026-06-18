@@ -1,14 +1,57 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>User Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>User Dashboard</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<style>
+
+body{
+    background:#f8f9fa;
+}
+
+footer{
+    background:#212529;
+    color:white;
+}
+
+.dashboard-btn{
+    transition:0.3s;
+}
+
+.dashboard-btn:hover{
+    transform:translateY(-3px);
+}
+
+</style>
+
 </head>
 
-<body class="bg-light">
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+
+<div class="container">
+
+<a class="navbar-brand fw-bold" href="/dashboard">
+🏥 Health Booking
+</a>
+
+<div>
+<a href="/logout" class="btn btn-light">
+Đăng xuất
+</a>
+</div>
+
+</div>
+
+</nav>
 
 <div class="container mt-5">
 
@@ -17,79 +60,67 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
 
 <h2>
-    Xin chào {{ fullname }}
+Xin chào {{ fullname }}
 </h2>
 
 {% if notification_count > 0 %}
-
 <div class="badge bg-danger fs-6 p-3">
-    🔔 {{ notification_count }} thông báo
+🔔 {{ notification_count }} thông báo
 </div>
-
 {% endif %}
 
 </div>
 
 <div class="alert alert-success">
-    Bạn đang đăng nhập với quyền USER
+Bạn đang đăng nhập với quyền USER
 </div>
 
 {% if reminders %}
 
 <div class="card border-warning mb-4">
+
 <div class="card-header bg-warning">
-
-    <b>🔔 Thông báo lịch khám</b>
-
+<b>🔔 Thông báo lịch khám</b>
 </div>
 
 <div class="card-body">
 
-    <ul class="mb-0">
+<ul class="mb-0">
 
-        {% for r in reminders %}
+{% for r in reminders %}
 
-        <li class="mb-2">
+<li class="mb-2">
 
-            {% if r.days_left == 0 %}
+{% if r.days_left == 0 %}
 
-            Hôm nay bạn có lịch khám với bác sĩ
-            <b>{{ r.doctor }}</b>
+Hôm nay bạn có lịch khám với bác sĩ
+<b>{{ r.doctor }}</b>
+lúc
+<b>{{ r.time }}</b>
 
-            lúc
+{% elif r.days_left == 1 %}
 
-            <b>{{ r.time }}</b>
+Ngày mai bạn có lịch khám với bác sĩ
+<b>{{ r.doctor }}</b>
+lúc
+<b>{{ r.time }}</b>
 
-            {% elif r.days_left == 1 %}
+{% else %}
 
-            Ngày mai bạn có lịch khám với bác sĩ
-            <b>{{ r.doctor }}</b>
+Còn
+<b>{{ r.days_left }}</b>
+ngày nữa bạn có lịch khám với bác sĩ
+<b>{{ r.doctor }}</b>
+lúc
+<b>{{ r.time }}</b>
 
-            lúc
+{% endif %}
 
-            <b>{{ r.time }}</b>
+</li>
 
-            {% else %}
+{% endfor %}
 
-            Còn
-
-            <b>{{ r.days_left }}</b>
-
-            ngày nữa bạn có lịch khám với bác sĩ
-
-            <b>{{ r.doctor }}</b>
-
-            lúc
-
-            <b>{{ r.time }}</b>
-
-            {% endif %}
-
-        </li>
-
-        {% endfor %}
-
-    </ul>
+</ul>
 
 </div>
 
@@ -100,73 +131,76 @@
 <div class="row mt-4">
 
 <div class="col-md-4 mb-3">
-    <a href="/doctor-list"
-       class="btn btn-warning w-100 p-3">
-        Xem danh sách bác sĩ
-    </a>
+<a href="/doctor-list" class="btn btn-warning w-100 p-3 dashboard-btn">
+👨‍⚕️ Danh sách bác sĩ
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/appointments"
-       class="btn btn-info w-100 p-3">
-        Đặt lịch khám
-    </a>
+<a href="/appointments" class="btn btn-info w-100 p-3 dashboard-btn">
+📅 Đặt lịch khám
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/map"
-       class="btn btn-success w-100 p-3">
-        Bản đồ phòng khám
-    </a>
+<a href="/map" class="btn btn-success w-100 p-3 dashboard-btn">
+🗺️ Bản đồ phòng khám
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/symptom-checker"
-       class="btn btn-primary w-100 p-3">
-        Tư vấn chuyên khoa
-    </a>
+<a href="/symptom-checker" class="btn btn-primary w-100 p-3 dashboard-btn">
+🩺 Tư vấn chuyên khoa
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/medicines"
-       class="btn btn-warning w-100 p-3">
-        Mua thuốc
-    </a>
+<a href="/medicines" class="btn btn-warning w-100 p-3 dashboard-btn">
+💊 Mua thuốc
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/cart"
-       class="btn btn-dark w-100 p-3">
-        Giỏ hàng
-    </a>
+<a href="/cart" class="btn btn-dark w-100 p-3 dashboard-btn">
+🛒 Giỏ hàng
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/chat-doctor"
-       class="btn btn-secondary w-100 p-3">
-        Nhắn tin bác sĩ
-    </a>
+<a href="/chat-doctor" class="btn btn-secondary w-100 p-3 dashboard-btn">
+💬 Nhắn tin bác sĩ
+</a>
 </div>
 
 <div class="col-md-4 mb-3">
-    <a href="/order-history"
-       class="btn btn-primary w-100 p-3">
-        Lịch sử đơn hàng
-    </a>
+<a href="/order-history" class="btn btn-primary w-100 p-3 dashboard-btn">
+📦 Lịch sử đơn hàng
+</a>
 </div>
-
 
 <div class="col-md-4 mb-3">
-    <a href="/logout"
-       class="btn btn-danger w-100 p-3">
-        Đăng xuất
-    </a>
-</div>
+<a href="/logout" class="btn btn-danger w-100 p-3 dashboard-btn">
+🚪 Đăng xuất
+</a>
 </div>
 
 </div>
 
 </div>
+
+</div>
+
+<footer class="py-4 mt-5">
+
+<div class="container text-center">
+
+<p class="mb-0">
+© 2026 Health Booking System - Đại học Đại Nam
+</p>
+
+</div>
+
+</footer>
 
 </body>
 </html>

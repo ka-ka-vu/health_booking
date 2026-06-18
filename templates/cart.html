@@ -1,136 +1,208 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>Giỏ hàng</title>
+{% extends "base.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block title %}
+Giỏ hàng
+{% endblock %}
 
-<body class="bg-light">
+{% block content %}
 
-<div class="container mt-5">
+<div class="container py-4">
 
-<div class="card shadow p-4">
+<div class="card shadow-lg border-0">
 
-<h2 class="mb-4">
-    Giỏ hàng của bạn
-</h2>
+    <div class="card-header bg-success text-white">
 
-{% if carts %}
+        <h2 class="mb-0">
+            🛒 Giỏ hàng của bạn
+        </h2>
 
-<table class="table table-bordered table-hover align-middle">
+    </div>
 
-<thead class="table-dark">
-<tr>
-    <th>Ảnh</th>
-    <th>Tên thuốc</th>
-    <th>Giá</th>
-    <th>Số lượng</th>
-    <th>Thành tiền</th>
-    <th>Thao tác</th>
-</tr>
-</thead>
+    <div class="card-body">
 
-<tbody>
+        {% if carts %}
 
-{% for item in carts %}
+        <div class="table-responsive">
 
-<tr>
+            <table class="table align-middle table-hover">
 
-    <td>
+                <thead class="table-dark">
 
-        {% if item.image %}
-        <img src="{{ item.image }}"
-             width="80"
-             class="rounded">
+                    <tr>
+
+                        <th>Ảnh</th>
+
+                        <th>Tên thuốc</th>
+
+                        <th>Giá</th>
+
+                        <th>Số lượng</th>
+
+                        <th>Thành tiền</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in carts %}
+
+                    <tr>
+
+                        <td>
+
+                            {% if item.image %}
+
+                            <img src="{{ item.image }}"
+                                 width="90"
+                                 class="rounded shadow-sm">
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+                                {{ item.medicine_name }}
+                            </strong>
+
+                        </td>
+
+                        <td class="text-primary fw-bold">
+
+                            {{ "{:,}".format(item.price) }}
+                            VNĐ
+
+                        </td>
+
+                        <td>
+
+                            <a href="/cart/decrease/{{ item._id }}"
+                               class="btn btn-warning btn-sm">
+
+                                −
+
+                            </a>
+
+                            <span class="mx-2 fw-bold">
+
+                                {{ item.quantity }}
+
+                            </span>
+
+                            <a href="/cart/increase/{{ item._id }}"
+                               class="btn btn-success btn-sm">
+
+                                +
+
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                            <span class="text-danger fw-bold">
+
+                                {{ "{:,}".format(item.price * item.quantity) }}
+                                VNĐ
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <a href="/cart/delete/{{ item._id }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Xóa sản phẩm này?')">
+
+                                🗑 Xóa
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="card bg-light border-0 mt-4">
+
+            <div class="card-body">
+
+                <h4 class="text-danger mb-0">
+
+                    💰 Tổng tiền:
+                    {{ "{:,}".format(total) }} VNĐ
+
+                </h4>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-5">
+
+            <h1>
+                🛒
+            </h1>
+
+            <h4>
+
+                Giỏ hàng đang trống
+
+            </h4>
+
+            <p class="text-muted">
+
+                Hãy thêm thuốc vào giỏ hàng
+
+            </p>
+
+        </div>
+
         {% endif %}
 
-    </td>
+        <hr>
 
-    <td>{{ item.medicine_name }}</td>
+        <div class="d-flex gap-2 flex-wrap">
 
-    <td>
-        {{ "{:,}".format(item.price) }} VNĐ
-    </td>
+            <a href="/dashboard"
+               class="btn btn-secondary">
 
-    <td>
+                ⬅ Quay lại
 
-        <a href="/cart/decrease/{{ item._id }}"
-           class="btn btn-warning btn-sm">
-            -
-        </a>
+            </a>
 
-        <span class="mx-2 fw-bold">
-            {{ item.quantity }}
-        </span>
+            {% if carts %}
 
-        <a href="/cart/increase/{{ item._id }}"
-           class="btn btn-success btn-sm">
-            +
-        </a>
+            <a href="/checkout"
+               class="btn btn-success">
 
-    </td>
+                💳 Thanh toán
 
-    <td>
+            </a>
 
-        <span class="text-danger fw-bold">
-            {{ "{:,}".format(item.price * item.quantity) }}
-            VNĐ
-        </span>
+            {% endif %}
 
-    </td>
+        </div>
 
-    <td>
-
-        <a href="/cart/delete/{{ item._id }}"
-           class="btn btn-danger btn-sm"
-           onclick="return confirm('Xóa sản phẩm này?')">
-            Xóa
-        </a>
-
-    </td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-<h4 class="text-danger mt-4">
-    Tổng tiền:
-    {{ "{:,}".format(total) }} VNĐ
-</h4>
-
-{% else %}
-
-<div class="alert alert-info">
-    Giỏ hàng đang trống
-</div>
-
-{% endif %}
-
-<hr>
-
-<div class="d-flex gap-2">
-
-    <a href="/dashboard"
-       class="btn btn-secondary">
-        Quay lại Dashboard
-    </a>
-
-    <a href="/checkout"
-       class="btn btn-success">
-        Thanh toán
-    </a>
+    </div>
 
 </div>
 
 </div>
 
-</div>
-
-</body>
-</html>
+{% endblock %}

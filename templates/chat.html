@@ -1,89 +1,124 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Nhắn tin bác sĩ</title>
+{% extends "base.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block title %}
+Nhắn tin bác sĩ
+{% endblock %}
 
-</head>
+{% block content %}
 
-<body class="bg-light">
+<div class="container py-4">
 
-<div class="container mt-5">
+<div class="card shadow-lg border-0">
 
-<div class="card shadow p-4">
+    <div class="card-header bg-primary text-white">
 
-<h2 class="mb-4">
-    Chọn bác sĩ để nhắn tin
-</h2>
+        <h2 class="mb-0">
+            💬 Nhắn tin với bác sĩ
+        </h2>
 
-{% if consult_medicine %}
+    </div>
 
-<div class="alert alert-info">
+    <div class="card-body">
 
-    <h5>Tư vấn sản phẩm</h5>
+        {% if consult_medicine %}
 
-    <p>
-        <b>Thuốc:</b>
-        {{ consult_medicine.medicine_name }}
-    </p>
+        <div class="alert alert-info shadow-sm">
 
-    <p>
-        <b>Bác sĩ:</b>
-        {{ consult_medicine.doctor_name }}
-    </p>
+            <h5>
+                💊 Tư vấn sản phẩm
+            </h5>
 
-    <a href="/chat/{{ consult_medicine.doctor_id }}"
-       class="btn btn-primary">
-        Chat ngay với bác sĩ
-    </a>
+            <p class="mb-1">
 
-</div>
+                <strong>Thuốc:</strong>
 
-<hr>
+                {{ consult_medicine.medicine_name }}
 
-{% endif %}
+            </p>
 
-{% if doctors %}
+            <p>
 
-    {% for doctor in doctors %}
+                <strong>Bác sĩ:</strong>
 
-    <div class="mb-3">
+                {{ consult_medicine.doctor_name }}
 
-        <a href="/chat/{{ doctor._id }}"
-           class="btn btn-outline-primary w-100 p-3">
+            </p>
 
-            <b>{{ doctor.name }}</b>
+            <a href="/chat/{{ consult_medicine.doctor_id }}"
+               class="btn btn-primary">
 
-            <br>
+                💬 Chat ngay
 
-            {{ doctor.specialty }}
+            </a>
+
+        </div>
+
+        {% endif %}
+
+        {% if doctors %}
+
+        <div class="row">
+
+            {% for doctor in doctors %}
+
+            <div class="col-md-6 mb-4">
+
+                <div class="card h-100 border-0 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="text-primary">
+
+                            👨‍⚕️ {{ doctor.name }}
+
+                        </h5>
+
+                        <p class="text-muted mb-3">
+
+                            {{ doctor.specialty }}
+
+                        </p>
+
+                        <a href="/chat/{{ doctor._id }}"
+                           class="btn btn-outline-primary">
+
+                            Bắt đầu trò chuyện
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-warning text-center">
+
+            ⚠ Chưa có bác sĩ nào trong hệ thống
+
+        </div>
+
+        {% endif %}
+
+        <hr>
+
+        <a href="/dashboard"
+           class="btn btn-secondary">
+
+            ⬅ Quay lại Dashboard
 
         </a>
 
     </div>
 
-    {% endfor %}
-
-{% else %}
-
-    <div class="alert alert-warning">
-        Chưa có bác sĩ nào trong hệ thống
-    </div>
-
-{% endif %}
-
-<hr>
-
-<a href="/dashboard"
-   class="btn btn-secondary">
-    Quay lại
-</a>
-
 </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

@@ -1,59 +1,117 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng nhập</title>
+{% extends "base.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block title %}
+Đăng nhập
+{% endblock %}
 
-</head>
-<body class="bg-light">
-<div class="container mt-5">
-<div class="card shadow p-4 mx-auto" style="max-width:500px">
+{% block content %}
 
-    <h2 class="text-center mb-4">
-        Đăng nhập
-    </h2>
+<div class="row justify-content-center">
 
-    <form method="POST">
+<div class="col-md-6 col-lg-5">
 
-        <input
-            type="email"
-            name="email"
-            class="form-control mb-3"
-            placeholder="Email"
-            required>
+    <div class="card border-0 shadow-lg rounded-4">
 
-        <input
-            type="password"
-            name="password"
-            class="form-control mb-3"
-            placeholder="Mật khẩu"
-            required>
+        <div class="card-header bg-primary text-white text-center p-4 rounded-top-4">
 
-        <button class="btn btn-success w-100 mb-3">
-            Đăng nhập
-        </button>
+            <h2 class="mb-0">
 
-    </form>
+                🔐 Đăng nhập
 
-    <hr>
+            </h2>
 
-    <div class="text-center">
+            <small>
 
-        <p class="mb-3">
-            Chưa có tài khoản?
-        </p>
+                Truy cập hệ thống Health Booking
 
-        <a href="/register"
-           class="btn btn-primary w-100">
-            Đăng ký
-        </a>
+            </small>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Email
+
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control form-control-lg"
+                        placeholder="Nhập email"
+                        required>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Mật khẩu
+
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control form-control-lg"
+                        placeholder="Nhập mật khẩu"
+                        required>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-lg w-100">
+
+                    Đăng nhập
+
+                </button>
+
+            </form>
+
+            <hr>
+
+            <div class="text-center">
+
+                <p class="text-muted">
+
+                    Chưa có tài khoản?
+
+                </p>
+
+                <a
+                    href="/register"
+                    class="btn btn-outline-success w-100">
+
+                    Đăng ký tài khoản
+
+                </a>
+
+            </div>
+
+            <div class="text-center mt-3">
+
+                <a href="/doctor-register">
+
+                    Đăng ký tài khoản bác sĩ
+
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
+
 </div>
 
-</body>
-</html>
+{% endblock %}

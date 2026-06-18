@@ -6,46 +6,63 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+
+<body class="bg-light">
 
 <div class="container mt-5">
 
-    <div class="card shadow mx-auto p-4" style="max-width:500px">
+<div class="card shadow p-4 mx-auto" style="max-width:500px">
 
-        <h2 class="text-center mb-4">
-            Đăng ký tài khoản
-        </h2>
+    <h2 class="text-center mb-4">
+        Đăng ký tài khoản
+    </h2>
 
-        <form method="POST">
+    <form method="POST">
 
-            <input
-                type="text"
-                name="fullname"
-                class="form-control mb-3"
-                placeholder="Họ và tên"
-                required>
+        <input
+            type="text"
+            name="fullname"
+            class="form-control mb-3"
+            placeholder="Họ và tên"
+            required>
 
-            <input
-                type="email"
-                name="email"
-                class="form-control mb-3"
-                placeholder="Email"
-                required>
+        <input
+            type="email"
+            name="email"
+            class="form-control mb-3"
+            placeholder="Email"
+            required>
 
-            <input
-                type="password"
-                name="password"
-                class="form-control mb-3"
-                placeholder="Mật khẩu"
-                required>
+        <input
+            type="password"
+            name="password"
+            class="form-control mb-3"
+            placeholder="Mật khẩu"
+            required>
 
-            <button class="btn btn-primary w-100">
-                Đăng ký
-            </button>
+        <button
+            class="btn btn-primary w-100 mb-3">
+            Đăng ký
+        </button>
 
-        </form>
+    </form>
+
+    <hr>
+
+    <div class="text-center">
+
+        <p class="mb-3">
+            Đã có tài khoản?
+        </p>
+
+        <a href="/login"
+           class="btn btn-secondary w-100">
+            Đăng nhập
+        </a>
 
     </div>
+
+</div>
 
 </div>
 

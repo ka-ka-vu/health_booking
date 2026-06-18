@@ -1,88 +1,152 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Duyệt tài khoản bác sĩ</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% block title %}
+Duyệt tài khoản bác sĩ
+{% endblock %}
 
-<div class="container mt-5">
+{% block content %}
 
-    <div class="card shadow p-4">
+<div class="container py-5">
 
-        <h2 class="mb-4">
-            Danh sách bác sĩ chờ duyệt
+<div class="card border-0 shadow-lg">
+
+    <div class="card-header bg-warning text-dark p-4">
+
+        <h2 class="mb-1">
+
+            👨‍⚕️ Duyệt tài khoản bác sĩ
+
         </h2>
+
+        <p class="mb-0">
+
+            Quản lý các yêu cầu đăng ký bác sĩ
+
+        </p>
+
+    </div>
+
+    <div class="card-body">
 
         {% if doctors %}
 
-        <table class="table table-bordered table-hover">
+        <div class="table-responsive">
 
-            <thead class="table-dark">
+            <table class="table table-hover align-middle">
 
-                <tr>
-                    <th>Họ tên</th>
-                    <th>Email</th>
-                    <th>Chuyên khoa</th>
-                    <th>SĐT</th>
-                    <th>Kinh nghiệm</th>
-                    <th>Thao tác</th>
-                </tr>
+                <thead class="table-dark">
 
-            </thead>
+                    <tr>
 
-            <tbody>
+                        <th>Họ tên</th>
 
-            {% for doctor in doctors %}
+                        <th>Email</th>
 
-                <tr>
+                        <th>Chuyên khoa</th>
 
-                    <td>{{ doctor.fullname }}</td>
+                        <th>SĐT</th>
 
-                    <td>{{ doctor.email }}</td>
+                        <th>Kinh nghiệm</th>
 
-                    <td>{{ doctor.specialty }}</td>
+                        <th>Trạng thái</th>
 
-                    <td>{{ doctor.phone }}</td>
+                        <th>Thao tác</th>
 
-                    <td>{{ doctor.experience }}</td>
+                    </tr>
 
-                    <td>
+                </thead>
 
-                        <a
-                            href="/approve-doctor/{{ doctor._id }}"
-                            class="btn btn-success btn-sm">
+                <tbody>
 
-                            Duyệt
+                {% for doctor in doctors %}
 
-                        </a>
+                    <tr>
 
-                    </td>
+                        <td>
 
-                </tr>
+                            <strong>
+                                {{ doctor.fullname }}
+                            </strong>
 
-            {% endfor %}
+                        </td>
 
-            </tbody>
+                        <td>
 
-        </table>
+                            {{ doctor.email }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-info">
+
+                                {{ doctor.specialty }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ doctor.phone }}
+
+                        </td>
+
+                        <td>
+
+                            {{ doctor.experience }} năm
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-warning text-dark">
+
+                                Chờ duyệt
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <a href="/approve-doctor/{{ doctor._id }}"
+                               class="btn btn-success btn-sm">
+
+                                ✔ Duyệt
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
         {% else %}
 
-        <div class="alert alert-info">
+        <div class="alert alert-success text-center">
 
-            Không có tài khoản bác sĩ nào chờ duyệt.
+            🎉 Hiện không có tài khoản bác sĩ nào chờ duyệt
 
         </div>
 
         {% endif %}
 
+    </div>
+
+    <div class="card-footer bg-light">
+
         <a href="/dashboard"
            class="btn btn-secondary">
 
-            Quay lại Dashboard
+            ⬅ Quay lại Dashboard
 
         </a>
 
@@ -90,5 +154,6 @@
 
 </div>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

@@ -1,67 +1,156 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Lịch khám bác sĩ</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% block title %}
+Lịch khám bác sĩ
+{% endblock %}
 
-<div class="container mt-5">
+{% block content %}
 
-<div class="card shadow p-4">
+<div class="container py-4">
 
-    <h2 class="mb-4">
-        Danh sách lịch khám
-    </h2>
+<!-- Header -->
 
-    {% if appointments %}
+<div class="card shadow-lg border-0 mb-4">
 
-    <table class="table table-bordered">
+    <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-        <thead>
-            <tr>
-                <th>Bệnh nhân</th>
-                <th>Ngày khám</th>
-                <th>Giờ khám</th>
-                <th>Trạng thái</th>
-            </tr>
-        </thead>
+        <div>
 
-        <tbody>
+            <h2 class="mb-1">
+                📅 Danh sách lịch khám
+            </h2>
 
-        {% for appt in appointments %}
+            <p class="text-muted mb-0">
+                Quản lý các lịch khám của bác sĩ
+            </p>
 
-            <tr>
-                <td>{{ appt.patient_name }}</td>
-                <td>{{ appt.date }}</td>
-                <td>{{ appt.time }}</td>
-                <td>{{ appt.status }}</td>
-            </tr>
+        </div>
 
-        {% endfor %}
+        <div>
 
-        </tbody>
+            <a href="/doctor-dashboard"
+               class="btn btn-secondary">
 
-    </table>
+                ⬅ Quay lại Dashboard
 
-    {% else %}
+            </a>
 
-    <div class="alert alert-warning">
-        Chưa có lịch khám nào
+        </div>
+
     </div>
 
-    {% endif %}
+</div>
 
-    <a href="/doctor-dashboard"
-       class="btn btn-secondary">
-        Quay lại
-    </a>
+{% if appointments %}
+
+<div class="row g-4">
+
+    {% for appt in appointments %}
+
+    <div class="col-lg-6">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+                <h5 class="text-primary">
+
+                    👤 {{ appt.patient_name }}
+
+                </h5>
+
+                <hr>
+
+                <p>
+
+                    <strong>📅 Ngày khám:</strong>
+
+                    {{ appt.date }}
+
+                </p>
+
+                <p>
+
+                    <strong>⏰ Giờ khám:</strong>
+
+                    {{ appt.time }}
+
+                </p>
+
+                <p>
+
+                    <strong>📌 Trạng thái:</strong>
+
+                    {% if appt.status == "pending" %}
+
+                    <span class="badge bg-warning text-dark">
+
+                        Chờ khám
+
+                    </span>
+
+                    {% elif appt.status == "completed" %}
+
+                    <span class="badge bg-success">
+
+                        Hoàn thành
+
+                    </span>
+
+                    {% elif appt.status == "cancelled" %}
+
+                    <span class="badge bg-danger">
+
+                        Đã hủy
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-secondary">
+
+                        {{ appt.status }}
+
+                    </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
 
 </div>
 
+{% else %}
+
+<div class="card shadow-sm">
+
+    <div class="card-body text-center p-5">
+
+        <h4>
+
+            📭 Chưa có lịch khám nào
+
+        </h4>
+
+        <p class="text-muted">
+
+            Hiện tại chưa có bệnh nhân đặt lịch
+
+        </p>
+
+    </div>
+
 </div>
 
-</body>
-</html>
+{% endif %}
+
+</div>
+
+{% endblock %}
