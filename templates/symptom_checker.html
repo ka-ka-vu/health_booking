@@ -132,6 +132,42 @@ Ví dụ:
 
     </h5>
 
+    {% if chat.urgency %}
+
+    <p>
+
+        ⚠️ Mức độ ưu tiên:
+
+        {% if chat.urgency == "Khẩn cấp" %}
+
+            <span class="badge bg-danger">
+
+                {{ chat.urgency }}
+
+            </span>
+
+        {% elif chat.urgency == "Cần khám sớm" %}
+
+            <span class="badge bg-warning text-dark">
+
+                {{ chat.urgency }}
+
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-success">
+
+                {{ chat.urgency }}
+
+            </span>
+
+        {% endif %}
+
+    </p>
+
+    {% endif %}
+
     {% if chat.doctor %}
 
     <p>
@@ -146,7 +182,7 @@ Ví dụ:
 
     {% if chat.question %}
 
-    <div class="alert alert-warning">
+    <div class="alert alert-warning mb-0">
 
         🤖 {{ chat.question }}
 
@@ -166,7 +202,7 @@ Ví dụ:
 
 <div class="card-header bg-primary text-white">
 
-Top chuyên khoa phù hợp
+📊 Top 3 chuyên khoa phù hợp
 
 </div>
 
@@ -178,9 +214,9 @@ Top chuyên khoa phù hợp
 
 <li>
 
-<b>{{ spec }}</b>
+    <b>{{ spec }}</b>
 
-- {{ score }} điểm
+    - {{ score }} điểm
 
 </li>
 
@@ -198,7 +234,7 @@ Top chuyên khoa phù hợp
 
 <div class="alert alert-success mt-3">
 
-{{ recommendation }}
+✅ {{ recommendation }}
 
 </div>
 
@@ -229,6 +265,20 @@ Top chuyên khoa phù hợp
 </div>
 
 </div>
+
+<script>
+
+let chatBox =
+    document.querySelector(".chat-scroll");
+
+if(chatBox){
+
+    chatBox.scrollTop =
+        chatBox.scrollHeight;
+
+}
+
+</script>
 
 </body>
 </html>

@@ -1360,6 +1360,7 @@ def symptom_checker():
     doctor_name = None
     recommendation = None
     chatbot_question = None
+    urgency = None
     top_specialties = []
 
     if request.method == "POST":
@@ -1368,119 +1369,143 @@ def symptom_checker():
 
         specialties = {
 
-            "Nội tổng quát":[
-                "sốt","mệt","mệt mỏi",
-                "yếu","chán ăn","đau người"
-            ],
+            "Tim mạch": {
+                "đau ngực": 10,
+                "tức ngực": 10,
+                "nghẹn ngực": 9,
+                "khó thở": 8,
+                "hồi hộp": 7,
+                "đánh trống ngực": 7,
+                "cao huyết áp": 6,
+                "tim đập nhanh": 6
+            },
 
-            "Hô hấp":[
-                "ho","khó thở","đờm",
-                "viêm phổi","viêm họng",
-                "cúm","hen","phổi"
-            ],
+            "Hô hấp": {
+                "ho": 8,
+                "khó thở": 8,
+                "đờm": 7,
+                "viêm họng": 6,
+                "sổ mũi": 5,
+                "nghẹt mũi": 5,
+                "hen": 8,
+                "viêm phổi": 10,
+                "cúm": 6
+            },
 
-            "Tim mạch":[
-                "tim","đau ngực",
-                "huyết áp","hồi hộp",
-                "cao huyết áp",
-                "đánh trống ngực"
-            ],
+            "Tiêu hóa": {
+                "đau bụng": 10,
+                "bụng": 4,
+                "tiêu chảy": 8,
+                "buồn nôn": 7,
+                "nôn": 7,
+                "đầy hơi": 6,
+                "ợ chua": 6,
+                "dạ dày": 8,
+                "táo bón": 6
+            },
 
-            "Tiêu hóa":[
-                "bụng","đau bụng",
-                "dạ dày","tiêu chảy",
-                "táo bón","ợ chua",
-                "đầy hơi","gan"
-            ],
+            "Thần kinh": {
+                "đau đầu": 10,
+                "chóng mặt": 8,
+                "hoa mắt": 7,
+                "mất ngủ": 6,
+                "tê tay": 7,
+                "tê chân": 7,
+                "co giật": 10
+            },
 
-            "Da liễu":[
-                "mụn","ngứa",
-                "dị ứng","da",
-                "nổi mẩn","phát ban"
-            ],
+            "Da liễu": {
+                "mụn": 5,
+                "ngứa": 8,
+                "dị ứng": 8,
+                "nổi mẩn": 8,
+                "phát ban": 9
+            },
 
-            "Thần kinh":[
-                "đầu","đau đầu",
-                "chóng mặt",
-                "mất ngủ",
-                "co giật",
-                "tê tay",
-                "tê chân"
-            ],
+            "Tai Mũi Họng": {
+                "tai": 4,
+                "mũi": 4,
+                "họng": 4,
+                "nghẹt mũi": 6,
+                "ù tai": 7,
+                "viêm xoang": 8
+            },
 
-            "Tai Mũi Họng":[
-                "tai","mũi","họng",
-                "nghẹt mũi",
-                "ù tai",
-                "viêm xoang"
-            ],
+            "Mắt": {
+                "mắt": 4,
+                "mờ mắt": 8,
+                "đau mắt": 8,
+                "nhức mắt": 7
+            },
 
-            "Mắt":[
-                "mắt",
-                "mờ mắt",
-                "đau mắt",
-                "nhức mắt"
-            ],
+            "Răng Hàm Mặt": {
+                "răng": 4,
+                "đau răng": 10,
+                "sâu răng": 8,
+                "nướu": 6,
+                "lợi": 6
+            },
 
-            "Răng Hàm Mặt":[
-                "răng",
-                "đau răng",
-                "sâu răng",
-                "nướu",
-                "lợi"
-            ],
+            "Cơ Xương Khớp": {
+                "khớp": 5,
+                "xương": 5,
+                "đau lưng": 8,
+                "đau vai": 8,
+                "đau gối": 8,
+                "thoái hóa": 10
+            },
 
-            "Cơ Xương Khớp":[
-                "khớp",
-                "xương",
-                "đau lưng",
-                "đau vai",
-                "đau gối",
-                "thoái hóa"
-            ],
+            "Tiết niệu": {
+                "tiểu": 4,
+                "thận": 7,
+                "tiểu buốt": 9,
+                "tiểu nhiều": 7,
+                "sỏi thận": 10
+            },
 
-            "Tiết niệu":[
-                "tiểu",
-                "thận",
-                "tiểu buốt",
-                "tiểu nhiều",
-                "sỏi thận"
-            ],
+            "Nội tiết": {
+                "tiểu đường": 10,
+                "đường huyết": 8,
+                "tuyến giáp": 8,
+                "nội tiết": 6
+            },
 
-            "Nội tiết":[
-                "tiểu đường",
-                "đường huyết",
-                "tuyến giáp",
-                "nội tiết"
-            ],
+            "Nam khoa": {
+                "sinh lý nam": 10,
+                "xuất tinh": 8,
+                "dương vật": 8
+            },
 
-            "Nam khoa":[
-                "sinh lý nam",
-                "xuất tinh",
-                "dương vật"
-            ],
+            "Sản phụ khoa": {
+                "kinh nguyệt": 8,
+                "mang thai": 10,
+                "phụ khoa": 8,
+                "rong kinh": 9
+            },
 
-            "Sản phụ khoa":[
-                "kinh nguyệt",
-                "mang thai",
-                "phụ khoa",
-                "rong kinh"
-            ],
+            "Nhi khoa": {
+                "trẻ em": 10,
+                "em bé": 10,
+                "trẻ nhỏ": 10,
+                "bé": 8
+            },
 
-            "Nhi khoa":[
-                "trẻ em",
-                "em bé",
-                "trẻ nhỏ",
-                "bé"
-            ],
+            "Tâm lý - Tâm thần": {
+                "stress": 8,
+                "lo âu": 9,
+                "trầm cảm": 10,
+                "căng thẳng": 8,
+                "tâm lý": 7
+            },
 
-            "Tâm lý - Tâm thần":[
-                "stress",
-                "lo âu",
-                "trầm cảm",
-                "căng thẳng",
-                "tâm lý"
-            ]
+            "Nội tổng quát": {
+                "sốt": 6,
+                "mệt": 5,
+                "mệt mỏi": 7,
+                "yếu": 5,
+                "chán ăn": 6,
+                "đau người": 6
+            }
         }
 
         scores = {}
@@ -1489,10 +1514,10 @@ def symptom_checker():
 
             score = 0
 
-            for keyword in keywords:
+            for keyword, weight in keywords.items():
 
                 if keyword in symptom:
-                    score += 2
+                    score += weight
 
             scores[spec] = score
 
@@ -1511,59 +1536,57 @@ def symptom_checker():
 
             chatbot_question = (
                 "Bạn có thể mô tả chi tiết hơn không? "
-                "Ví dụ: đau ở đâu, ho, sốt, khó thở, đau bụng..."
+                "Ví dụ: đau ở đâu, sốt, ho, khó thở, đau bụng..."
             )
 
             session["chat_history"].append({
                 "user": symptom,
                 "specialty": "Chưa xác định",
                 "doctor": "",
-                "question": chatbot_question
+                "question": chatbot_question,
+                "urgency": "Chưa xác định"
             })
 
         else:
 
             specialty = top_specialties[0][0]
 
+            urgency = "Bình thường"
+
+            if (
+                "đau ngực" in symptom or
+                "tức ngực" in symptom or
+                "khó thở" in symptom or
+                "co giật" in symptom
+            ):
+                urgency = "Khẩn cấp"
+
+            elif (
+                "sốt cao" in symptom or
+                "nôn nhiều" in symptom
+            ):
+                urgency = "Cần khám sớm"
+
             if specialty == "Tim mạch":
-
-                chatbot_question = (
-                    "Bạn có bị khó thở hoặc hồi hộp tim không?"
-                )
-
-            elif specialty == "Tiêu hóa":
-
-                chatbot_question = (
-                    "Bạn có bị tiêu chảy hoặc buồn nôn không?"
-                )
+                chatbot_question = "Bạn có bị khó thở hoặc hồi hộp tim không?"
 
             elif specialty == "Hô hấp":
+                chatbot_question = "Bạn có sốt hoặc có đờm không?"
 
-                chatbot_question = (
-                    "Bạn có bị sốt hoặc có đờm không?"
-                )
+            elif specialty == "Tiêu hóa":
+                chatbot_question = "Bạn có bị tiêu chảy hoặc buồn nôn không?"
 
             elif specialty == "Thần kinh":
-
-                chatbot_question = (
-                    "Bạn có bị chóng mặt hoặc mất ngủ không?"
-                )
+                chatbot_question = "Bạn có bị chóng mặt hoặc mất ngủ không?"
 
             doctor = db.doctors.find_one(
-                {
-                    "specialty": specialty
-                },
-                sort=[
-                    ("experience", -1)
-                ]
+                {"specialty": specialty},
+                sort=[("experience", -1)]
             )
 
             if doctor:
-
                 doctor_name = doctor["name"]
-
             else:
-
                 doctor_name = "Chưa có bác sĩ phù hợp"
 
             recommendation = (
@@ -1574,7 +1597,8 @@ def symptom_checker():
                 "user": symptom,
                 "specialty": specialty,
                 "doctor": doctor_name,
-                "question": chatbot_question
+                "question": chatbot_question,
+                "urgency": urgency
             })
 
         session.modified = True
@@ -1585,13 +1609,10 @@ def symptom_checker():
         doctor=doctor_name,
         recommendation=recommendation,
         chatbot_question=chatbot_question,
+        urgency=urgency,
         top_specialties=top_specialties,
-        chat_history=session.get(
-            "chat_history",
-            []
-        )
+        chat_history=session.get("chat_history", [])
     )
-
 
 # ==========================
 # Xóa lịch sử chat
