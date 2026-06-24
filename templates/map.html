@@ -13,12 +13,10 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
 
 <style>
-
 #map{
     height:700px;
     border-radius:10px;
 }
-
 </style>
 
 </head>
@@ -31,9 +29,7 @@ href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css
 
 <div class="d-flex justify-content-between align-items-center mb-4">
 
-<h2>
-🗺️ Bản đồ phòng khám
-</h2>
+<h2>🗺️ Bản đồ phòng khám</h2>
 
 <a href="/dashboard"
 class="btn btn-secondary">
@@ -100,6 +96,8 @@ clinics.push({
 
 {% endfor %}
 
+console.log(clinics);
+
 let markers = [];
 
 clinics.forEach(c => {
@@ -111,7 +109,12 @@ clinics.forEach(c => {
     marker.bindPopup(
         "<b>"+c.name+"</b><br>"
         + c.address + "<br>"
-        + c.phone
+        + c.phone + "<br><br>"
+        + "<button class='btn btn-primary btn-sm' "
+        + "onclick='navigateToClinic("
+        + c.lat + ","
+        + c.lng
+        + ")'>🚗 Chỉ đường</button>"
     );
 
     markers.push(
@@ -154,6 +157,37 @@ function distance(lat1,lon1,lat2,lon2){
         );
 
     return R*c;
+}
+
+function navigateToClinic(clinicLat, clinicLng){
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            let userLat =
+                position.coords.latitude;
+
+            let userLng =
+                position.coords.longitude;
+
+            window.open(
+                `https://www.google.com/maps/dir/${userLat},${userLng}/${clinicLat},${clinicLng}`,
+                "_blank"
+            );
+
+        },
+
+        function(){
+
+            alert(
+                "Không lấy được vị trí hiện tại"
+            );
+
+        }
+
+    );
+
 }
 
 navigator.geolocation.getCurrentPosition(
@@ -210,14 +244,24 @@ function(position){
             +
             " km)";
 
-        L.Routing.control({
+        L.marker(
+            [nearest.lat, nearest.lng]
+        )
+        .addTo(map)
+        .bindPopup(
+            "🏥 Phòng khám gần nhất<br><b>"
+            + nearest.name
+            + "</b>"
+        )
+        .openPopup();
+
+        let route = L.Routing.control({
 
             waypoints:[
                 L.latLng(
                     userLat,
                     userLng
                 ),
-
                 L.latLng(
                     nearest.lat,
                     nearest.lng
@@ -227,6 +271,11 @@ function(position){
             routeWhileDragging:false
 
         }).addTo(map);
+
+        map.setView(
+            [nearest.lat, nearest.lng],
+            15
+        );
 
     }
 
