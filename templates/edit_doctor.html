@@ -10,194 +10,206 @@ Sửa bác sĩ
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+<div class="col-lg-8">
 
-        <div class="card border-0 shadow-lg rounded-4">
+    <div class="card border-0 shadow-lg rounded-4">
 
-            <div class="card-header bg-warning text-dark p-4 rounded-top-4">
+        <div class="card-header bg-warning text-dark p-4 rounded-top-4">
 
-                <h2 class="mb-0">
+            <h2 class="mb-0">
+                👨‍⚕️ Sửa thông tin bác sĩ
+            </h2>
 
-                    👨‍⚕️ Sửa thông tin bác sĩ
+            <small>
+                Cập nhật hồ sơ bác sĩ trong hệ thống
+            </small>
 
-                </h2>
+        </div>
 
-                <small>
+        <div class="card-body p-4">
 
-                    Cập nhật hồ sơ bác sĩ trong hệ thống
+            <form method="POST"
+                  enctype="multipart/form-data">
 
-                </small>
+                <!-- Ảnh bác sĩ -->
 
-            </div>
+                <div class="mb-4 text-center">
 
-            <div class="card-body p-4">
+                    <label class="form-label fw-semibold">
+                        🖼 Ảnh bác sĩ
+                    </label>
 
-                <form method="POST">
+                    <br>
 
-                    <div class="mb-3">
+                    {% if doctor.image %}
 
-                        <label class="form-label fw-semibold">
+                    <img
+                        src="{{ doctor.image }}"
+                        width="140"
+                        height="140"
+                        class="rounded-circle border shadow mb-3"
+                        style="object-fit:cover;">
 
-                            Họ và tên
+                    {% endif %}
 
-                        </label>
+                    <input
+                        type="file"
+                        name="image"
+                        class="form-control"
+                        accept="image/*">
 
-                        <input
-                            type="text"
-                            name="name"
-                            class="form-control form-control-lg"
-                            value="{{ doctor.name }}"
-                            required>
+                </div>
 
-                    </div>
+                <div class="mb-3">
 
-                    <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Họ và tên
+                    </label>
 
-                        <label class="form-label fw-semibold">
+                    <input
+                        type="text"
+                        name="name"
+                        class="form-control form-control-lg"
+                        value="{{ doctor.name }}"
+                        required>
 
-                            Chuyên khoa
+                </div>
 
-                        </label>
+                <div class="mb-3">
 
-                        <select
-                            name="specialty"
-                            class="form-select form-select-lg"
-                            required>
+                    <label class="form-label fw-semibold">
+                        Chuyên khoa
+                    </label>
 
-                            {% for specialty in specialties %}
+                    <select
+                        name="specialty"
+                        class="form-select form-select-lg"
+                        required>
 
-                            <option
-                                value="{{ specialty.name }}"
-                                {% if specialty.name == doctor.specialty %}
-                                selected
-                                {% endif %}>
+                        {% for specialty in specialties %}
 
-                                {{ specialty.name }}
+                        <option
+                            value="{{ specialty.name }}"
+                            {% if specialty.name == doctor.specialty %}
+                            selected
+                            {% endif %}>
 
-                            </option>
+                            {{ specialty.name }}
 
-                            {% endfor %}
+                        </option>
 
-                        </select>
+                        {% endfor %}
 
-                    </div>
+                    </select>
 
-                    <div class="mb-3">
+                </div>
 
-                        <label class="form-label fw-semibold">
+                <div class="mb-3">
 
-                            🏥 Phòng khám
+                    <label class="form-label fw-semibold">
+                        🏥 Phòng khám
+                    </label>
 
-                        </label>
+                    <select
+                        name="clinic"
+                        class="form-select form-select-lg"
+                        required>
 
-                        <select
-                            name="clinic"
-                            class="form-select form-select-lg"
-                            required>
+                        {% for clinic in clinics %}
 
-                            {% for clinic in clinics %}
+                        <option
+                            value="{{ clinic.name }}"
+                            {% if clinic.name == doctor.clinic %}
+                            selected
+                            {% endif %}>
 
-                            <option
-                                value="{{ clinic.name }}"
-                                {% if clinic.name == doctor.clinic %}
-                                selected
-                                {% endif %}>
+                            {{ clinic.name }}
 
-                                {{ clinic.name }}
+                        </option>
 
-                            </option>
+                        {% endfor %}
 
-                            {% endfor %}
+                    </select>
 
-                        </select>
+                </div>
 
-                    </div>
+                <div class="mb-3">
 
-                    <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        📞 Số điện thoại
+                    </label>
 
-                        <label class="form-label fw-semibold">
+                    <input
+                        type="text"
+                        name="phone"
+                        class="form-control form-control-lg"
+                        value="{{ doctor.phone }}"
+                        required>
 
-                            📞 Số điện thoại
+                </div>
 
-                        </label>
+                <div class="mb-3">
 
-                        <input
-                            type="text"
-                            name="phone"
-                            class="form-control form-control-lg"
-                            value="{{ doctor.phone }}"
-                            required>
+                    <label class="form-label fw-semibold">
+                        📧 Email
+                    </label>
 
-                    </div>
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control form-control-lg"
+                        value="{{ doctor.email }}"
+                        required>
 
-                    <div class="mb-3">
+                </div>
 
-                        <label class="form-label fw-semibold">
+                <div class="mb-3">
 
-                            📧 Email
+                    <label class="form-label fw-semibold">
+                        ⭐ Kinh nghiệm (năm)
+                    </label>
 
-                        </label>
+                    <input
+                        type="number"
+                        name="experience"
+                        class="form-control form-control-lg"
+                        value="{{ doctor.experience }}"
+                        min="0"
+                        required>
 
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control form-control-lg"
-                            value="{{ doctor.email }}"
-                            required>
+                </div>
 
-                    </div>
+                <div class="alert alert-info">
+                    💡 Kiểm tra kỹ thông tin trước khi cập nhật.
+                </div>
 
-                    <div class="mb-3">
+                <div class="d-flex gap-2 mt-4">
 
-                        <label class="form-label fw-semibold">
+                    <button
+                        type="submit"
+                        class="btn btn-warning btn-lg">
 
-                            ⭐ Kinh nghiệm (năm)
+                        💾 Cập nhật
 
-                        </label>
+                    </button>
 
-                        <input
-                            type="number"
-                            name="experience"
-                            class="form-control form-control-lg"
-                            value="{{ doctor.experience }}"
-                            min="0"
-                            required>
+                    <a
+                        href="/doctors"
+                        class="btn btn-outline-secondary btn-lg">
 
-                    </div>
+                        ⬅ Quay lại
 
-                    <div class="alert alert-info">
+                    </a>
 
-                        💡 Kiểm tra kỹ thông tin trước khi cập nhật.
+                </div>
 
-                    </div>
-
-                    <div class="d-flex gap-2 mt-4">
-
-                        <button
-                            type="submit"
-                            class="btn btn-warning btn-lg">
-
-                            💾 Cập nhật
-
-                        </button>
-
-                        <a
-                            href="/doctors"
-                            class="btn btn-outline-secondary btn-lg">
-
-                            ⬅ Quay lại
-
-                        </a>
-
-                    </div>
-
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
     </div>
+
+</div>
 
 </div>
 

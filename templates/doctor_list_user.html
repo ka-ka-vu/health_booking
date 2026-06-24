@@ -12,21 +12,17 @@ Danh sách bác sĩ
 
 <div class="card shadow-lg border-0 mb-4">
 
-    <div class="card-body">
+<div class="card-body">
 
-        <h2 class="mb-1">
+    <h2 class="mb-1">
+        👨‍⚕️ Danh sách bác sĩ
+    </h2>
 
-            👨‍⚕️ Danh sách bác sĩ
+    <p class="text-muted mb-0">
+        Chọn bác sĩ phù hợp để đặt lịch khám
+    </p>
 
-        </h2>
-
-        <p class="text-muted mb-0">
-
-            Chọn bác sĩ phù hợp để đặt lịch khám
-
-        </p>
-
-    </div>
+</div>
 
 </div>
 
@@ -34,85 +30,122 @@ Danh sách bác sĩ
 
 <div class="row g-4">
 
-    {% for doctor in doctors %}
+{% for doctor in doctors %}
 
-    <div class="col-lg-6">
+<div class="col-lg-6">
 
-        <div class="card shadow-sm border-0 h-100">
+    <div class="card shadow-sm border-0 h-100">
 
-            <div class="card-body">
+        <div class="card-body">
 
-                <div class="d-flex align-items-center mb-3">
+            <div class="d-flex align-items-center mb-3">
 
-                    <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
-                         style="width:60px;height:60px;font-size:24px;">
+                {% if doctor.image %}
 
-                        👨‍⚕️
+                <img
+                    src="{{ doctor.image }}"
+                    alt="{{ doctor.name }}"
+                    class="rounded-circle border shadow-sm"
+                    style="
+                        width:80px;
+                        height:80px;
+                        object-fit:cover;
+                    ">
 
-                    </div>
+                {% else %}
 
-                    <div class="ms-3">
+                <div
+                    class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
+                    style="
+                        width:80px;
+                        height:80px;
+                        font-size:32px;
+                    ">
 
-                        <h4 class="mb-0">
-
-                            {{ doctor.name }}
-
-                        </h4>
-
-                        <small class="text-muted">
-
-                            Bác sĩ chuyên khoa
-
-                        </small>
-
-                    </div>
+                    👨‍⚕️
 
                 </div>
-
-                <hr>
-
-                <p>
-
-                    <strong>🩺 Chuyên khoa:</strong>
-
-                    <span class="badge bg-info">
-
-                        {{ doctor.specialty }}
-
-                    </span>
-
-                </p>
-
-                <p>
-
-                    <strong>📚 Kinh nghiệm:</strong>
-
-                    {{ doctor.experience }} năm
-
-                </p>
-
-                {% if doctor.clinic %}
-
-                <p>
-
-                    <strong>🏥 Phòng khám:</strong>
-
-                    {{ doctor.clinic }}
-
-                </p>
 
                 {% endif %}
 
-                <div class="mt-3">
+                <div class="ms-3">
 
-                    <a href="/book/{{ doctor._id }}"
-                       class="btn btn-primary">
+                    <h4 class="mb-1">
+                        {{ doctor.name }}
+                    </h4>
 
-                        📅 Đặt lịch khám
-
-                    </a>
+                    <small class="text-muted">
+                        Bác sĩ chuyên khoa
+                    </small>
 
                 </div>
+
+            </div>
+
+            <hr>
+
+            <p>
+
+                <strong>🩺 Chuyên khoa:</strong>
+
+                <span class="badge bg-info">
+                    {{ doctor.specialty }}
+                </span>
+
+            </p>
+
+            <p>
+
+                <strong>📚 Kinh nghiệm:</strong>
+
+                {{ doctor.experience }} năm
+
+            </p>
+
+            {% if doctor.clinic %}
+
+            <p>
+
+                <strong>🏥 Phòng khám:</strong>
+
+                {{ doctor.clinic }}
+
+            </p>
+
+            {% endif %}
+
+            {% if doctor.phone %}
+
+            <p>
+
+                <strong>📞 Điện thoại:</strong>
+
+                {{ doctor.phone }}
+
+            </p>
+
+            {% endif %}
+
+            {% if doctor.email %}
+
+            <p>
+
+                <strong>📧 Email:</strong>
+
+                {{ doctor.email }}
+
+            </p>
+
+            {% endif %}
+
+            <div class="mt-3">
+
+                <a href="/book/{{ doctor._id }}"
+                   class="btn btn-primary">
+
+                    📅 Đặt lịch khám
+
+                </a>
 
             </div>
 
@@ -120,7 +153,9 @@ Danh sách bác sĩ
 
     </div>
 
-    {% endfor %}
+</div>
+
+{% endfor %}
 
 </div>
 
@@ -128,21 +163,17 @@ Danh sách bác sĩ
 
 <div class="card shadow-sm">
 
-    <div class="card-body text-center p-5">
+<div class="card-body text-center p-5">
 
-        <h4>
+    <h4>
+        📭 Chưa có bác sĩ nào
+    </h4>
 
-            📭 Chưa có bác sĩ nào
+    <p class="text-muted">
+        Hiện chưa có dữ liệu bác sĩ trong hệ thống
+    </p>
 
-        </h4>
-
-        <p class="text-muted">
-
-            Hiện chưa có dữ liệu bác sĩ trong hệ thống
-
-        </p>
-
-    </div>
+</div>
 
 </div>
 
@@ -150,12 +181,12 @@ Danh sách bác sĩ
 
 <div class="mt-4">
 
-    <a href="/dashboard"
-       class="btn btn-secondary">
+<a href="/dashboard"
+   class="btn btn-secondary">
 
-        ⬅ Quay lại Dashboard
+    ⬅ Quay lại Dashboard
 
-    </a>
+</a>
 
 </div>
 

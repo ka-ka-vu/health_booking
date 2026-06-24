@@ -24,7 +24,24 @@
 
             <div class="card-body p-4">
 
-                <form method="POST">
+                <form method="POST"
+                      enctype="multipart/form-data">
+
+                    <!-- Ảnh bác sĩ -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            🖼 Ảnh bác sĩ
+                        </label>
+
+                        <input
+                            type="file"
+                            name="image"
+                            class="form-control"
+                            accept="image/*"
+                            required>
+
+                    </div>
 
                     <!-- Tên bác sĩ -->
                     <div class="mb-3">

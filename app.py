@@ -901,26 +901,57 @@ def add_doctor():
         email = request.form["email"]
         experience = request.form["experience"]
 
+        # Ảnh bác sĩ
+        image = request.files["image"]
+
+        filename = secure_filename(
+            image.filename
+        )
+
+        os.makedirs(
+            "static/uploads/doctors",
+            exist_ok=True
+        )
+
+        image.save(
+            os.path.join(
+                "static/uploads/doctors",
+                filename
+            )
+        )
+
+        image_path = (
+            "/static/uploads/doctors/" +
+            filename
+        )
+
         db.doctors.insert_one({
+
             "name": name,
             "specialty": specialty,
             "clinic": clinic,
             "phone": phone,
             "email": email,
-            "experience": experience
+            "experience": experience,
+            "image": image_path
+
         })
 
         return redirect("/doctors")
 
-    specialties = list(db.specialties.find())
-    clinics = list(db.clinics.find())
+    specialties = list(
+        db.specialties.find()
+    )
+
+    clinics = list(
+        db.clinics.find()
+    )
 
     return render_template(
         "add_doctor.html",
         specialties=specialties,
         clinics=clinics
     )
-
 
 # ==========================
 # SỬA BÁC SĨ
@@ -940,6 +971,33 @@ def edit_doctor(id):
 
     if request.method == "POST":
 
+        image_path = doctor.get("image", "")
+
+        file = request.files.get("image")
+
+        if file and file.filename != "":
+
+            filename = secure_filename(
+                file.filename
+            )
+
+            os.makedirs(
+                "static/uploads/doctors",
+                exist_ok=True
+            )
+
+            save_path = os.path.join(
+                "static/uploads/doctors",
+                filename
+            )
+
+            file.save(save_path)
+
+            image_path = (
+                "/static/uploads/doctors/" +
+                filename
+            )
+
         db.doctors.update_one(
             {"_id": ObjectId(id)},
             {
@@ -949,7 +1007,8 @@ def edit_doctor(id):
                     "clinic": request.form["clinic"],
                     "phone": request.form["phone"],
                     "email": request.form["email"],
-                    "experience": request.form["experience"]
+                    "experience": request.form["experience"],
+                    "image": image_path
                 }
             }
         )
@@ -962,7 +1021,6 @@ def edit_doctor(id):
         specialties=specialties,
         clinics=clinics
     )
-
 
 # ==========================
 # XÓA BÁC SĨ
