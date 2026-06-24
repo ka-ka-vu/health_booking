@@ -195,69 +195,106 @@ def register():
 # ==========================
 # ĐĂNG KÝ TÀI KHOẢN BÁC SĨ
 # ==========================
-
 @app.route("/doctor-register", methods=["GET", "POST"])
 def doctor_register():
 
-        if request.method == "POST":
+    if request.method == "POST":
 
-            fullname = request.form["fullname"]
-            email = request.form["email"]
-            password = request.form["password"]
+        fullname = request.form["fullname"]
+        email = request.form["email"]
+        password = request.form["password"]
 
-            specialty = request.form["specialty"]
-            phone = request.form["phone"]
+        specialty = request.form["specialty"]
+        phone = request.form["phone"]
+        clinic_address = request.form["clinic_address"]
 
-            clinic_address = request.form["clinic_address"]
+        experience = request.form["experience"] + " năm"
 
-            experience = request.form["experience"] + " năm"
+        existing_user = db.users.find_one({
+            "email": email
+        })
 
-            existing_user = db.users.find_one({
-                "email": email
-            })
-
-            if existing_user:
-                return """
-                <script>
-                    alert('Email đã tồn tại!');
-                    window.location='/doctor-register';
-                </script>
-                """
-
-            hashed_password = bcrypt.hashpw(
-                password.encode("utf-8"),
-                bcrypt.gensalt()
-            )
-
-            db.users.insert_one({
-                "fullname": fullname,
-                "email": email,
-                "password": hashed_password,
-                "role": "doctor_pending",
-
-                "specialty": specialty,
-                "phone": phone,
-                "clinic_address": clinic_address,
-                "experience": experience,
-
-                "created_at": datetime.now()
-            })
-
+        if existing_user:
             return """
             <script>
-                alert('Đăng ký thành công! Chờ Admin duyệt tài khoản.');
-                window.location='/login';
+                alert('Email đã tồn tại!');
+                window.location='/doctor-register';
             </script>
             """
 
-        specialties = list(
-            db.specialties.find()
+        image_path = ""
+
+        if "image" in request.files:
+
+            image = request.files["image"]
+
+            if image.filename != "":
+
+                filename = secure_filename(image.filename)
+
+                upload_folder = os.path.join(
+                    app.root_path,
+                    "static",
+                    "uploads",
+                    "doctors"
+                )
+
+                os.makedirs(
+                    upload_folder,
+                    exist_ok=True
+                )
+
+                image.save(
+                    os.path.join(
+                        upload_folder,
+                        filename
+                    )
+                )
+
+                image_path = (
+                    "/static/uploads/doctors/" +
+                    filename
+                )
+
+        hashed_password = bcrypt.hashpw(
+            password.encode("utf-8"),
+            bcrypt.gensalt()
         )
 
-        return render_template(
-            "doctor_register.html",
-            specialties=specialties
-        )
+        db.users.insert_one({
+
+            "fullname": fullname,
+            "email": email,
+            "password": hashed_password,
+
+            "role": "doctor_pending",
+
+            "specialty": specialty,
+            "phone": phone,
+            "clinic_address": clinic_address,
+            "experience": experience,
+
+            "image": image_path,
+
+            "created_at": datetime.now()
+
+        })
+
+        return """
+        <script>
+            alert('Đăng ký hồ sơ bác sĩ thành công. Vui lòng chờ quản trị viên xét duyệt.');
+            window.location='/login';
+        </script>
+        """
+
+    specialties = list(
+        db.specialties.find()
+    )
+
+    return render_template(
+        "doctor_register.html",
+        specialties=specialties
+    )
 
 # ==========================
 # ĐĂNG NHẬP

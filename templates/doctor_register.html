@@ -10,188 +10,190 @@
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+<div class="col-lg-8">
 
-        <div class="card border-0 shadow-lg">
+    <div class="card border-0 shadow-lg">
 
-            <div class="card-header bg-success text-white text-center p-4">
+        <div class="card-header bg-success text-white text-center p-4">
 
-                <h2 class="mb-2">
+            <h2 class="mb-2">
+                👨‍⚕️ Đăng ký tài khoản bác sĩ
+            </h2>
 
-                    👨‍⚕️ Đăng ký tài khoản bác sĩ
+            <p class="mb-0">
+                Tham gia hệ thống Health Booking
+            </p>
 
-                </h2>
+        </div>
 
-                <p class="mb-0">
+        <div class="card-body p-4">
 
-                    Tham gia hệ thống Health Booking
+            <form method="POST"
+                  enctype="multipart/form-data">
 
-                </p>
+                <div class="mb-3">
 
-            </div>
+                    <label class="form-label fw-bold">
+                        Họ và tên
+                    </label>
 
-            <div class="card-body p-4">
+                    <input
+                        type="text"
+                        name="fullname"
+                        class="form-control"
+                        placeholder="Nhập họ và tên"
+                        required>
 
-                <form method="POST">
+                </div>
 
-                    <div class="mb-3">
+                <div class="mb-3">
 
-                        <label class="form-label fw-bold">
+                    <label class="form-label fw-bold">
+                        Email
+                    </label>
 
-                            Họ và tên
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="example@gmail.com"
+                        required>
 
-                        </label>
+                </div>
 
-                        <input
-                            type="text"
-                            name="fullname"
-                            class="form-control"
-                            placeholder="Nhập họ và tên"
-                            required>
+                <div class="mb-3">
 
-                    </div>
+                    <label class="form-label fw-bold">
+                        Mật khẩu
+                    </label>
 
-                    <div class="mb-3">
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Nhập mật khẩu"
+                        required>
 
-                        <label class="form-label fw-bold">
+                </div>
 
-                            Email
+                <div class="mb-3">
 
-                        </label>
+                    <label class="form-label fw-bold">
+                        Chuyên khoa
+                    </label>
 
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control"
-                            placeholder="example@gmail.com"
-                            required>
+                    <select
+                        name="specialty"
+                        class="form-select"
+                        required>
 
-                    </div>
+                        <option value="">
+                            -- Chọn chuyên khoa --
+                        </option>
 
-                    <div class="mb-3">
+                        {% for specialty in specialties %}
 
-                        <label class="form-label fw-bold">
+                        <option value="{{ specialty.name }}">
+                            {{ specialty.name }}
+                        </option>
 
-                            Mật khẩu
+                        {% endfor %}
 
-                        </label>
+                    </select>
 
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            placeholder="Nhập mật khẩu"
-                            required>
+                </div>
 
-                    </div>
+                <div class="mb-3">
 
-                    <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        Số điện thoại
+                    </label>
 
-                        <label class="form-label fw-bold">
+                    <input
+                        type="text"
+                        name="phone"
+                        class="form-control"
+                        placeholder="Nhập số điện thoại"
+                        required>
 
-                            Chuyên khoa
+                </div>
 
-                        </label>
+                <div class="mb-3">
 
-                        <select
-                            name="specialty"
-                            class="form-select"
-                            required>
+                    <label class="form-label fw-bold">
+                        Địa chỉ phòng khám
+                    </label>
 
-                            <option value="">
-                                -- Chọn chuyên khoa --
-                            </option>
+                    <input
+                        type="text"
+                        name="clinic_address"
+                        class="form-control"
+                        placeholder="Nhập địa chỉ phòng khám"
+                        required>
 
-                            {% for specialty in specialties %}
+                </div>
 
-                            <option value="{{ specialty.name }}">
-                                {{ specialty.name }}
-                            </option>
+                <div class="mb-3">
 
-                            {% endfor %}
+                    <label class="form-label fw-bold">
+                        Số năm kinh nghiệm
+                    </label>
 
-                        </select>
+                    <input
+                        type="number"
+                        name="experience"
+                        class="form-control"
+                        min="0"
+                        placeholder="Ví dụ: 5"
+                        required>
 
-                    </div>
+                </div>
 
-                    <div class="mb-3">
+                <div class="mb-4">
 
-                        <label class="form-label fw-bold">
+                    <label class="form-label fw-bold">
+                        🖼 Ảnh bác sĩ
+                    </label>
 
-                            Số điện thoại
+                    <input
+                        type="file"
+                        name="image"
+                        class="form-control"
+                        accept="image/*"
+                        required>
 
-                        </label>
+                    <small class="text-muted">
+                        Chọn ảnh chân dung bác sĩ
+                    </small>
 
-                        <input
-                            type="text"
-                            name="phone"
-                            class="form-control"
-                            placeholder="Nhập số điện thoại"
-                            required>
+                </div>
 
-                    </div>
+                <button
+                    type="submit"
+                    class="btn btn-success btn-lg w-100">
 
-                    <div class="mb-3">
+                    🚀 Đăng ký bác sĩ
 
-                        <label class="form-label fw-bold">
+                </button>
 
-                            Địa chỉ phòng khám
+            </form>
 
-                        </label>
+        </div>
 
-                        <input
-                            type="text"
-                            name="clinic_address"
-                            class="form-control"
-                            placeholder="Nhập địa chỉ phòng khám"
-                            required>
+        <div class="card-footer bg-light">
 
-                    </div>
+            <a href="/login"
+               class="btn btn-secondary w-100">
 
-                    <div class="mb-4">
+                ⬅ Quay lại đăng nhập
 
-                        <label class="form-label fw-bold">
-
-                            Số năm kinh nghiệm
-
-                        </label>
-
-                        <input
-                            type="number"
-                            name="experience"
-                            class="form-control"
-                            min="0"
-                            placeholder="Ví dụ: 5"
-                            required>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="btn btn-success btn-lg w-100">
-
-                        🚀 Đăng ký bác sĩ
-
-                    </button>
-
-                </form>
-
-            </div>
-
-            <div class="card-footer bg-light">
-
-                <a href="/login"
-                   class="btn btn-secondary w-100">
-
-                    ⬅ Quay lại đăng nhập
-
-                </a>
-
-            </div>
+            </a>
 
         </div>
 
     </div>
+
+</div>
 
 </div>
 
