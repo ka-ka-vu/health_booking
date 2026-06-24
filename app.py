@@ -280,42 +280,32 @@ def login():
             user["password"]
         ):
 
-            # Bác sĩ chưa được duyệt
             if user.get("role") == "doctor_pending":
 
-                return """
-                <script>
-                    alert('Tài khoản bác sĩ đang chờ Admin duyệt!');
-                    window.location.href='/login';
-                </script>
-                """
+                return render_template(
+                    "login.html",
+                    error="Tài khoản bác sĩ đang chờ Admin duyệt!"
+                )
 
-            # Lưu session
             session["user_id"] = str(user["_id"])
             session["fullname"] = user["fullname"]
             session["role"] = user.get("role", "user")
 
-            # Admin
             if user.get("role") == "admin":
                 return redirect("/dashboard")
 
-            # Doctor
             elif user.get("role") == "doctor":
                 return redirect("/doctor-dashboard")
 
-            # User
             else:
                 return redirect("/dashboard")
 
-        return """
-        <script>
-            alert('Sai email hoặc mật khẩu!');
-            window.location.href='/login';
-        </script>
-        """
+        return render_template(
+            "login.html",
+            error="Sai email hoặc mật khẩu!"
+        )
 
     return render_template("login.html")
-
 
 # ==========================
 # DASHBOARD CHUNG
