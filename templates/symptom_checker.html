@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tư vấn chuyên khoa</title>
+<title>Tư vấn chuyên khoa thông minh</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
       rel="stylesheet">
@@ -10,22 +10,31 @@
 <style>
 
 .chat-box{
-    max-width:800px;
+    max-width:900px;
     margin:auto;
 }
 
 .bot-message{
     background:#e9f5ff;
     padding:15px;
-    border-radius:12px;
+    border-radius:15px;
     margin-top:15px;
+    border-left:5px solid #0d6efd;
 }
 
 .user-message{
     background:#f1f1f1;
     padding:15px;
-    border-radius:12px;
+    border-radius:15px;
     margin-top:15px;
+    text-align:right;
+    border-right:5px solid #198754;
+}
+
+.chat-scroll{
+    max-height:500px;
+    overflow-y:auto;
+    padding-right:10px;
 }
 
 </style>
@@ -34,7 +43,7 @@
 
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container mt-4">
 
 <div class="card shadow p-4 chat-box">
 
@@ -74,7 +83,7 @@ Ví dụ:
 <textarea
     name="symptom"
     class="form-control"
-    rows="5"
+    rows="4"
     placeholder="Nhập triệu chứng..."
     required></textarea>
 
@@ -88,50 +97,68 @@ Ví dụ:
 
 </button>
 
-</form>
+<a href="/clear-chat"
+   class="btn btn-danger ms-2">
 
-{% if specialty %}
+   🗑️ Xóa hội thoại
+
+</a>
+
+</form>
 
 <hr>
 
+<div class="chat-scroll">
+
+{% for chat in chat_history %}
+
 <div class="user-message">
 
-<b>Triệu chứng đã nhập:</b>
+    <b>👤 Bạn:</b>
 
-<br>
+    <br>
 
-{{ request.form["symptom"] }}
+    {{ chat.user }}
 
 </div>
 
 <div class="bot-message">
 
-<h5>
-🏥 Chuyên khoa phù hợp nhất:
-<strong>{{ specialty }}</strong>
-</h5>
+    <h5>
 
-<p>
+        🏥 Chuyên khoa phù hợp:
 
-👨‍⚕️ Bác sĩ đề xuất:
+        <strong>{{ chat.specialty }}</strong>
 
-<b>{{ doctor }}</b>
+    </h5>
 
-</p>
+    {% if chat.doctor %}
+
+    <p>
+
+        👨‍⚕️ Bác sĩ đề xuất:
+
+        <b>{{ chat.doctor }}</b>
+
+    </p>
+
+    {% endif %}
+
+    {% if chat.question %}
+
+    <div class="alert alert-warning">
+
+        🤖 {{ chat.question }}
+
+    </div>
+
+    {% endif %}
 
 </div>
 
-{% endif %}
-
-{% if chatbot_question %}
-
-<div class="alert alert-warning mt-3">
-
-🤖 {{ chatbot_question }}
+{% endfor %}
 
 </div>
-
-{% endif %}
 
 {% if top_specialties %}
 
@@ -177,7 +204,7 @@ Top chuyên khoa phù hợp
 
 {% endif %}
 
-{% if specialty %}
+{% if chat_history %}
 
 <div class="d-flex gap-2 mt-3 flex-wrap">
 

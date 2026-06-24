@@ -1347,11 +1347,14 @@ def doctor_appointments():
     )
   
 # ==========================
-# Tư vấn chuyên khoa
+# Tư vấn chuyên khoa thông minh
 # ==========================
 
 @app.route("/symptom-checker", methods=["GET", "POST"])
 def symptom_checker():
+
+    if "chat_history" not in session:
+        session["chat_history"] = []
 
     specialty = None
     doctor_name = None
@@ -1367,15 +1370,13 @@ def symptom_checker():
 
             "Nội tổng quát":[
                 "sốt","mệt","mệt mỏi",
-                "yếu","chán ăn",
-                "đau người"
+                "yếu","chán ăn","đau người"
             ],
 
             "Hô hấp":[
-                "ho","khó thở",
-                "đờm","viêm phổi",
-                "viêm họng","cúm",
-                "hen","phổi"
+                "ho","khó thở","đờm",
+                "viêm phổi","viêm họng",
+                "cúm","hen","phổi"
             ],
 
             "Tim mạch":[
@@ -1408,8 +1409,7 @@ def symptom_checker():
             ],
 
             "Tai Mũi Họng":[
-                "tai","mũi",
-                "họng",
+                "tai","mũi","họng",
                 "nghẹt mũi",
                 "ù tai",
                 "viêm xoang"
@@ -1514,6 +1514,13 @@ def symptom_checker():
                 "Ví dụ: đau ở đâu, ho, sốt, khó thở, đau bụng..."
             )
 
+            session["chat_history"].append({
+                "user": symptom,
+                "specialty": "Chưa xác định",
+                "doctor": "",
+                "question": chatbot_question
+            })
+
         else:
 
             specialty = top_specialties[0][0]
@@ -1536,6 +1543,12 @@ def symptom_checker():
                     "Bạn có bị sốt hoặc có đờm không?"
                 )
 
+            elif specialty == "Thần kinh":
+
+                chatbot_question = (
+                    "Bạn có bị chóng mặt hoặc mất ngủ không?"
+                )
+
             doctor = db.doctors.find_one(
                 {
                     "specialty": specialty
@@ -1549,16 +1562,22 @@ def symptom_checker():
 
                 doctor_name = doctor["name"]
 
-                recommendation = (
-                    f"Chuyên khoa phù hợp nhất: "
-                    f"{specialty}"
-                )
-
             else:
 
-                doctor_name = (
-                    "Chưa có bác sĩ phù hợp"
-                )
+                doctor_name = "Chưa có bác sĩ phù hợp"
+
+            recommendation = (
+                f"Chuyên khoa phù hợp nhất: {specialty}"
+            )
+
+            session["chat_history"].append({
+                "user": symptom,
+                "specialty": specialty,
+                "doctor": doctor_name,
+                "question": chatbot_question
+            })
+
+        session.modified = True
 
     return render_template(
         "symptom_checker.html",
@@ -1566,7 +1585,28 @@ def symptom_checker():
         doctor=doctor_name,
         recommendation=recommendation,
         chatbot_question=chatbot_question,
-        top_specialties=top_specialties
+        top_specialties=top_specialties,
+        chat_history=session.get(
+            "chat_history",
+            []
+        )
+    )
+
+
+# ==========================
+# Xóa lịch sử chat
+# ==========================
+
+@app.route("/clear-chat")
+def clear_chat():
+
+    session.pop(
+        "chat_history",
+        None
+    )
+
+    return redirect(
+        "/symptom-checker"
     )
     
 # ==========================
