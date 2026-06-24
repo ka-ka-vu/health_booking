@@ -1352,8 +1352,12 @@ def doctor_appointments():
 
 @app.route("/symptom-checker", methods=["GET", "POST"])
 def symptom_checker():
+
     specialty = None
     doctor_name = None
+    recommendation = None
+    chatbot_question = None
+    top_specialties = []
 
     if request.method == "POST":
 
@@ -1361,42 +1365,41 @@ def symptom_checker():
 
         specialties = {
 
-            "Nội tổng quát": [
-                "sốt", "mệt", "mệt mỏi",
-                "yếu", "chán ăn",
+            "Nội tổng quát":[
+                "sốt","mệt","mệt mỏi",
+                "yếu","chán ăn",
                 "đau người"
             ],
 
-            "Hô hấp": [
-                "ho", "khó thở",
-                "đờm", "viêm phổi",
-                "viêm họng", "cúm",
-                "hen", "phổi"
+            "Hô hấp":[
+                "ho","khó thở",
+                "đờm","viêm phổi",
+                "viêm họng","cúm",
+                "hen","phổi"
             ],
 
-            "Tim mạch": [
-                "tim", "đau ngực",
-                "huyết áp", "hồi hộp",
+            "Tim mạch":[
+                "tim","đau ngực",
+                "huyết áp","hồi hộp",
                 "cao huyết áp",
                 "đánh trống ngực"
             ],
 
-            "Tiêu hóa": [
-                "bụng", "đau bụng",
-                "dạ dày", "tiêu chảy",
-                "táo bón", "ợ chua",
-                "đầy hơi", "gan"
+            "Tiêu hóa":[
+                "bụng","đau bụng",
+                "dạ dày","tiêu chảy",
+                "táo bón","ợ chua",
+                "đầy hơi","gan"
             ],
 
-            "Da liễu": [
-                "mụn", "ngứa",
-                "dị ứng", "da",
-                "nổi mẩn",
-                "phát ban"
+            "Da liễu":[
+                "mụn","ngứa",
+                "dị ứng","da",
+                "nổi mẩn","phát ban"
             ],
 
-            "Thần kinh": [
-                "đầu", "đau đầu",
+            "Thần kinh":[
+                "đầu","đau đầu",
                 "chóng mặt",
                 "mất ngủ",
                 "co giật",
@@ -1404,23 +1407,22 @@ def symptom_checker():
                 "tê chân"
             ],
 
-            "Tai Mũi Họng": [
-                "tai", "mũi",
+            "Tai Mũi Họng":[
+                "tai","mũi",
                 "họng",
                 "nghẹt mũi",
                 "ù tai",
                 "viêm xoang"
             ],
 
-            "Mắt": [
+            "Mắt":[
                 "mắt",
                 "mờ mắt",
                 "đau mắt",
-                "cận thị",
                 "nhức mắt"
             ],
 
-            "Răng Hàm Mặt": [
+            "Răng Hàm Mặt":[
                 "răng",
                 "đau răng",
                 "sâu răng",
@@ -1428,7 +1430,7 @@ def symptom_checker():
                 "lợi"
             ],
 
-            "Cơ Xương Khớp": [
+            "Cơ Xương Khớp":[
                 "khớp",
                 "xương",
                 "đau lưng",
@@ -1437,7 +1439,7 @@ def symptom_checker():
                 "thoái hóa"
             ],
 
-            "Tiết niệu": [
+            "Tiết niệu":[
                 "tiểu",
                 "thận",
                 "tiểu buốt",
@@ -1445,36 +1447,34 @@ def symptom_checker():
                 "sỏi thận"
             ],
 
-            "Nội tiết": [
+            "Nội tiết":[
                 "tiểu đường",
                 "đường huyết",
                 "tuyến giáp",
                 "nội tiết"
             ],
 
-            "Nam khoa": [
+            "Nam khoa":[
                 "sinh lý nam",
                 "xuất tinh",
-                "dương vật",
-                "nam khoa"
+                "dương vật"
             ],
 
-            "Sản phụ khoa": [
+            "Sản phụ khoa":[
                 "kinh nguyệt",
                 "mang thai",
                 "phụ khoa",
-                "thai",
                 "rong kinh"
             ],
 
-            "Nhi khoa": [
+            "Nhi khoa":[
                 "trẻ em",
                 "em bé",
                 "trẻ nhỏ",
                 "bé"
             ],
 
-            "Tâm lý - Tâm thần": [
+            "Tâm lý - Tâm thần":[
                 "stress",
                 "lo âu",
                 "trầm cảm",
@@ -1483,40 +1483,90 @@ def symptom_checker():
             ]
         }
 
-        best_score = 0
-        specialty = "Nội tổng quát"
+        scores = {}
 
         for spec, keywords in specialties.items():
 
             score = 0
 
-            for word in keywords:
+            for keyword in keywords:
 
-                if word in symptom:
-                    score += 1
+                if keyword in symptom:
+                    score += 2
 
-            if score > best_score:
-                best_score = score
-                specialty = spec
+            scores[spec] = score
 
-        doctor = db.doctors.find_one(
-            {
-                "specialty": specialty
-            },
-            sort=[
-                ("experience", -1)
-            ]
+        top_specialties = sorted(
+            scores.items(),
+            key=lambda x: x[1],
+            reverse=True
         )
 
-        if doctor:
-            doctor_name = doctor["name"]
+        top_specialties = [
+            item for item in top_specialties
+            if item[1] > 0
+        ]
+
+        if len(top_specialties) == 0:
+
+            chatbot_question = (
+                "Bạn có thể mô tả chi tiết hơn không? "
+                "Ví dụ: đau ở đâu, ho, sốt, khó thở, đau bụng..."
+            )
+
         else:
-            doctor_name = "Chưa có bác sĩ phù hợp"
+
+            specialty = top_specialties[0][0]
+
+            if specialty == "Tim mạch":
+
+                chatbot_question = (
+                    "Bạn có bị khó thở hoặc hồi hộp tim không?"
+                )
+
+            elif specialty == "Tiêu hóa":
+
+                chatbot_question = (
+                    "Bạn có bị tiêu chảy hoặc buồn nôn không?"
+                )
+
+            elif specialty == "Hô hấp":
+
+                chatbot_question = (
+                    "Bạn có bị sốt hoặc có đờm không?"
+                )
+
+            doctor = db.doctors.find_one(
+                {
+                    "specialty": specialty
+                },
+                sort=[
+                    ("experience", -1)
+                ]
+            )
+
+            if doctor:
+
+                doctor_name = doctor["name"]
+
+                recommendation = (
+                    f"Chuyên khoa phù hợp nhất: "
+                    f"{specialty}"
+                )
+
+            else:
+
+                doctor_name = (
+                    "Chưa có bác sĩ phù hợp"
+                )
 
     return render_template(
         "symptom_checker.html",
         specialty=specialty,
-        doctor=doctor_name
+        doctor=doctor_name,
+        recommendation=recommendation,
+        chatbot_question=chatbot_question,
+        top_specialties=top_specialties
     )
     
 # ==========================

@@ -1,92 +1,203 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Tư vấn chuyên khoa</title>
+<meta charset="UTF-8">
+<title>Tư vấn chuyên khoa</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<style>
+
+.chat-box{
+    max-width:800px;
+    margin:auto;
+}
+
+.bot-message{
+    background:#e9f5ff;
+    padding:15px;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+.user-message{
+    background:#f1f1f1;
+    padding:15px;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+</style>
+
 </head>
 
 <body class="bg-light">
 
 <div class="container mt-5">
 
-<div class="card shadow p-4">
+<div class="card shadow p-4 chat-box">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2 class="mb-0">
-            Tư vấn chuyên khoa
-        </h2>
+<h2 class="mb-0">
+🤖 Tư vấn chuyên khoa thông minh
+</h2>
 
-        <a href="/dashboard"
-           class="btn btn-secondary">
-            Quay lại
-        </a>
+<a href="/dashboard"
+   class="btn btn-secondary">
+    Quay lại
+</a>
 
-    </div>
+</div>
 
-    <form method="POST">
+<div class="bot-message">
 
-        <div class="mb-3">
+Xin chào 👋
 
-            <label class="form-label">
-                Nhập triệu chứng
-            </label>
+Hãy mô tả triệu chứng của bạn càng chi tiết càng tốt.
 
-            <textarea
-                name="symptom"
-                class="form-control"
-                rows="4"
-                placeholder="Ví dụ: đau đầu, chóng mặt, sốt, đau bụng..."
-                required></textarea>
+Ví dụ:
 
-        </div>
+<ul class="mb-0">
+<li>Đau đầu, chóng mặt 3 ngày</li>
+<li>Ho có đờm, sốt nhẹ</li>
+<li>Đau ngực và khó thở</li>
+</ul>
 
-        <button
-            type="submit"
-            class="btn btn-primary">
-            Phân tích triệu chứng
-        </button>
+</div>
 
-    </form>
+<form method="POST" class="mt-4">
 
-    {% if specialty %}
+<div class="mb-3">
 
-    <hr>
+<textarea
+    name="symptom"
+    class="form-control"
+    rows="5"
+    placeholder="Nhập triệu chứng..."
+    required></textarea>
 
-    <div class="alert alert-success">
+</div>
 
-        <h4 class="mb-3">
-            Chuyên khoa đề xuất:
-            <strong>{{ specialty }}</strong>
-        </h4>
+<button
+    type="submit"
+    class="btn btn-primary">
 
-        <p class="mb-3">
+    🔍 Phân tích triệu chứng
 
-            Bác sĩ phù hợp nhất:
+</button>
 
-            <b>{{ doctor }}</b>
+</form>
 
-        </p>
+{% if specialty %}
 
-        <div class="d-flex gap-2 flex-wrap">
+<hr>
 
-            <a href="/appointments/add"
-               class="btn btn-success">
-                Đặt lịch ngay
-            </a>
+<div class="user-message">
 
-            <a href="/doctors"
-               class="btn btn-outline-primary">
-                Xem danh sách bác sĩ
-            </a>
+<b>Triệu chứng đã nhập:</b>
 
-        </div>
+<br>
 
-    </div>
+{{ request.form["symptom"] }}
 
-    {% endif %}
+</div>
+
+<div class="bot-message">
+
+<h5>
+🏥 Chuyên khoa phù hợp nhất:
+<strong>{{ specialty }}</strong>
+</h5>
+
+<p>
+
+👨‍⚕️ Bác sĩ đề xuất:
+
+<b>{{ doctor }}</b>
+
+</p>
+
+</div>
+
+{% endif %}
+
+{% if chatbot_question %}
+
+<div class="alert alert-warning mt-3">
+
+🤖 {{ chatbot_question }}
+
+</div>
+
+{% endif %}
+
+{% if top_specialties %}
+
+<div class="card mt-4">
+
+<div class="card-header bg-primary text-white">
+
+Top chuyên khoa phù hợp
+
+</div>
+
+<div class="card-body">
+
+<ol>
+
+{% for spec, score in top_specialties[:3] %}
+
+<li>
+
+<b>{{ spec }}</b>
+
+- {{ score }} điểm
+
+</li>
+
+{% endfor %}
+
+</ol>
+
+</div>
+
+</div>
+
+{% endif %}
+
+{% if recommendation %}
+
+<div class="alert alert-success mt-3">
+
+{{ recommendation }}
+
+</div>
+
+{% endif %}
+
+{% if specialty %}
+
+<div class="d-flex gap-2 mt-3 flex-wrap">
+
+<a href="/appointments/add"
+   class="btn btn-success">
+
+📅 Đặt lịch ngay
+
+</a>
+
+<a href="/doctors"
+   class="btn btn-outline-primary">
+
+👨‍⚕️ Xem danh sách bác sĩ
+
+</a>
+
+</div>
+
+{% endif %}
 
 </div>
 
