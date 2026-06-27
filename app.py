@@ -1,3 +1,5 @@
+import eventlet
+eventlet.monkey_patch()
 from flask import Flask, render_template, request, redirect, session
 from database import db
 from bson.objectid import ObjectId
@@ -39,30 +41,37 @@ def join_chat(data):
 @socketio.on("send_message")
 def send_chat(data):
 
-    room = data["room"]
+    print("Đã nhận dữ liệu:", data)
 
-    doctor_id, user_id = room.split("_", 1)
+    try:
 
-    db.messages.insert_one({
-        "doctor_id": doctor_id,
-        "user_id": user_id,
-        "sender_name": data["sender_name"],
-        "sender_role": data["sender_role"],
-        "message": data["message"],
-        "created_at": datetime.now()
-    })
+        room = data["room"]
 
-    emit(
-        "receive_message",
-        {
+        doctor_id, user_id = room.split("_", 1)
+
+        db.messages.insert_one({
+            "doctor_id": doctor_id,
+            "user_id": user_id,
             "sender_name": data["sender_name"],
             "sender_role": data["sender_role"],
-            "message": data["message"]
-        },
-        room=room
-    )
+            "message": data["message"],
+            "created_at": datetime.now()
+        })
 
-    print("Đã gửi:", data["message"])
+        emit(
+            "receive_message",
+            {
+                "sender_name": data["sender_name"],
+                "sender_role": data["sender_role"],
+                "message": data["message"]
+            },
+            room=room
+        )
+
+        print("Đã lưu MongoDB")
+
+    except Exception as e:
+        print("Lỗi Socket:", e)
 
 # ==========================
 # Bác sĩ nhận tin nhắn
