@@ -8,42 +8,61 @@ from flask_socketio import SocketIO
 from werkzeug.utils import secure_filename
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import MONGO_URI, EMAIL_ADDRESS, EMAIL_PASSWORD
+from flask_socketio import join_room, emit
 import smtplib
 import os
 import bcrypt
 
 app = Flask(__name__)
+
 from config import SECRET_KEY
 app.secret_key = SECRET_KEY
 
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode="threading"
+    async_mode="threading",
+    manage_session=False
 )
 
 # ==========================
-# GỬI tin nhắn
+# SOCKET CHAT
 # ==========================
-@app.route("/send-message", methods=["POST"])
-def send_message():
 
-    if "user_id" not in session:
-        return {"success": False}
+@socketio.on("join_room")
+def join_chat(data):
+    room = data["room"]
+    join_room(room)
+    print("Join room:", room)
 
-    doctor_id = request.form["doctor_id"]
-    message = request.form["message"]
+
+@socketio.on("send_message")
+def send_chat(data):
+
+    room = data["room"]
+
+    doctor_id, user_id = room.split("_", 1)
 
     db.messages.insert_one({
         "doctor_id": doctor_id,
-        "user_id": str(session["user_id"]),
-        "sender_name": session["fullname"],
-        "sender_role": session["role"],
-        "message": message,
+        "user_id": user_id,
+        "sender_name": data["sender_name"],
+        "sender_role": data["sender_role"],
+        "message": data["message"],
         "created_at": datetime.now()
     })
 
-    return {"success": True}
+    emit(
+        "receive_message",
+        {
+            "sender_name": data["sender_name"],
+            "sender_role": data["sender_role"],
+            "message": data["message"]
+        },
+        room=room
+    )
+
+    print("Đã gửi:", data["message"])
 
 # ==========================
 # Bác sĩ nhận tin nhắn

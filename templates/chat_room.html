@@ -34,35 +34,35 @@ Chat với bác sĩ
 
                     {% for msg in messages %}
 
-                    {% if msg.sender_role=="user" %}
+                        {% if msg.sender_role=="user" %}
 
-                    <div class="mb-3 text-end">
+                            <div class="mb-3 text-end">
 
-                        <span class="badge bg-primary">
-                            {{ msg.sender_name }}
-                        </span>
+                                <span class="badge bg-primary">
+                                    {{ msg.sender_name }}
+                                </span>
 
-                        <div class="bg-primary text-white p-2 rounded mt-1 d-inline-block">
-                            {{ msg.message }}
-                        </div>
+                                <div class="bg-primary text-white p-2 rounded mt-1 d-inline-block">
+                                    {{ msg.message }}
+                                </div>
 
-                    </div>
+                            </div>
 
-                    {% else %}
+                        {% else %}
 
-                    <div class="mb-3 text-start">
+                            <div class="mb-3 text-start">
 
-                        <span class="badge bg-success">
-                            {{ msg.sender_name }}
-                        </span>
+                                <span class="badge bg-success">
+                                    {{ msg.sender_name }}
+                                </span>
 
-                        <div class="bg-light border p-2 rounded mt-1 d-inline-block">
-                            {{ msg.message }}
-                        </div>
+                                <div class="bg-light border p-2 rounded mt-1 d-inline-block">
+                                    {{ msg.message }}
+                                </div>
 
-                    </div>
+                            </div>
 
-                    {% endif %}
+                        {% endif %}
 
                     {% endfor %}
 
@@ -112,92 +112,102 @@ Chat với bác sĩ
 
 </div>
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
 <script>
+
+const socket = io();
+
+const room = "{{ doctor._id }}_{{ session['user_id'] }}";
+
+// Tham gia phòng chat
+socket.emit("join_room", {
+    room: room
+});
 
 const chatBox = document.getElementById("chat-box");
 
 chatBox.scrollTop = chatBox.scrollHeight;
 
-function sendMessage(){
 
-    let input = document.getElementById("message");
+// Nhận tin nhắn realtime
+socket.on("receive_message", function(data){
 
-    let message = input.value.trim();
+    let html = "";
 
-    if(message==="")
-        return;
+    if(data.sender_role === "user"){
 
-    fetch("/send-message",{
-
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/x-www-form-urlencoded"
-        },
-
-        body:new URLSearchParams({
-
-            doctor_id:"{{ doctor._id }}",
-
-            message:message
-
-        })
-
-    })
-
-    .then(response=>response.json())
-
-    .then(data=>{
-
-        if(data.success){
-
-            chatBox.innerHTML += `
-
+        html = `
             <div class="mb-3 text-end">
 
                 <span class="badge bg-primary">
-
-                    {{ session["fullname"] }}
-
+                    ${data.sender_name}
                 </span>
 
                 <div class="bg-primary text-white p-2 rounded mt-1 d-inline-block">
-
-                    ${message}
-
+                    ${data.message}
                 </div>
 
             </div>
+        `;
 
-            `;
+    }else{
 
-            input.value="";
+        html = `
+            <div class="mb-3 text-start">
 
-            input.focus();
+                <span class="badge bg-success">
+                    ${data.sender_name}
+                </span>
 
-            chatBox.scrollTop = chatBox.scrollHeight;
+                <div class="bg-light border p-2 rounded mt-1 d-inline-block">
+                    ${data.message}
+                </div>
 
-        }else{
+            </div>
+        `;
 
-            alert("Không gửi được tin nhắn.");
+    }
 
-        }
+    chatBox.insertAdjacentHTML("beforeend", html);
 
-    })
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-    .catch(error=>{
+});
 
-        console.log(error);
 
-        alert("Lỗi kết nối.");
+// Gửi tin nhắn
+function sendMessage(){
+
+    const input = document.getElementById("message");
+
+    const message = input.value.trim();
+
+    if(message === "")
+        return;
+
+    socket.emit("send_message",{
+
+        room: room,
+
+        sender_name: "{{ session['fullname'] }}",
+
+        sender_role: "user",
+
+        message: message
 
     });
 
+    input.value = "";
+
+    input.focus();
+
 }
+
 
 document.getElementById("message").addEventListener("keypress",function(e){
 
-    if(e.key==="Enter"){
+    if(e.key === "Enter"){
 
         e.preventDefault();
 
