@@ -5,7 +5,6 @@ from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
-from flask_socketio import SocketIO, emit, join_room
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import MONGO_URI, EMAIL_ADDRESS, EMAIL_PASSWORD
 import smtplib
@@ -16,39 +15,6 @@ app = Flask(__name__)
 from config import SECRET_KEY
 app.secret_key = SECRET_KEY
 
-socketio = SocketIO(
-    app,
-    cors_allowed_origins="*"
-)
-
-@socketio.on("join_room")
-def handle_join(data):
-
-    room = data["room"]
-
-    join_room(room)
-
-@socketio.on("send_message")
-def handle_message(data):
-
-    print("=== SEND_MESSAGE ===")
-    print(data)
-
-    room = data["room"]
-    doctor_id, user_id = room.split("_", 1)
-
-    db.messages.insert_one({
-        "doctor_id": doctor_id,
-        "user_id": user_id,
-        "sender_name": data["sender_name"],
-        "sender_role": data.get("sender_role", "user"),
-        "message": data["message"],
-        "created_at": datetime.now()
-    })
-
-    print("Đã lưu MongoDB")
-
-    emit("receive_message", data, room=room)
 
 # ==========================
 # GỬI EMAIL

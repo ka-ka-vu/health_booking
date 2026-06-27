@@ -15,25 +15,19 @@ Chat với bác sĩ
         <div class="card shadow-lg border-0">
 
             <!-- Header -->
-
             <div class="card-header bg-primary text-white">
 
                 <h4 class="mb-1">
-
                     👨‍⚕️ {{ doctor.name }}
-
                 </h4>
 
                 <small>
-
                     {{ doctor.specialty }}
-
                 </small>
 
             </div>
 
             <!-- Chat -->
-
             <div id="chat-box"
                  class="bg-white p-3"
                  style="height:500px;overflow-y:auto;">
@@ -47,15 +41,11 @@ Chat với bác sĩ
                     <div class="text-end">
 
                         <span class="badge bg-primary">
-
                             {{ msg.sender_name }}
-
                         </span>
 
                         <div class="bg-primary text-white p-2 rounded mt-1 d-inline-block">
-
                             {{ msg.message }}
-
                         </div>
 
                     </div>
@@ -65,15 +55,11 @@ Chat với bác sĩ
                     <div class="text-start">
 
                         <span class="badge bg-success">
-
                             {{ msg.sender_name }}
-
                         </span>
 
                         <div class="bg-light border p-2 rounded mt-1 d-inline-block">
-
                             {{ msg.message }}
-
                         </div>
 
                     </div>
@@ -86,27 +72,32 @@ Chat với bác sĩ
 
             </div>
 
-            <!-- Input -->
-
+            <!-- Form gửi -->
             <div class="card-footer">
 
-                <div class="input-group">
+                <form method="POST">
 
-                    <input
-                        type="text"
-                        id="message"
-                        class="form-control"
-                        placeholder="Nhập tin nhắn...">
+                    <div class="input-group">
 
-                    <button
-                        class="btn btn-primary"
-                        onclick="sendMessage()">
+                        <input
+                            type="text"
+                            name="message"
+                            class="form-control"
+                            placeholder="Nhập tin nhắn..."
+                            required
+                            autocomplete="off">
 
-                        📤 Gửi
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
 
-                    </button>
+                            📤 Gửi
 
-                </div>
+                        </button>
+
+                    </div>
+
+                </form>
 
                 <div class="mt-3">
 
@@ -129,118 +120,16 @@ Chat với bác sĩ
 
 </div>
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
 <script>
 
-const socket = io();
+const chatBox = document.getElementById("chat-box");
 
-const room =
-"{{ doctor._id }}_{{ session['user_id'] }}";
+chatBox.scrollTop = chatBox.scrollHeight;
 
-socket.emit(
-    "join_room",
-    {
-        room: room
-    }
-);
-
-const chatBox =
-document.getElementById("chat-box");
-
-chatBox.scrollTop =
-chatBox.scrollHeight;
-
-socket.on(
-    "receive_message",
-    function(data){
-
-        let html = "";
-
-        if(data.sender_role === "user"){
-
-            html = `
-            <div class="mb-3 text-end">
-
-                <span class="badge bg-primary">
-                    ${data.sender_name}
-                </span>
-
-                <div class="bg-primary text-white p-2 rounded mt-1 d-inline-block">
-
-                    ${data.message}
-
-                </div>
-
-            </div>
-            `;
-
-        }else{
-
-            html = `
-            <div class="mb-3 text-start">
-
-                <span class="badge bg-success">
-                    ${data.sender_name}
-                </span>
-
-                <div class="bg-light border p-2 rounded mt-1 d-inline-block">
-
-                    ${data.message}
-
-                </div>
-
-            </div>
-            `;
-        }
-
-        chatBox.innerHTML += html;
-
-        chatBox.scrollTop =
-        chatBox.scrollHeight;
-    }
-);
-
-function sendMessage(){
-
-    let message =
-    document.getElementById("message").value;
-
-    if(message.trim() === "")
-        return;
-
-    socket.emit(
-        "send_message",
-        {
-            room: room,
-            sender_name:
-                "{{ session['fullname'] }}",
-            sender_role: "user",
-            message: message
-        }
-    );
-
-    document.getElementById("message").value = "";
-
-    document.getElementById("message").focus();
-}
-
-document
-.getElementById("message")
-.addEventListener(
-    "keypress",
-    function(e){
-
-        if(e.key === "Enter"){
-
-            e.preventDefault();
-
-            sendMessage();
-
-        }
-
-    }
-);
+// Tự cập nhật sau mỗi 3 giây
+setInterval(function () {
+    location.reload();
+}, 3000);
 
 </script>
 
