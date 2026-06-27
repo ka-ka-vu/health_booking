@@ -1156,6 +1156,29 @@ def add_appointment():
             "name": doctor
 
         })
+        
+        # ==========================
+        # KIỂM TRA TRÙNG LỊCH KHÁM
+        # ==========================
+
+        existed = db.appointments.find_one({
+
+            "doctor": doctor,
+
+            "date": date,
+
+            "time": time
+
+        })
+
+        if existed:
+
+            return """
+            <script>
+                alert('Khung giờ này của bác sĩ đã có người đặt. Vui lòng chọn thời gian khác!');
+                window.history.back();
+            </script>
+            """
 
         # ==========================
         # LƯU LỊCH KHÁM
