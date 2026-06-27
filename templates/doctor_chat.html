@@ -135,6 +135,14 @@ Chat với bệnh nhân
 
 const socket = io();
 
+socket.on("connect", function () {
+    console.log("Socket connected:", socket.id);
+});
+
+socket.on("connect_error", function (err) {
+    console.log("Connect error:", err);
+});
+
 const room =
 "{{ doctor._id }}_{{ patient._id }}";
 

@@ -17,8 +17,9 @@ from config import SECRET_KEY
 app.secret_key = SECRET_KEY
 
 socketio = SocketIO(
-app,
-cors_allowed_origins="*"
+    app,
+    cors_allowed_origins="*",
+    async_mode="eventlet"
 )
 
 @socketio.on("join_room")
@@ -31,46 +32,24 @@ def handle_join(data):
 @socketio.on("send_message")
 def handle_message(data):
 
-    room = data["room"]
+    print("=== SEND_MESSAGE ===")
+    print(data)
 
-# room = doctor_id_user_id
+    room = data["room"]
     doctor_id, user_id = room.split("_", 1)
 
     db.messages.insert_one({
-
         "doctor_id": doctor_id,
-
         "user_id": user_id,
-
         "sender_name": data["sender_name"],
-
-        "sender_role": data.get(
-            "sender_role",
-            "user"
-        ),
-
+        "sender_role": data.get("sender_role", "user"),
         "message": data["message"],
-
         "created_at": datetime.now()
-
     })
 
-    emit(
-        "receive_message",
-        {
+    print("Đã lưu MongoDB")
 
-            "sender_name": data["sender_name"],
-
-            "sender_role": data.get(
-                "sender_role",
-                "user"
-            ),
-
-            "message": data["message"]
-
-        },
-        room=room
-    )
+    emit("receive_message", data, room=room)
 
 # ==========================
 # GỬI EMAIL
