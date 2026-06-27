@@ -1,4 +1,5 @@
 import eventlet
+from flask import Flask, render_template, request, redirect, session, flash
 eventlet.monkey_patch()
 from flask import Flask, render_template, request, redirect, session
 from database import db
@@ -1173,12 +1174,12 @@ def add_appointment():
 
         if existed:
 
-            return """
-            <script>
-                alert('Khung giờ này của bác sĩ đã có người đặt. Vui lòng chọn thời gian khác!');
-                window.history.back();
-            </script>
-            """
+            flash(
+                "Khung giờ này của bác sĩ đã có người đặt. Vui lòng chọn thời gian khác!",
+                "danger"
+            )
+
+            return redirect("/appointments/add")
 
         # ==========================
         # LƯU LỊCH KHÁM
