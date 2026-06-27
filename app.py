@@ -19,7 +19,7 @@ app.secret_key = SECRET_KEY
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode="eventlet"
+    async_mode="threading"
 )
 
 @socketio.on("join_room")
