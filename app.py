@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
 from pymongo import MongoClient
+from flask_socketio import SocketIO
 from werkzeug.utils import secure_filename
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import MONGO_URI, EMAIL_ADDRESS, EMAIL_PASSWORD
@@ -15,6 +16,11 @@ app = Flask(__name__)
 from config import SECRET_KEY
 app.secret_key = SECRET_KEY
 
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode="threading"
+)
 
 # ==========================
 # GỬI EMAIL
