@@ -1,4 +1,5 @@
 import eventlet
+from ai.chatbot import answer
 from flask import Flask, render_template, request, redirect, session, flash
 eventlet.monkey_patch()
 from flask import Flask, render_template, request, redirect, session
@@ -1506,262 +1507,22 @@ def symptom_checker():
     if "chat_history" not in session:
         session["chat_history"] = []
 
-    specialty = None
-    doctor_name = None
-    recommendation = None
-    chatbot_question = None
-    urgency = None
-    top_specialties = []
+    result = None
 
     if request.method == "POST":
 
-        symptom = request.form["symptom"].lower()
+        symptom = request.form["symptom"]
 
-        specialties = {
+        result = answer(symptom)
 
-            "Tim mạch": {
-                "đau ngực": 10,
-                "tức ngực": 10,
-                "nghẹn ngực": 9,
-                "khó thở": 8,
-                "hồi hộp": 7,
-                "đánh trống ngực": 7,
-                "cao huyết áp": 6,
-                "tim đập nhanh": 6
-            },
-
-            "Hô hấp": {
-                "ho": 8,
-                "khó thở": 8,
-                "đờm": 7,
-                "viêm họng": 6,
-                "sổ mũi": 5,
-                "nghẹt mũi": 5,
-                "hen": 8,
-                "viêm phổi": 10,
-                "cúm": 6
-            },
-
-            "Tiêu hóa": {
-                "đau bụng": 10,
-                "bụng": 4,
-                "tiêu chảy": 8,
-                "buồn nôn": 7,
-                "nôn": 7,
-                "đầy hơi": 6,
-                "ợ chua": 6,
-                "dạ dày": 8,
-                "táo bón": 6
-            },
-
-            "Thần kinh": {
-                "đau đầu": 10,
-                "chóng mặt": 8,
-                "hoa mắt": 7,
-                "mất ngủ": 6,
-                "tê tay": 7,
-                "tê chân": 7,
-                "co giật": 10
-            },
-
-            "Da liễu": {
-                "mụn": 5,
-                "ngứa": 8,
-                "dị ứng": 8,
-                "nổi mẩn": 8,
-                "phát ban": 9
-            },
-
-            "Tai Mũi Họng": {
-                "tai": 4,
-                "mũi": 4,
-                "họng": 4,
-                "nghẹt mũi": 6,
-                "ù tai": 7,
-                "viêm xoang": 8
-            },
-
-            "Mắt": {
-                "mắt": 4,
-                "mờ mắt": 8,
-                "đau mắt": 8,
-                "nhức mắt": 7
-            },
-
-            "Răng Hàm Mặt": {
-                "răng": 4,
-                "đau răng": 10,
-                "sâu răng": 8,
-                "nướu": 6,
-                "lợi": 6
-            },
-
-            "Cơ Xương Khớp": {
-                "khớp": 5,
-                "xương": 5,
-                "đau lưng": 8,
-                "đau vai": 8,
-                "đau gối": 8,
-                "thoái hóa": 10
-            },
-
-            "Tiết niệu": {
-                "tiểu": 4,
-                "thận": 7,
-                "tiểu buốt": 9,
-                "tiểu nhiều": 7,
-                "sỏi thận": 10
-            },
-
-            "Nội tiết": {
-                "tiểu đường": 10,
-                "đường huyết": 8,
-                "tuyến giáp": 8,
-                "nội tiết": 6
-            },
-
-            "Nam khoa": {
-                "sinh lý nam": 10,
-                "xuất tinh": 8,
-                "dương vật": 8
-            },
-
-            "Sản phụ khoa": {
-                "kinh nguyệt": 8,
-                "mang thai": 10,
-                "phụ khoa": 8,
-                "rong kinh": 9
-            },
-
-            "Nhi khoa": {
-                "trẻ em": 10,
-                "em bé": 10,
-                "trẻ nhỏ": 10,
-                "bé": 8
-            },
-
-            "Tâm lý - Tâm thần": {
-                "stress": 8,
-                "lo âu": 9,
-                "trầm cảm": 10,
-                "căng thẳng": 8,
-                "tâm lý": 7
-            },
-
-            "Nội tổng quát": {
-                "sốt": 6,
-                "mệt": 5,
-                "mệt mỏi": 7,
-                "yếu": 5,
-                "chán ăn": 6,
-                "đau người": 6
-            }
-        }
-
-        scores = {}
-
-        for spec, keywords in specialties.items():
-
-            score = 0
-
-            for keyword, weight in keywords.items():
-
-                if keyword in symptom:
-                    score += weight
-
-            scores[spec] = score
-
-        top_specialties = sorted(
-            scores.items(),
-            key=lambda x: x[1],
-            reverse=True
-        )
-
-        top_specialties = [
-            item for item in top_specialties
-            if item[1] > 0
-        ]
-
-        if len(top_specialties) == 0:
-
-            chatbot_question = (
-                "Bạn có thể mô tả chi tiết hơn không? "
-                "Ví dụ: đau ở đâu, sốt, ho, khó thở, đau bụng..."
-            )
-
-            session["chat_history"].append({
-                "user": symptom,
-                "specialty": "Chưa xác định",
-                "doctor": "",
-                "question": chatbot_question,
-                "urgency": "Chưa xác định"
-            })
-
-        else:
-
-            specialty = top_specialties[0][0]
-
-            urgency = "Bình thường"
-
-            if (
-                "đau ngực" in symptom or
-                "tức ngực" in symptom or
-                "khó thở" in symptom or
-                "co giật" in symptom
-            ):
-                urgency = "Khẩn cấp"
-
-            elif (
-                "sốt cao" in symptom or
-                "nôn nhiều" in symptom
-            ):
-                urgency = "Cần khám sớm"
-
-            if specialty == "Tim mạch":
-                chatbot_question = "Bạn có bị khó thở hoặc hồi hộp tim không?"
-
-            elif specialty == "Hô hấp":
-                chatbot_question = "Bạn có sốt hoặc có đờm không?"
-
-            elif specialty == "Tiêu hóa":
-                chatbot_question = "Bạn có bị tiêu chảy hoặc buồn nôn không?"
-
-            elif specialty == "Thần kinh":
-                chatbot_question = "Bạn có bị chóng mặt hoặc mất ngủ không?"
-
-            doctor = db.doctors.find_one(
-                {"specialty": specialty},
-                sort=[("experience", -1)]
-            )
-
-            if doctor:
-                doctor_name = doctor["name"]
-            else:
-                doctor_name = "Chưa có bác sĩ phù hợp"
-
-            recommendation = (
-                f"Chuyên khoa phù hợp nhất: {specialty}"
-            )
-
-            session["chat_history"].append({
-                "user": symptom,
-                "specialty": specialty,
-                "doctor": doctor_name,
-                "question": chatbot_question,
-                "urgency": urgency
-            })
+        session["chat_history"].append(result)
 
         session.modified = True
 
     return render_template(
         "symptom_checker.html",
-        specialty=specialty,
-        doctor=doctor_name,
-        recommendation=recommendation,
-        chatbot_question=chatbot_question,
-        urgency=urgency,
-        top_specialties=top_specialties,
-        chat_history=session.get("chat_history", [])
+        result=result,
+        chat_history=session["chat_history"]
     )
 
 # ==========================
