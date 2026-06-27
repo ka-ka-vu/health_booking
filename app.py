@@ -18,8 +18,7 @@ app.secret_key = SECRET_KEY
 
 socketio = SocketIO(
     app,
-    cors_allowed_origins="*",
-    async_mode="threading"
+    cors_allowed_origins="*"
 )
 
 @socketio.on("join_room")
@@ -2652,25 +2651,24 @@ scheduler.start()
 scheduler = BackgroundScheduler()
 
 scheduler.add_job(
-
     check_doctor_appointments,
-
     "cron",
-
     hour=8,
-
     minute=0
-
 )
-
-scheduler.start()
 
 # ==========================
 # CHẠY FLASK
 # ==========================
+
 if __name__ == "__main__":
+
+    # Chỉ chạy Scheduler khi chạy trực tiếp (Local)
+    scheduler.start()
+
     socketio.run(
         app,
         host="0.0.0.0",
-        port=5000
+        port=5000,
+        debug=True
     )
