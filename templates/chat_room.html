@@ -8,37 +8,35 @@ Chat với bác sĩ
 
 <div class="container py-4">
 
-<div class="row justify-content-center">
+    <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+        <div class="col-lg-8">
 
-        <div class="card shadow-lg border-0">
+            <div class="card shadow-lg border-0">
 
-            <!-- Header -->
-            <div class="card-header bg-primary text-white">
+                <!-- Header -->
+                <div class="card-header bg-primary text-white">
 
-                <h4 class="mb-1">
-                    👨‍⚕️ {{ doctor.name }}
-                </h4>
+                    <h4 class="mb-1">
+                        👨‍⚕️ {{ doctor.name }}
+                    </h4>
 
-                <small>
-                    {{ doctor.specialty }}
-                </small>
+                    <small>
+                        {{ doctor.specialty }}
+                    </small>
 
-            </div>
+                </div>
 
-            <!-- Chat -->
-            <div id="chat-box"
-                 class="bg-white p-3"
-                 style="height:500px;overflow-y:auto;">
+                <!-- Chat -->
+                <div id="chat-box"
+                     class="bg-white p-3"
+                     style="height:500px;overflow-y:auto;">
 
-                {% for msg in messages %}
+                    {% for msg in messages %}
 
-                <div class="mb-3">
+                    {% if msg.sender_role=="user" %}
 
-                    {% if msg.sender_role == "user" %}
-
-                    <div class="text-end">
+                    <div class="mb-3 text-end">
 
                         <span class="badge bg-primary">
                             {{ msg.sender_name }}
@@ -52,7 +50,7 @@ Chat với bác sĩ
 
                     {% else %}
 
-                    <div class="text-start">
+                    <div class="mb-3 text-start">
 
                         <span class="badge bg-success">
                             {{ msg.sender_name }}
@@ -66,30 +64,26 @@ Chat với bác sĩ
 
                     {% endif %}
 
+                    {% endfor %}
+
                 </div>
 
-                {% endfor %}
+                <!-- Nhập tin nhắn -->
 
-            </div>
-
-            <!-- Form gửi -->
-            <div class="card-footer">
-
-                <form method="POST">
+                <div class="card-footer">
 
                     <div class="input-group">
 
                         <input
+                            id="message"
                             type="text"
-                            name="message"
                             class="form-control"
                             placeholder="Nhập tin nhắn..."
-                            required
                             autocomplete="off">
 
                         <button
-                            type="submit"
-                            class="btn btn-primary">
+                            class="btn btn-primary"
+                            onclick="sendMessage()">
 
                             📤 Gửi
 
@@ -97,16 +91,16 @@ Chat với bác sĩ
 
                     </div>
 
-                </form>
+                    <div class="mt-3">
 
-                <div class="mt-3">
+                        <a href="/chat-doctor"
+                           class="btn btn-secondary">
 
-                    <a href="/chat-doctor"
-                       class="btn btn-secondary">
+                            ⬅ Quay lại
 
-                        ⬅ Quay lại
+                        </a>
 
-                    </a>
+                    </div>
 
                 </div>
 
@@ -118,18 +112,100 @@ Chat với bác sĩ
 
 </div>
 
-</div>
-
 <script>
 
 const chatBox = document.getElementById("chat-box");
 
 chatBox.scrollTop = chatBox.scrollHeight;
 
-// Tự cập nhật sau mỗi 3 giây
-setInterval(function () {
-    location.reload();
-}, 3000);
+function sendMessage(){
+
+    let input = document.getElementById("message");
+
+    let message = input.value.trim();
+
+    if(message==="")
+        return;
+
+    fetch("/send-message",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+
+        body:new URLSearchParams({
+
+            doctor_id:"{{ doctor._id }}",
+
+            message:message
+
+        })
+
+    })
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        if(data.success){
+
+            chatBox.innerHTML += `
+
+            <div class="mb-3 text-end">
+
+                <span class="badge bg-primary">
+
+                    {{ session["fullname"] }}
+
+                </span>
+
+                <div class="bg-primary text-white p-2 rounded mt-1 d-inline-block">
+
+                    ${message}
+
+                </div>
+
+            </div>
+
+            `;
+
+            input.value="";
+
+            input.focus();
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+        }else{
+
+            alert("Không gửi được tin nhắn.");
+
+        }
+
+    })
+
+    .catch(error=>{
+
+        console.log(error);
+
+        alert("Lỗi kết nối.");
+
+    });
+
+}
+
+document.getElementById("message").addEventListener("keypress",function(e){
+
+    if(e.key==="Enter"){
+
+        e.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
 
 </script>
 

@@ -23,6 +23,59 @@ socketio = SocketIO(
 )
 
 # ==========================
+# GỬI tin nhắn
+# ==========================
+@app.route("/send-message", methods=["POST"])
+def send_message():
+
+    if "user_id" not in session:
+        return {"success": False}
+
+    doctor_id = request.form["doctor_id"]
+    message = request.form["message"]
+
+    db.messages.insert_one({
+        "doctor_id": doctor_id,
+        "user_id": str(session["user_id"]),
+        "sender_name": session["fullname"],
+        "sender_role": session["role"],
+        "message": message,
+        "created_at": datetime.now()
+    })
+
+    return {"success": True}
+
+# ==========================
+# Bác sĩ nhận tin nhắn
+# ==========================
+@app.route("/load-messages/<doctor_id>")
+def load_messages(doctor_id):
+
+    messages=list(db.messages.find({
+
+        "doctor_id":doctor_id,
+
+        "user_id":str(session["user_id"])
+
+    }).sort("created_at",1))
+
+    result=[]
+
+    for m in messages:
+
+        result.append({
+
+            "sender_name":m["sender_name"],
+
+            "sender_role":m["sender_role"],
+
+            "message":m["message"]
+
+        })
+
+    return result
+
+# ==========================
 # GỬI EMAIL
 # ==========================
 
