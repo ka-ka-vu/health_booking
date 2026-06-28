@@ -113,37 +113,42 @@ def send_email(to_email, subject, content):
 
     try:
 
-        msg = MIMEText(
-            content,
-            "plain",
-            "utf-8"
-        )
+        msg = MIMEText(content, "plain", "utf-8")
 
         msg["Subject"] = subject
         msg["From"] = EMAIL_ADDRESS
         msg["To"] = to_email
 
-        server = smtplib.SMTP(
-            "smtp.gmail.com",
-            587
-        )
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+
+        server.ehlo()
 
         server.starttls()
+
+        server.ehlo()
 
         server.login(
             EMAIL_ADDRESS,
             EMAIL_PASSWORD
         )
 
-        server.send_message(msg)
+        server.sendmail(
+            EMAIL_ADDRESS,
+            to_email,
+            msg.as_string()
+        )
 
         server.quit()
 
-        print("Đã gửi email thành công")
+        print("✅ Gửi email thành công")
+
+        return True
 
     except Exception as e:
 
-        print("Lỗi gửi email:", e)
+        print("❌ Lỗi gửi email:", str(e))
+
+        return False
 
 # ==========================
 # KIỂM TRA ADMIN
@@ -452,9 +457,15 @@ def dashboard():
 # USER DASHBOARD
 # ==========================
 
-    today = datetime.now().date()
+@app.route("/dashboard")
+def dashboard():
+
+    if "user_id" not in session:
+        return redirect("/login")
 
     reminders = []
+
+    now = datetime.now()
 
     appointments = db.appointments.find({
         "user_id": session["user_id"]
@@ -464,37 +475,74 @@ def dashboard():
 
         try:
 
-            appointment_date = datetime.strptime(
-                appt["date"],
-                "%Y-%m-%d"
-            ).date()
+            appointment_datetime = datetime.strptime(
+                appt["date"] + " " + appt["time"],
+                "%Y-%m-%d %H:%M"
+            )
 
-            days_left = (
-                appointment_date - today
-            ).days
+            time_left = appointment_datetime - now
 
-            # Nhắc lịch khám trong 3 ngày tới
-            if 0 <= days_left <= 3:
+            total_seconds = time_left.total_seconds()
 
-                reminders.append({
-                    "doctor": appt["doctor"],
-                    "date": appt["date"],
-                    "time": appt["time"],
-                    "days_left": days_left
-                })
+            # Bỏ qua lịch đã qua
+            if total_seconds < 0:
+                continue
 
-        except:
-            pass
+            days_left = time_left.days
+            hours_left = int(total_seconds // 3600)
+            minutes_left = int(total_seconds // 60)
 
-# Đếm số thông báo
+            # --------------------------
+            # Thông báo
+            # --------------------------
+
+            if days_left == 3:
+
+                message = "Còn 3 ngày nữa đến lịch khám"
+
+            elif days_left == 1:
+
+                message = "Ngày mai bạn có lịch khám"
+
+            elif days_left == 0 and hours_left >= 1:
+
+                message = f"Hôm nay khám sau {hours_left} giờ"
+
+            elif 0 <= minutes_left <= 60:
+
+                message = "Đến giờ khám"
+
+            else:
+                continue
+
+            reminders.append({
+
+                "doctor": appt["doctor"],
+
+                "date": appt["date"],
+
+                "time": appt["time"],
+
+                "message": message
+
+            })
+
+        except Exception as e:
+            print(e)
+
     notification_count = len(reminders)
 
     return render_template(
-            "user_dashboard.html",
-            fullname=session["fullname"],
-            reminders=reminders,
-            notification_count=notification_count
-        )
+
+        "user_dashboard.html",
+
+        fullname=session["fullname"],
+
+        reminders=reminders,
+
+        notification_count=notification_count
+
+    )
 
 # ==========================
 # DASHBOARD BÁC SĨ
@@ -560,44 +608,56 @@ def doctor_dashboard():
     )
 
 # ==========================
-# NHẮC LỊCH BÁC SĨ
+# NHẮC LỊCH CHO BÁC SĨ
 # ==========================
 
 def check_doctor_appointments():
 
-    tomorrow = (
-        datetime.now() +
-        timedelta(days=1)
-    ).strftime("%Y-%m-%d")
+    now = datetime.now()
 
-    appointments = db.appointments.find({
-
-        "date": tomorrow,
-
-        "doctor_reminder_sent": False
-
-    })
+    appointments = db.appointments.find()
 
     for appt in appointments:
 
-        doctor = db.doctors.find_one({
+        try:
 
-            "_id": ObjectId(
-                appt["doctor_id"]
+            appointment_datetime = datetime.strptime(
+                appt["date"] + " " + appt["time"],
+                "%Y-%m-%d %H:%M"
             )
 
-        })
+            time_left = appointment_datetime - now
 
-        if not doctor:
-            continue
+            days_left = time_left.days
 
-        content = f"""
-Xin chào {doctor['name']}
+            seconds_left = time_left.total_seconds()
 
-Bạn có lịch khám vào ngày mai.
+            doctor_email = appt.get("doctor_email")
+
+            if not doctor_email:
+                continue
+
+            subject = ""
+            content = ""
+
+            # ======================
+            # TRƯỚC 3 NGÀY
+            # ======================
+
+            if (
+                2 <= days_left <= 3
+                and not appt.get("doctor_email_3days")
+            ):
+
+                subject = "Nhắc lịch khám sau 3 ngày"
+
+                content = f"""
+Xin chào Bác sĩ {appt['doctor']}
+
+Sau khoảng 3 ngày bạn có lịch khám.
 
 Bệnh nhân:
-{appt['fullname']}
+{appt['patient']}
 
 Ngày:
 {appt['date']}
@@ -606,29 +666,142 @@ Giờ:
 {appt['time']}
 """
 
-        send_email(
+                send_email(
+                    doctor_email,
+                    subject,
+                    content
+                )
 
-            doctor["email"],
+                db.appointments.update_one(
+                    {"_id": appt["_id"]},
+                    {
+                        "$set":{
+                            "doctor_email_3days":True
+                        }
+                    }
+                )
 
-            "Nhắc lịch khám ngày mai",
+            # ======================
+            # TRƯỚC 1 NGÀY
+            # ======================
 
-            content
+            elif (
+                0 <= days_left <= 1
+                and not appt.get("doctor_email_1day")
+            ):
 
-        )
+                subject = "Nhắc lịch khám ngày mai"
 
-        db.appointments.update_one(
+                content = f"""
+Xin chào Bác sĩ {appt['doctor']}
 
-            {
-                "_id": appt["_id"]
-            },
+Ngày mai bạn có lịch khám.
 
-            {
-                "$set": {
-                    "doctor_reminder_sent": True
-                }
-            }
+Bệnh nhân:
+{appt['patient']}
 
-        )
+Ngày:
+{appt['date']}
+
+Giờ:
+{appt['time']}
+"""
+
+                send_email(
+                    doctor_email,
+                    subject,
+                    content
+                )
+
+                db.appointments.update_one(
+                    {"_id": appt["_id"]},
+                    {
+                        "$set":{
+                            "doctor_email_1day":True
+                        }
+                    }
+                )
+
+            # ======================
+            # ĐÚNG NGÀY
+            # ======================
+
+            elif (
+                days_left == 0
+                and seconds_left > 3600
+                and not appt.get("doctor_email_today")
+            ):
+
+                subject = "Hôm nay có lịch khám"
+
+                content = f"""
+Xin chào Bác sĩ {appt['doctor']}
+
+Hôm nay bạn có lịch khám.
+
+Bệnh nhân:
+{appt['patient']}
+
+Giờ:
+{appt['time']}
+"""
+
+                send_email(
+                    doctor_email,
+                    subject,
+                    content
+                )
+
+                db.appointments.update_one(
+                    {"_id": appt["_id"]},
+                    {
+                        "$set":{
+                            "doctor_email_today":True
+                        }
+                    }
+                )
+
+            # ======================
+            # TRƯỚC 30 PHÚT
+            # ======================
+
+            elif (
+                0 <= seconds_left <= 1800
+                and not appt.get("doctor_email_30minutes")
+            ):
+
+                subject = "Sắp đến giờ khám"
+
+                content = f"""
+Xin chào Bác sĩ {appt['doctor']}
+
+Chỉ còn khoảng 30 phút nữa sẽ đến lịch khám.
+
+Bệnh nhân:
+{appt['patient']}
+
+Giờ khám:
+{appt['time']}
+"""
+
+                send_email(
+                    doctor_email,
+                    subject,
+                    content
+                )
+
+                db.appointments.update_one(
+                    {"_id": appt["_id"]},
+                    {
+                        "$set":{
+                            "doctor_email_30minutes":True
+                        }
+                    }
+                )
+
+        except Exception as e:
+
+            print("Lỗi nhắc lịch bác sĩ:", e)
 
 # ==========================
 # DANH SÁCH BÁC SĨ CHỜ DUYỆT
