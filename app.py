@@ -1,7 +1,5 @@
-import eventlet
 from ai.chatbot import answer
 from flask import Flask, render_template, request, redirect, session, flash
-eventlet.monkey_patch()
 from flask import Flask, render_template, request, redirect, session
 from database import db
 from bson.objectid import ObjectId
@@ -25,7 +23,7 @@ app.secret_key = SECRET_KEY
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode="eventlet",
+    async_mode="threading",
     manage_session=False
 )
 
@@ -2501,5 +2499,7 @@ scheduler.add_job(
 # ==========================
 
 if __name__ == "__main__":
-    scheduler.start()
-    socketio.run(app)
+    socketio.run(
+        app,
+        debug=False
+    )
