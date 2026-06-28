@@ -188,6 +188,273 @@ SYNONYMS = {
     "lo âu":[
         "lo âu",
         "lo lắng"
+    ],
+    
+    "đau họng": [
+        "đau họng",
+        "rát họng",
+        "viêm họng",
+        "khó nuốt",
+        "nuốt đau"
+    ],
+
+    "sổ mũi": [
+        "sổ mũi",
+        "chảy nước mũi",
+        "nước mũi",
+        "mũi chảy"
+    ],
+
+    "nghẹt mũi": [
+        "nghẹt mũi",
+        "tắc mũi",
+        "khó thở bằng mũi"
+    ],
+
+    "hắt hơi": [
+        "hắt hơi",
+        "hắt xì",
+        "nhảy mũi"
+    ],
+
+    "đờm": [
+        "đờm",
+        "khạc đờm",
+        "đờm vàng",
+        "đờm xanh"
+    ],
+
+    "ho ra máu": [
+        "ho ra máu",
+        "khạc ra máu"
+    ],
+
+    "rét run": [
+        "rét run",
+        "lạnh run",
+        "run người"
+    ],
+
+    "đổ mồ hôi": [
+        "đổ mồ hôi",
+        "toát mồ hôi",
+        "vã mồ hôi"
+    ],
+
+    "mệt mỏi": [
+        "mệt",
+        "mệt mỏi",
+        "kiệt sức",
+        "uể oải"
+    ],
+
+    "yếu": [
+        "yếu",
+        "đuối",
+        "không có sức"
+    ],
+
+    "chán ăn": [
+        "chán ăn",
+        "ăn không ngon",
+        "mất khẩu vị"
+    ],
+
+    "sụt cân": [
+        "sụt cân",
+        "giảm cân",
+        "gầy đi"
+    ],
+
+    "tăng cân": [
+        "tăng cân",
+        "béo lên"
+    ],
+
+    "vàng da": [
+        "vàng da",
+        "da vàng",
+        "mắt vàng"
+    ],
+
+    "vàng mắt": [
+        "vàng mắt",
+        "lòng trắng mắt vàng"
+    ],
+
+    "phù chân": [
+        "phù chân",
+        "sưng chân",
+        "chân phù"
+    ],
+
+    "phù mặt": [
+        "phù mặt",
+        "mặt sưng"
+    ],
+
+    "run tay": [
+        "run tay",
+        "tay run"
+    ],
+
+    "run chân": [
+        "run chân"
+    ],
+
+    "tê tay": [
+        "tê tay",
+        "tay tê"
+    ],
+
+    "tê chân": [
+        "tê chân",
+        "chân tê"
+    ],
+
+    "liệt": [
+        "liệt",
+        "không cử động được"
+    ],
+
+    "méo miệng": [
+        "méo miệng",
+        "lệch miệng"
+    ],
+
+    "nói khó": [
+        "nói khó",
+        "nói ngọng",
+        "khó nói"
+    ],
+
+    "đi lại khó khăn": [
+        "đi lại khó",
+        "đi khó",
+        "khó đi lại"
+    ],
+
+    "đau cổ": [
+        "đau cổ",
+        "cổ đau"
+    ],
+
+    "cứng cổ": [
+        "cứng cổ",
+        "khó quay cổ"
+    ],
+
+    "đau cơ": [
+        "đau cơ",
+        "nhức cơ"
+    ],
+
+    "yếu cơ": [
+        "yếu cơ"
+    ],
+
+    "đau khớp": [
+        "đau khớp",
+        "nhức khớp"
+    ],
+
+    "sưng khớp": [
+        "sưng khớp"
+    ],
+
+    "đau hông": [
+        "đau hông"
+    ],
+
+    "đau hông lưng": [
+        "đau hông lưng"
+    ],
+
+    "tiểu khó": [
+        "tiểu khó",
+        "đi tiểu khó"
+    ],
+
+    "bí tiểu": [
+        "bí tiểu"
+    ],
+
+    "tiểu ra máu": [
+        "tiểu ra máu",
+        "đái ra máu"
+    ],
+
+    "đi ngoài ra máu": [
+        "đi ngoài ra máu",
+        "ỉa ra máu"
+    ],
+
+    "đau rát khi tiểu": [
+        "đau rát khi tiểu"
+    ],
+
+    "khát nước": [
+        "khát nước",
+        "uống nhiều nước"
+    ],
+
+    "khô miệng": [
+        "khô miệng"
+    ],
+
+    "tim đập nhanh": [
+        "tim đập nhanh",
+        "tim đập mạnh"
+    ],
+
+    "hồi hộp": [
+        "hồi hộp",
+        "tim hồi hộp"
+    ],
+
+    "đau hạ sườn phải": [
+        "đau hạ sườn phải"
+    ],
+
+    "đau hố chậu phải": [
+        "đau hố chậu phải"
+    ],
+
+    "bụng chướng": [
+        "bụng chướng",
+        "chướng bụng"
+    ],
+
+    "đầy hơi": [
+        "đầy hơi",
+        "đầy bụng"
+    ],
+
+    "ợ chua": [
+        "ợ chua",
+        "ợ nóng"
+    ],
+
+    "táo bón": [
+        "táo bón"
+    ],
+
+    "phát ban": [
+        "phát ban",
+        "ban đỏ"
+    ],
+
+    "nổi mẩn": [
+        "nổi mẩn",
+        "nổi mề đay"
+    ],
+
+    "mụn nước": [
+        "mụn nước"
+    ],
+
+    "ngứa hậu môn": [
+        "ngứa hậu môn"
     ]
 }
 
