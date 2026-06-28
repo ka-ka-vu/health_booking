@@ -2467,7 +2467,7 @@ def medicine_consult(medicine_id):
     return redirect("/chat-doctor")
 
 # ==========================
-# MUA THUỐC
+# MUA NGAY
 # ==========================
 
 @app.route("/buy-medicine/<medicine_id>")
@@ -2481,14 +2481,31 @@ def buy_medicine(medicine_id):
     })
 
     if not medicine:
-        return "<h3>Không tìm thấy thuốc</h3>"
+        return redirect("/medicines")
 
-    flash(
-        "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
-        "info"
-    )
+    # Xóa giỏ hàng cũ
+    db.cart.delete_many({
+        "user_id": str(session["user_id"])
+    })
 
-    return redirect("/medicines")
+    # Thêm đúng 1 sản phẩm
+    db.cart.insert_one({
+
+        "user_id": str(session["user_id"]),
+
+        "medicine_id": str(medicine["_id"]),
+
+        "medicine_name": medicine["name"],
+
+        "price": medicine["price"],
+
+        "image": medicine.get("image", ""),
+
+        "quantity": 1
+
+    })
+
+    return redirect("/checkout")
     
 # ==========================
 # THÊM VÀO GIỎ HÀNG
