@@ -426,72 +426,78 @@ def login():
 
     return render_template("login.html")
 
-# ==========================
-# DASHBOARD CHUNG
-# ==========================
-
 @app.route("/dashboard")
 def dashboard():
 
-# Kiểm tra đăng nhập
     if "user_id" not in session:
         return redirect("/login")
+
+    role = session.get("role")
+
+    if role == "admin":
+        return redirect("/admin-dashboard")
+
+    elif role == "doctor":
+        return redirect("/doctor-dashboard")
+
+    else:
+        return redirect("/user-dashboard")
 
 # ==========================
 # ADMIN DASHBOARD
 # ==========================
-    if session.get("role") == "admin":
 
-        # Tổng số bác sĩ
-        doctor_count = db.doctors.count_documents({})
+@app.route("/admin-dashboard")
+def admin_dashboard():
 
-        # Tổng số phòng khám
-        clinic_count = db.clinics.count_documents({})
+    # Kiểm tra đăng nhập
+    if "user_id" not in session:
+        return redirect("/login")
 
-        # Tổng số lịch khám
-        appointment_count = db.appointments.count_documents({})
+    # Chỉ Admin được truy cập
+    if session.get("role") != "admin":
+        return redirect("/dashboard")
 
-        # Ngày hiện tại
-        today = datetime.now().strftime("%Y-%m-%d")
+    # Tổng số bác sĩ
+    doctor_count = db.doctors.count_documents({})
 
-        # Lịch khám hôm nay
-        today_appointments = db.appointments.count_documents({
-            "date": today
-        })
+    # Tổng số phòng khám
+    clinic_count = db.clinics.count_documents({})
 
-        # Thống kê lịch khám theo tháng
-        months = [0] * 12
+    # Tổng số lịch khám
+    appointment_count = db.appointments.count_documents({})
 
-        appointments = db.appointments.find()
+    # Ngày hiện tại
+    today = datetime.now().strftime("%Y-%m-%d")
 
-        for appt in appointments:
+    # Lịch khám hôm nay
+    today_appointments = db.appointments.count_documents({
+        "date": today
+    })
 
-            try:
-                month = int(
-                    appt["date"].split("-")[1]
-                )
+    # Thống kê lịch khám theo tháng
+    months = [0] * 12
 
-                months[month - 1] += 1
+    appointments = db.appointments.find()
 
-            except:
-                pass
+    for appt in appointments:
 
-        return render_template(
-            "admin_dashboard.html",
-            fullname=session["fullname"],
-            doctor_count=doctor_count,
-            clinic_count=clinic_count,
-            appointment_count=appointment_count,
-            today_appointments=today_appointments,
-            months=months
-        )
+        try:
+            month = int(appt["date"].split("-")[1])
+            months[month - 1] += 1
 
-# ==========================
-# DOCTOR DASHBOARD
-# ==========================
-    if session.get("role") == "doctor":
+        except Exception:
+            pass
 
-        return redirect("/doctor-dashboard")
+    return render_template(
+        "admin_dashboard.html",
+        fullname=session["fullname"],
+        doctor_count=doctor_count,
+        clinic_count=clinic_count,
+        appointment_count=appointment_count,
+        today_appointments=today_appointments,
+        months=months
+    )
 
 # ==========================
 # USER DASHBOARD
