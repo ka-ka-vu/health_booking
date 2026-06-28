@@ -8,132 +8,113 @@
 
 <div class="row justify-content-center">
 
-<div class="col-md-6 col-lg-5">
+    <div class="col-md-6 col-lg-5">
 
-    <div class="card border-0 shadow-lg rounded-4">
+        <div class="card border-0 shadow-lg rounded-4">
 
-        <div class="card-header bg-primary text-white text-center p-4 rounded-top-4">
+            <div class="card-header bg-primary text-white text-center p-4 rounded-top-4">
 
-            <h2 class="mb-0">
-                🔐 Đăng nhập
-            </h2>
+                <h2 class="mb-0">
+                    🔐 Đăng nhập
+                </h2>
 
-            <small>
-                Truy cập hệ thống Health Booking
-            </small>
-
-        </div>
-
-        <div class="card-body p-4">
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-
-    {% for category, message in messages %}
-
-        <div class="alert alert-{{ 'success' if category=='success' else 'danger' }} alert-dismissible fade show">
-
-            {{ message }}
-
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-            </button>
-
-        </div>
-
-    {% endfor %}
-
-{% endif %}
-{% endwith %}
-
-            {% if error %}
-            <div class="alert alert-danger alert-dismissible fade show">
-                {{ error }}
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-                </button>
-
-            </div>
-            {% endif %}
-
-            <form method="POST">
-
-                <div class="mb-3">
-
-                    <label class="form-label fw-semibold">
-                        Email
-                    </label>
-
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-control form-control-lg"
-                        placeholder="Nhập email"
-                        required>
-
-                </div>
-
-                <div class="mb-4">
-
-                    <label class="form-label fw-semibold">
-                        Mật khẩu
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password"
-                        class="form-control form-control-lg"
-                        placeholder="Nhập mật khẩu"
-                        required>
-
-                </div>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary btn-lg w-100">
-
-                    Đăng nhập
-
-                </button>
-
-            </form>
-
-            <hr>
-
-            <div class="text-center">
-
-                <p class="text-muted">
-                    Chưa có tài khoản?
-                </p>
-
-                <a
-                    href="/register"
-                    class="btn btn-outline-success w-100">
-
-                    Đăng ký tài khoản
-
-                </a>
+                <small>
+                    Truy cập hệ thống Health Booking
+                </small>
 
             </div>
 
-            <div class="text-center mt-3">
+            <div class="card-body p-4">
 
-                <a href="/doctor-register">
-                    Đăng ký tài khoản bác sĩ
-                </a>
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show">
+
+                    {{ error }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+                {% endif %}
+
+                <form method="POST">
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control form-control-lg"
+                            placeholder="Nhập email"
+                            required>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Mật khẩu
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control form-control-lg"
+                            placeholder="Nhập mật khẩu"
+                            required>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-lg w-100">
+
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Đăng nhập
+
+                    </button>
+
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+
+                    <p class="text-muted">
+                        Chưa có tài khoản?
+                    </p>
+
+                    <a
+                        href="/user-register"
+                        class="btn btn-outline-success w-100">
+
+                        <i class="bi bi-person-plus"></i>
+                        Đăng ký tài khoản
+
+                    </a>
+
+                </div>
+
+                <div class="text-center mt-3">
+
+                    <a href="/doctor-register">
+                        👨‍⚕️ Đăng ký tài khoản bác sĩ
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
-</div>
 
 </div>
 
