@@ -458,9 +458,14 @@ def dashboard():
 # ==========================
 
 @app.route("/dashboard")
-def dashboard():
+def user_dashboard():
 
+    # Chưa đăng nhập
     if "user_id" not in session:
+        return redirect("/login")
+
+    # Chỉ tài khoản user được vào
+    if session.get("role") != "user":
         return redirect("/login")
 
     reminders = []
@@ -476,41 +481,39 @@ def dashboard():
         try:
 
             appointment_datetime = datetime.strptime(
-                appt["date"] + " " + appt["time"],
+                f"{appt['date']} {appt['time']}",
                 "%Y-%m-%d %H:%M"
             )
 
             time_left = appointment_datetime - now
 
-            total_seconds = time_left.total_seconds()
-
-            # Bỏ qua lịch đã qua
-            if total_seconds < 0:
+            # Lịch đã qua
+            if time_left.total_seconds() < 0:
                 continue
 
             days_left = time_left.days
-            hours_left = int(total_seconds // 3600)
-            minutes_left = int(total_seconds // 60)
+            hours_left = int(time_left.total_seconds() // 3600)
+            minutes_left = int(time_left.total_seconds() // 60)
 
-            # --------------------------
-            # Thông báo
-            # --------------------------
+            # -----------------------
+            # Nội dung thông báo
+            # -----------------------
 
             if days_left == 3:
 
-                message = "Còn 3 ngày nữa đến lịch khám"
+                message = "📅 Còn 3 ngày nữa đến lịch khám."
 
             elif days_left == 1:
 
-                message = "Ngày mai bạn có lịch khám"
+                message = "📅 Ngày mai bạn có lịch khám."
 
             elif days_left == 0 and hours_left >= 1:
 
-                message = f"Hôm nay khám sau {hours_left} giờ"
+                message = f"⏰ Hôm nay còn khoảng {hours_left} giờ nữa đến lịch khám."
 
             elif 0 <= minutes_left <= 60:
 
-                message = "Đến giờ khám"
+                message = "🚨 Đã đến giờ khám!"
 
             else:
                 continue
@@ -518,19 +521,14 @@ def dashboard():
             reminders.append({
 
                 "doctor": appt["doctor"],
-
                 "date": appt["date"],
-
                 "time": appt["time"],
-
                 "message": message
 
             })
 
         except Exception as e:
-            print(e)
-
-    notification_count = len(reminders)
+            print("Dashboard:", e)
 
     return render_template(
 
@@ -540,7 +538,7 @@ def dashboard():
 
         reminders=reminders,
 
-        notification_count=notification_count
+        notification_count=len(reminders)
 
     )
 
@@ -2676,3 +2674,53 @@ scheduler.add_job(
 if __name__ == "__main__":
     scheduler.start()
     socketio.run(app)
+    
+# ==========================
+# TEST GỬI EMAIL
+# ==========================
+
+@app.route("/test-reminder")
+def test_reminder():
+
+    user = db.users.find_one({
+        "email": "kka719201@gmail.com"
+    })
+
+    if not user:
+        return "Không tìm thấy user"
+
+    subject = "🔔 Nhắc lịch khám"
+
+    content = f"""
+Xin chào {user['fullname']},
+
+Đây là email nhắc lịch khám.
+
+============================
+
+Bệnh nhân:
+{user['fullname']}
+
+Bác sĩ:
+Nguyễn Văn A
+
+Ngày khám:
+30/06/2026
+
+Giờ khám:
+08:30
+
+============================
+
+Vui lòng đến trước 15 phút.
+
+Health Booking
+"""
+
+    send_email(
+        user["email"],
+        subject,
+        content
+    )
+
+    return "Đã gửi email nhắc lịch!"
