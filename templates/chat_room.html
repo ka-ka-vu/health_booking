@@ -116,26 +116,53 @@ Chat với bác sĩ
 
 <script>
 
-const socket = io();
-
 const room = "{{ doctor._id }}_{{ session['user_id'] }}";
 
-// Tham gia phòng chat
-socket.emit("join_room", {
-    room: room
+const socket = io({
+    transports: ["websocket", "polling"],
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 1000
 });
 
 const chatBox = document.getElementById("chat-box");
+const input = document.getElementById("message");
 
-chatBox.scrollTop = chatBox.scrollHeight;
+// =========================
+// Kết nối thành công
+// =========================
+socket.on("connect", function () {
 
+    console.log("Socket Connected");
 
-// Nhận tin nhắn realtime
-socket.on("receive_message", function(data){
+    socket.emit("join_room", {
+        room: room
+    });
+
+});
+
+// =========================
+// Mất kết nối
+// =========================
+socket.on("disconnect", function () {
+
+    console.log("Socket Disconnected");
+
+});
+
+// =========================
+// Tránh đăng ký nhiều lần
+// =========================
+socket.off("receive_message");
+
+// =========================
+// Nhận tin nhắn
+// =========================
+socket.on("receive_message", function (data) {
 
     let html = "";
 
-    if(data.sender_role === "user"){
+    if (data.sender_role === "user") {
 
         html = `
             <div class="mb-3 text-end">
@@ -151,7 +178,7 @@ socket.on("receive_message", function(data){
             </div>
         `;
 
-    }else{
+    } else {
 
         html = `
             <div class="mb-3 text-start">
@@ -175,18 +202,17 @@ socket.on("receive_message", function(data){
 
 });
 
-
+// =========================
 // Gửi tin nhắn
-function sendMessage(){
-
-    const input = document.getElementById("message");
+// =========================
+function sendMessage() {
 
     const message = input.value.trim();
 
-    if(message === "")
+    if (!message)
         return;
 
-    socket.emit("send_message",{
+    socket.emit("send_message", {
 
         room: room,
 
@@ -204,10 +230,12 @@ function sendMessage(){
 
 }
 
+// =========================
+// Enter để gửi
+// =========================
+input.addEventListener("keypress", function (e) {
 
-document.getElementById("message").addEventListener("keypress",function(e){
-
-    if(e.key === "Enter"){
+    if (e.key === "Enter") {
 
         e.preventDefault();
 
@@ -216,6 +244,15 @@ document.getElementById("message").addEventListener("keypress",function(e){
     }
 
 });
+
+// =========================
+// Cuộn xuống cuối
+// =========================
+window.onload = function () {
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+};
 
 </script>
 

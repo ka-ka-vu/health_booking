@@ -116,7 +116,11 @@ Chat với bệnh nhân
 
 <script>
 
-const socket = io();
+const socket = io({
+
+    transports:["websocket","polling"]
+
+});
 
 const room = "{{ doctor._id }}_{{ patient._id }}";
 

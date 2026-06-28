@@ -2,10 +2,10 @@ import eventlet
 eventlet.monkey_patch()
 from flask import (Flask,render_template,request,redirect,session,flash,url_for,jsonify)
 from database import db
+from flask_socketio import SocketIO, join_room, emit
 from bson.objectid import ObjectId
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-from flask_socketio import SocketIO
 from werkzeug.utils import secure_filename
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_socketio import join_room, emit
@@ -31,13 +31,27 @@ socketio = SocketIO(
 )
 
 # ==========================
+# JOIN ROOM
+# ==========================
+
+@socketio.on("join_room")
+def join_chat(data):
+
+    room = data.get("room")
+
+    if not room:
+        return
+
+    join_room(room)
+
+    print(f"✅ Join room: {room}")
+
+# ==========================
 # SOCKET CHAT
 # ==========================
 
 @socketio.on("send_message")
 def send_chat(data):
-
-    print("Đã nhận dữ liệu:", data)
 
     try:
 
@@ -45,46 +59,45 @@ def send_chat(data):
 
         doctor_id, user_id = room.split("_", 1)
 
-        # Lưu tin nhắn vào MongoDB
-        try:
+        db.messages.insert_one({
 
-            db.messages.insert_one({
+            "doctor_id": doctor_id,
 
-                "doctor_id": doctor_id,
-                "user_id": user_id,
-                "sender_name": data["sender_name"],
-                "sender_role": data["sender_role"],
-                "message": data["message"],
-                "created_at": datetime.now()
+            "user_id": user_id,
 
-            })
+            "sender_name": data["sender_name"],
 
-            print("Đã lưu MongoDB")
+            "sender_role": data["sender_role"],
 
-        except Exception as e:
+            "message": data["message"],
 
-            print("Lỗi MongoDB:", e)
+            "created_at": datetime.now()
 
-        # Gửi realtime tới các client trong room
-        emit(
+        })
+
+        socketio.emit(
 
             "receive_message",
 
             {
 
                 "sender_name": data["sender_name"],
+
                 "sender_role": data["sender_role"],
+
                 "message": data["message"]
 
             },
 
-            room=room
+            to=room
 
         )
 
+        print("✅ Emit:", room)
+
     except Exception as e:
 
-        print("Lỗi Socket:", e)
+        print(e)
 
 # ==========================
 # Bác sĩ nhận tin nhắn
@@ -1801,39 +1814,134 @@ def doctor_appointments():
 @app.route("/symptom-checker", methods=["GET", "POST"])
 def symptom_checker():
 
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if "chat_history" not in session:
+        session["chat_history"] = []
+
+    recommendation = None
+    top_specialties = []
+
     if request.method == "POST":
 
-        symptom = request.form["symptom"]
+        symptom = request.form.get("symptom", "").lower().strip()
 
-        # xử lý ở đây
+        specialty = "Đa khoa"
 
-        return render_template(
-            "symptom_checker.html",
-            chat_history=...,
-            top_specialties=...,
-            recommendation=...
+        # ==========================
+        # Xác định chuyên khoa
+        # ==========================
+
+        if any(x in symptom for x in [
+            "tim",
+            "đau ngực",
+            "cao huyết áp",
+            "hồi hộp"
+        ]):
+            specialty = "Tim mạch"
+
+        elif any(x in symptom for x in [
+            "da",
+            "mụn",
+            "dị ứng",
+            "ngứa",
+            "nấm"
+        ]):
+            specialty = "Da liễu"
+
+        elif any(x in symptom for x in [
+            "mắt",
+            "mờ",
+            "đỏ mắt",
+            "cận"
+        ]):
+            specialty = "Mắt"
+
+        elif any(x in symptom for x in [
+            "tai",
+            "mũi",
+            "họng",
+            "viêm họng",
+            "ho"
+        ]):
+            specialty = "Tai Mũi Họng"
+
+        elif any(x in symptom for x in [
+            "bụng",
+            "dạ dày",
+            "tiêu chảy",
+            "đầy hơi"
+        ]):
+            specialty = "Tiêu hóa"
+
+        elif any(x in symptom for x in [
+            "xương",
+            "khớp",
+            "đau lưng",
+            "gãy"
+        ]):
+            specialty = "Cơ xương khớp"
+
+        recommendation = (
+            f"Dựa trên triệu chứng của bạn, "
+            f"nên khám chuyên khoa {specialty}."
         )
 
+        # ==========================
+        # Lấy bác sĩ phù hợp
+        # ==========================
+
+        top_specialties = list(
+            db.doctors.find({
+                "specialty": {
+                    "$regex": specialty,
+                    "$options": "i"
+                }
+            })
+        )
+
+        # ==========================
+        # Lưu lịch sử chat
+        # ==========================
+
+        history = session["chat_history"]
+
+        history.append({
+
+            "question": symptom,
+
+            "answer": recommendation,
+
+            "time": datetime.now().strftime("%H:%M")
+
+        })
+
+        session["chat_history"] = history
+
     return render_template(
+
         "symptom_checker.html",
-        chat_history=[]
+
+        chat_history=session.get("chat_history", []),
+
+        recommendation=recommendation,
+
+        top_specialties=top_specialties
+
     )
 
+
 # ==========================
-# Xóa lịch sử chat
+# XÓA LỊCH SỬ CHAT
 # ==========================
 
 @app.route("/clear-chat")
 def clear_chat():
 
-    session.pop(
-        "chat_history",
-        None
-    )
+    session.pop("chat_history", None)
 
-    return redirect(
-        "/symptom-checker"
-    )
+    return redirect("/symptom-checker")
     
 # ==========================
 # CHAT CHI TIẾT (BỆNH NHÂN)
@@ -2137,70 +2245,73 @@ def doctor_profile():
 @app.route("/add-medicine", methods=["GET", "POST"])
 def add_medicine():
 
-        if "user_id" not in session:
-            return redirect("/login")
+    if "user_id" not in session:
+        return redirect("/login")
 
-        if session.get("role") != "doctor":
-            return redirect("/login")
+    if session.get("role") != "doctor":
+        return redirect("/login")
 
-        user = db.users.find_one({
-            "_id": ObjectId(session["user_id"])
-        })
+    user = db.users.find_one({
+        "_id": ObjectId(session["user_id"])
+    })
 
-        doctor = db.doctors.find_one({
-            "email": user["email"]
-        })
+    doctor = db.doctors.find_one({
+        "email": user["email"]
+    })
 
-        if request.method == "POST":
+    if request.method == "POST":
 
-            image = request.files["image"]
+        image = request.files["image"]
 
-            filename = secure_filename(
-                image.filename
+        image_path = ""
+
+        if image and image.filename != "":
+
+            filename = secure_filename(image.filename)
+
+            os.makedirs(
+                "static/uploads/medicines",
+                exist_ok=True
             )
 
             image.save(
                 os.path.join(
-                    "static/uploads",
+                    "static/uploads/thuoc",
                     filename
                 )
             )
 
-            db.medicines.insert_one({
+            image_path = "/static/uploads/thuoc/" + filename
 
-                "doctor_id": str(doctor["_id"]),
-                "doctor_name": doctor["name"],
+        db.medicines.insert_one({
 
-                "name": request.form["name"],
+            "doctor_id": str(doctor["_id"]),
+            "doctor_name": doctor["name"],
 
-                "price": int(
-                    request.form["price"]
-                ),
+            "name": request.form["name"],
 
-                "quantity": int(
-                    request.form["quantity"]
-                ),
+            "price": int(request.form["price"]),
 
-                "description":
-                    request.form["description"],
+            "quantity": int(request.form["quantity"]),
 
-                "image":
-                    "/static/uploads/" + filename,
+            "description": request.form["description"],
 
-                "created_at":
-                    datetime.now()
-            })
+            "image": image_path,
 
-            return """
-            <script>
-                alert('Đăng thuốc thành công!');
-                window.location.href='/my-medicines';
-            </script>
-            """
+            "created_at": datetime.now()
 
-        return render_template(
-            "add_medicine.html"
-        )
+        })
+
+        return """
+        <script>
+            alert('Đăng thuốc thành công!');
+            window.location.href='/my-medicines';
+        </script>
+        """
+
+    return render_template(
+        "add_medicine.html"
+    )
 
 # ==========================
 # SỬA THUỐC
@@ -2209,60 +2320,61 @@ def add_medicine():
 @app.route("/edit-medicine/<medicine_id>", methods=["GET", "POST"])
 def edit_medicine(medicine_id):
 
-        if "user_id" not in session:
-            return redirect("/login")
+    if "user_id" not in session:
+        return redirect("/login")
 
-        medicine = db.medicines.find_one({
-            "_id": ObjectId(medicine_id)
-        })
+    medicine = db.medicines.find_one({
+        "_id": ObjectId(medicine_id)
+    })
 
-        if not medicine:
-            return "<h3>Không tìm thấy thuốc</h3>"
+    if not medicine:
+        return "<h3>Không tìm thấy thuốc</h3>"
 
-        if request.method == "POST":
+    if request.method == "POST":
 
-            image_path = medicine.get("image", "")
+        image_path = medicine.get("image", "")
 
-            file = request.files.get("image")
+        file = request.files.get("image")
 
-            if file and file.filename != "":
+        if file and file.filename != "":
 
-                filename = secure_filename(file.filename)
+            filename = secure_filename(file.filename)
 
-                upload_folder = "static/uploads"
-
-                os.makedirs(upload_folder, exist_ok=True)
-
-                save_path = os.path.join(
-                    upload_folder,
-                    filename
-                )
-
-                file.save(save_path)
-
-                image_path = "/" + save_path.replace("\\", "/")
-
-            db.medicines.update_one(
-                {
-                    "_id": ObjectId(medicine_id)
-                },
-                {
-                    "$set": {
-                        "name": request.form["name"],
-                        "price": int(request.form["price"]),
-                        "quantity": int(request.form["quantity"]),
-                        "description": request.form["description"],
-                        "image": image_path
-                    }
-                }
+            os.makedirs(
+                "static/uploads/thuoc",
+                exist_ok=True
             )
 
-            return redirect("/my-medicines")
+            save_path = os.path.join(
+                "static/uploads/thuocs",
+                filename
+            )
 
-        return render_template(
-            "edit_medicine.html",
-            medicine=medicine
+            file.save(save_path)
+
+            image_path = "/static/uploads/thuoc/" + filename
+
+        db.medicines.update_one(
+            {
+                "_id": ObjectId(medicine_id)
+            },
+            {
+                "$set": {
+                    "name": request.form["name"],
+                    "price": int(request.form["price"]),
+                    "quantity": int(request.form["quantity"]),
+                    "description": request.form["description"],
+                    "image": image_path
+                }
+            }
         )
+
+        return redirect("/my-medicines")
+
+    return render_template(
+        "edit_medicine.html",
+        medicine=medicine
+    )
  
 # ==========================
 # THUỐC CỦA TÔI
