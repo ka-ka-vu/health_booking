@@ -173,7 +173,6 @@ def register_choice():
         "register_choice.html"
     )
 
-
 # ==========================
 # ĐĂNG KÝ NGƯỜI DÙNG
 # ==========================
@@ -189,42 +188,46 @@ def register():
             email = request.form.get("email")
             password = request.form.get("password")
 
-            print("fullname =", fullname)
-            print("email =", email)
-            print("password =", password)
-
-            existing_user = db.users.find_one({"email": email})
+            existing_user = db.users.find_one({
+                "email": email
+            })
 
             if existing_user:
-                return "Email đã tồn tại"
+
+                flash("Email đã tồn tại!", "danger")
+                return redirect(url_for("register"))
 
             hashed_password = bcrypt.hashpw(
-                password.encode(),
+                password.encode("utf-8"),
                 bcrypt.gensalt()
             )
 
-            result = db.users.insert_one({
+            db.users.insert_one({
+
                 "fullname": fullname,
                 "email": email,
                 "password": hashed_password,
                 "role": "user"
+
             })
 
-            session["user_id"] = str(result.inserted_id)
-            session["fullname"] = fullname
-            session["role"] = "user"
+            flash(
+                "Đăng ký thành công! Vui lòng đăng nhập để sử dụng hệ thống.",
+                "success"
+            )
 
-            return "Đăng ký thành công"
+            return redirect(url_for("login"))
 
         return render_template("register.html")
 
     except Exception as e:
 
         import traceback
-
         traceback.print_exc()
 
-        return str(e), 500
+        flash("Có lỗi xảy ra khi đăng ký!", "danger")
+
+        return redirect(url_for("register"))
 
 # ==========================
 # ĐĂNG KÝ TÀI KHOẢN BÁC SĨ
