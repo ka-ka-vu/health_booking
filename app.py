@@ -1134,7 +1134,7 @@ def delete_clinic(id):
 
 
 # ==========================
-# DANH SÁCH BÁC SĨ
+# DANH SÁCH BÁC SĨ (ADMIN)
 # ==========================
 
 @app.route("/doctors")
@@ -1146,17 +1146,16 @@ def doctors():
     if session.get("role") != "admin":
         return redirect("/dashboard")
 
-    doctors = list(
-        db.doctors.find()
-    )
+    doctors = list(db.doctors.find().sort("name", 1))
 
     return render_template(
         "doctor_list.html",
         doctors=doctors
     )
 
+
 # ==========================
-# DANH SÁCH BÁC SĨ CHO USER
+# DANH SÁCH BÁC SĨ (USER)
 # ==========================
 
 @app.route("/doctor-list")
@@ -1165,9 +1164,10 @@ def doctor_list():
     if "user_id" not in session:
         return redirect("/login")
 
-    doctors = list(
-        db.doctors.find()
-    )
+    doctors = list(db.doctors.find().sort("name", 1))
+
+    for doctor in doctors:
+        print(doctor)
 
     return render_template(
         "doctor_list_user.html",
@@ -1192,29 +1192,32 @@ def add_doctor():
         email = request.form["email"]
         experience = request.form["experience"]
 
-        # Ảnh bác sĩ
-        image = request.files["image"]
+        # ==========================
+        # Upload ảnh bác sĩ
+        # ==========================
 
-        filename = secure_filename(
-            image.filename
-        )
+        image = request.files.get("image")
 
-        os.makedirs(
-            "static/uploads/doctors",
-            exist_ok=True
-        )
+        image_path = ""
 
-        image.save(
-            os.path.join(
-                "static/uploads/doctors",
-                filename
+        if image and image.filename != "":
+
+            filename = secure_filename(image.filename)
+
+            upload_folder = os.path.join(
+                app.root_path,
+                "static",
+                "uploads",
+                "doctors"
             )
-        )
 
-        image_path = (
-            "/static/uploads/doctors/" +
-            filename
-        )
+            os.makedirs(upload_folder, exist_ok=True)
+
+            image.save(
+                os.path.join(upload_folder, filename)
+            )
+
+            image_path = f"/static/uploads/doctors/{filename}"
 
         db.doctors.insert_one({
 
@@ -1228,15 +1231,12 @@ def add_doctor():
 
         })
 
+        flash("Thêm bác sĩ thành công!", "success")
+
         return redirect("/doctors")
 
-    specialties = list(
-        db.specialties.find()
-    )
-
-    clinics = list(
-        db.clinics.find()
-    )
+    specialties = list(db.specialties.find())
+    clinics = list(db.clinics.find())
 
     return render_template(
         "add_doctor.html",
@@ -1257,6 +1257,9 @@ def edit_doctor(id):
         "_id": ObjectId(id)
     })
 
+    if not doctor:
+        return "<h3>Không tìm thấy bác sĩ</h3>"
+
     specialties = list(db.specialties.find())
     clinics = list(db.clinics.find())
 
@@ -1268,29 +1271,30 @@ def edit_doctor(id):
 
         if file and file.filename != "":
 
-            filename = secure_filename(
-                file.filename
+            filename = secure_filename(file.filename)
+
+            upload_folder = os.path.join(
+                app.root_path,
+                "static",
+                "uploads",
+                "doctors"
             )
 
-            os.makedirs(
-                "static/uploads/doctors",
-                exist_ok=True
-            )
+            os.makedirs(upload_folder, exist_ok=True)
 
             save_path = os.path.join(
-                "static/uploads/doctors",
+                upload_folder,
                 filename
             )
 
             file.save(save_path)
 
-            image_path = (
-                "/static/uploads/doctors/" +
-                filename
-            )
+            image_path = f"/static/uploads/doctors/{filename}"
 
         db.doctors.update_one(
-            {"_id": ObjectId(id)},
+            {
+                "_id": ObjectId(id)
+            },
             {
                 "$set": {
                     "name": request.form["name"],
@@ -1303,6 +1307,8 @@ def edit_doctor(id):
                 }
             }
         )
+
+        flash("Cập nhật bác sĩ thành công!", "success")
 
         return redirect("/doctors")
 
