@@ -2270,7 +2270,7 @@ def add_medicine():
             filename = secure_filename(image.filename)
 
             os.makedirs(
-                "static/uploads/medicines",
+                "static/uploads/thuoc",
                 exist_ok=True
             )
 
