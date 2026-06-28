@@ -1,179 +1,134 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Lịch sử đơn hàng</title>
+    <meta charset="UTF-8">
+    <title>Lịch sử đơn hàng</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
 
 <body class="bg-light">
 
-<div class="container py-5">
+<div class="container mt-5">
 
-<div class="card shadow-lg border-0">
+<div class="card shadow p-4 mx-auto" style="max-width:1000px">
 
-<div class="card-header bg-primary text-white">
+    <h2 class="mb-4 text-center">
+        🛒 Lịch sử đơn hàng
+    </h2>
 
-<h2 class="mb-0">
-🛒 Lịch sử đơn hàng
-</h2>
+    {% if orders %}
 
-</div>
+    <table class="table table-bordered table-hover align-middle">
 
-<div class="card-body">
+        <thead class="table-dark">
 
-{% with messages = get_flashed_messages(with_categories=true) %}
+        <tr>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th>Số sản phẩm</th>
+        </tr>
 
-{% if messages %}
+        </thead>
 
-{% for category,message in messages %}
+        <tbody>
 
-<div class="alert alert-{{ category }} alert-dismissible fade show">
+        {% for order in orders %}
 
-{{ message }}
+        <tr>
 
-<button class="btn-close"
-        data-bs-dismiss="alert">
-</button>
+            <td>
 
-</div>
+                {% if order.created_at %}
 
-{% endfor %}
+                    {{ order.created_at.strftime("%d/%m/%Y %H:%M") }}
 
-{% endif %}
+                {% else %}
 
-{% endwith %}
+                    -
 
+                {% endif %}
 
-{% if orders %}
+            </td>
 
-<table class="table table-hover align-middle">
+            <td class="text-danger fw-bold">
 
-<thead class="table-dark">
+                {{ "{:,}".format(order.total) }} VNĐ
 
-<tr>
+            </td>
 
-<th>Ngày đặt</th>
+            <td>
 
-<th>Số sản phẩm</th>
+                {% if order.status == "pending" %}
 
-<th>Tổng tiền</th>
+                    <span class="badge bg-warning text-dark">
+                        Chờ xác nhận
+                    </span>
 
-<th>Trạng thái</th>
+                {% elif order.status == "paid" %}
 
-</tr>
+                    <span class="badge bg-success">
+                        Đã thanh toán
+                    </span>
 
-</thead>
+                {% elif order.status == "cancel" %}
 
-<tbody>
+                    <span class="badge bg-danger">
+                        Đã hủy
+                    </span>
 
-{% for order in orders %}
+                {% else %}
 
-<tr>
+                    <span class="badge bg-secondary">
+                        Không xác định
+                    </span>
 
-<td>
+                {% endif %}
 
-{% if order.created_at %}
+            </td>
 
-{{ order.created_at.strftime("%d/%m/%Y %H:%M") }}
+            <td>
 
-{% else %}
+                {{ order["items"]|length }}
 
--
+            </td>
 
-{% endif %}
+        </tr>
 
-</td>
+        {% endfor %}
 
-<td>
+        </tbody>
 
-{{ order.items|default([])|length }}
+    </table>
 
-</td>
+    {% else %}
 
-<td class="fw-bold text-danger">
+    <div class="alert alert-info text-center">
 
-{{ "{:,}".format(order.total|default(0)) }} VNĐ
+        Bạn chưa có đơn hàng nào.
 
-</td>
+    </div>
 
-<td>
+    {% endif %}
 
-{% if order.status=="pending" %}
+    <hr>
 
-<span class="badge bg-warning text-dark">
+    <div class="text-center">
 
-⏳ Chờ xác nhận
+        <a href="/dashboard"
+           class="btn btn-secondary">
 
-</span>
+            ⬅ Quay lại Dashboard
 
-{% elif order.status=="paid" %}
+        </a>
 
-<span class="badge bg-success">
-
-✅ Đã thanh toán
-
-</span>
-
-{% elif order.status=="cancel" %}
-
-<span class="badge bg-danger">
-
-❌ Đã hủy
-
-</span>
-
-{% else %}
-
-<span class="badge bg-secondary">
-
-Không xác định
-
-</span>
-
-{% endif %}
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-{% else %}
-
-<div class="alert alert-info text-center">
-
-<h5>📭 Bạn chưa có đơn hàng nào</h5>
-
-</div>
-
-{% endif %}
-
-<div class="mt-4">
-
-<a href="/dashboard"
-class="btn btn-secondary">
-
-⬅ Quay lại Dashboard
-
-</a>
+    </div>
 
 </div>
 
 </div>
-
-</div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
