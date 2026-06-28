@@ -457,8 +457,7 @@ def dashboard():
 # USER DASHBOARD
 # ==========================
 
-@app.route("/user-dashboard
-")
+@app.route("/user-dashboard")
 def user_dashboard():
 
     # Chưa đăng nhập
