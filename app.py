@@ -1,5 +1,8 @@
-from ai.chatbot import answer
+import eventlet
 from flask import Flask, render_template, request, redirect, session, flash
+eventlet.monkey_patch()
+from flask import request, jsonify
+from medical_data import MEDICAL_DATA
 from flask import Flask, render_template, request, redirect, session
 from database import db
 from bson.objectid import ObjectId
@@ -23,7 +26,7 @@ app.secret_key = SECRET_KEY
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode="threading",
+    async_mode="eventlet",
     manage_session=False
 )
 
@@ -1496,32 +1499,29 @@ def doctor_appointments():
         appointments=appointments
     )
   
-# ==========================
-# Tư vấn chuyên khoa thông minh
-# ==========================
+# ===========================================
+# TƯ VẤN CHUYÊN KHOA
+# ===========================================
 
 @app.route("/symptom-checker", methods=["GET", "POST"])
 def symptom_checker():
-
-    if "chat_history" not in session:
-        session["chat_history"] = []
-
-    result = None
 
     if request.method == "POST":
 
         symptom = request.form["symptom"]
 
-        result = answer(symptom)
+        # xử lý ở đây
 
-        session["chat_history"].append(result)
-
-        session.modified = True
+        return render_template(
+            "symptom_checker.html",
+            chat_history=...,
+            top_specialties=...,
+            recommendation=...
+        )
 
     return render_template(
         "symptom_checker.html",
-        result=result,
-        chat_history=session["chat_history"]
+        chat_history=[]
     )
 
 # ==========================
@@ -2499,7 +2499,5 @@ scheduler.add_job(
 # ==========================
 
 if __name__ == "__main__":
-    socketio.run(
-        app,
-        debug=False
-    )
+    scheduler.start()
+    socketio.run(app)
