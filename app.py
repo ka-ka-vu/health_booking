@@ -1,25 +1,26 @@
 import eventlet
 eventlet.monkey_patch()
-from flask import Flask, render_template, request, redirect, session, flash, url_for
-from flask import request, jsonify
-from flask import Flask, render_template, request, redirect, session
+from flask import (Flask,render_template,request,redirect,session,flash,url_for,jsonify)
 from database import db
 from bson.objectid import ObjectId
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-from pymongo import MongoClient
 from flask_socketio import SocketIO
 from werkzeug.utils import secure_filename
 from apscheduler.schedulers.background import BackgroundScheduler
-from config import MONGO_URI, EMAIL_ADDRESS, EMAIL_PASSWORD
 from flask_socketio import join_room, emit
 import smtplib
 import os
 import bcrypt
 
-app = Flask(__name__)
+from config import (
+    MONGO_URI,
+    EMAIL_ADDRESS,
+    EMAIL_PASSWORD,
+    SECRET_KEY
+)
 
-from config import SECRET_KEY
+app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
 socketio = SocketIO(
@@ -33,13 +34,6 @@ socketio = SocketIO(
 # SOCKET CHAT
 # ==========================
 
-@socketio.on("join_room")
-def join_chat(data):
-    room = data["room"]
-    join_room(room)
-    print("Join room:", room)
-
-
 @socketio.on("send_message")
 def send_chat(data):
 
@@ -51,28 +45,45 @@ def send_chat(data):
 
         doctor_id, user_id = room.split("_", 1)
 
-        db.messages.insert_one({
-            "doctor_id": doctor_id,
-            "user_id": user_id,
-            "sender_name": data["sender_name"],
-            "sender_role": data["sender_role"],
-            "message": data["message"],
-            "created_at": datetime.now()
-        })
+        # Lưu tin nhắn vào MongoDB
+        try:
 
+            db.messages.insert_one({
+
+                "doctor_id": doctor_id,
+                "user_id": user_id,
+                "sender_name": data["sender_name"],
+                "sender_role": data["sender_role"],
+                "message": data["message"],
+                "created_at": datetime.now()
+
+            })
+
+            print("Đã lưu MongoDB")
+
+        except Exception as e:
+
+            print("Lỗi MongoDB:", e)
+
+        # Gửi realtime tới các client trong room
         emit(
+
             "receive_message",
+
             {
+
                 "sender_name": data["sender_name"],
                 "sender_role": data["sender_role"],
                 "message": data["message"]
+
             },
+
             room=room
+
         )
 
-        print("Đã lưu MongoDB")
-
     except Exception as e:
+
         print("Lỗi Socket:", e)
 
 # ==========================
@@ -111,15 +122,25 @@ def load_messages(doctor_id):
 
 def send_email(to_email, subject, content):
 
+    server = None
+
     try:
 
-        msg = MIMEText(content, "plain", "utf-8")
+        msg = MIMEText(
+            content,
+            "plain",
+            "utf-8"
+        )
 
         msg["Subject"] = subject
         msg["From"] = EMAIL_ADDRESS
         msg["To"] = to_email
 
-        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server = smtplib.SMTP(
+            "smtp.gmail.com",
+            587,
+            timeout=30
+        )
 
         server.ehlo()
 
@@ -134,21 +155,40 @@ def send_email(to_email, subject, content):
 
         server.sendmail(
             EMAIL_ADDRESS,
-            to_email,
+            [to_email],
             msg.as_string()
         )
 
-        server.quit()
-
-        print("✅ Gửi email thành công")
+        print(f"✅ Email đã gửi tới: {to_email}")
 
         return True
 
-    except Exception as e:
+    except smtplib.SMTPAuthenticationError:
 
-        print("❌ Lỗi gửi email:", str(e))
+        print("❌ Sai EMAIL_ADDRESS hoặc EMAIL_PASSWORD")
 
         return False
+
+    except smtplib.SMTPConnectError:
+
+        print("❌ Không kết nối được Gmail SMTP")
+
+        return False
+
+    except Exception as e:
+
+        print(f"❌ Lỗi gửi email: {e}")
+
+        return False
+
+    finally:
+
+        if server:
+
+            try:
+                server.quit()
+            except:
+                pass
 
 # ==========================
 # KIỂM TRA ADMIN
@@ -1289,20 +1329,14 @@ def delete_doctor(id):
 @app.route("/appointments/add", methods=["GET", "POST"])
 def add_appointment():
 
-    # Kiểm tra đăng nhập
     if "user_id" not in session:
         return redirect("/login")
 
-    # Khi người dùng bấm đặt lịch
     if request.method == "POST":
 
-        # Lấy dữ liệu từ form
         patient = request.form["patient"]
-
         doctor = request.form["doctor"]
-
         date = request.form["date"]
-
         time = request.form["time"]
 
         # ==========================
@@ -1316,16 +1350,17 @@ def add_appointment():
             "%Y-%m-%d"
         ).date()
 
-        # Không cho đặt lịch quá khứ
         if selected_date < today:
 
-            return """
-            <h3>Không thể đặt lịch trước ngày hiện tại!</h3>
-            <a href='/appointments/add'>Quay lại</a>
-            """
+            flash(
+                "Không thể đặt lịch trước ngày hiện tại!",
+                "danger"
+            )
+
+            return redirect("/appointments/add")
 
         # ==========================
-        # LẤY THÔNG TIN BÁC SĨ
+        # THÔNG TIN BÁC SĨ
         # ==========================
 
         doctor_info = db.doctors.find_one({
@@ -1333,17 +1368,43 @@ def add_appointment():
             "name": doctor
 
         })
-        
+
+        if not doctor_info:
+
+            flash(
+                "Không tìm thấy bác sĩ.",
+                "danger"
+            )
+
+            return redirect("/appointments/add")
+
         # ==========================
-        # KIỂM TRA TRÙNG LỊCH KHÁM
+        # THÔNG TIN NGƯỜI DÙNG
+        # ==========================
+
+        user = db.users.find_one({
+
+            "_id": ObjectId(session["user_id"])
+
+        })
+
+        if not user:
+
+            flash(
+                "Không tìm thấy tài khoản.",
+                "danger"
+            )
+
+            return redirect("/login")
+
+        # ==========================
+        # KIỂM TRA TRÙNG LỊCH
         # ==========================
 
         existed = db.appointments.find_one({
 
             "doctor": doctor,
-
             "date": date,
-
             "time": time
 
         })
@@ -1361,45 +1422,94 @@ def add_appointment():
         # LƯU LỊCH KHÁM
         # ==========================
 
-        db.appointments.insert_one({
+        appointment = {
 
-            # Tên bệnh nhân
             "patient": patient,
 
-            # Tên bác sĩ
             "doctor": doctor,
 
-            # Email bác sĩ
-            "doctor_email": (
-                doctor_info["email"]
-                if doctor_info and "email" in doctor_info
-                else ""
-            ),
+            "doctor_id": str(doctor_info["_id"]),
 
-            # Ngày khám
-            "date": date,
+            "doctor_email": doctor_info.get("email", ""),
 
-            # Giờ khám
-            "time": time,
-
-            # Người đặt lịch
             "user_id": str(session["user_id"]),
 
-            # Đánh dấu đã gửi email nhắc chưa
+            "user_email": user["email"],
+
+            "date": date,
+
+            "time": time,
+
             "doctor_reminder_sent": False,
 
             "user_reminder_sent": False,
 
-            # Thời gian tạo lịch
             "created_at": datetime.now()
 
-        })
+        }
 
-        # Quay lại danh sách lịch khám
+        db.appointments.insert_one(appointment)
+
+        # ==========================
+        # GỬI EMAIL XÁC NHẬN
+        # ==========================
+
+        subject = "Xác nhận đặt lịch khám"
+
+        content = f"""
+Xin chào {user['fullname']},
+
+Bạn đã đặt lịch khám thành công.
+
+==============================
+
+Bệnh nhân:
+{patient}
+
+Bác sĩ:
+{doctor}
+
+Ngày khám:
+{date}
+
+Giờ khám:
+{time}
+
+==============================
+
+Vui lòng đến trước 15 phút.
+
+Health Booking System
+"""
+
+        email_ok = send_email(
+
+            user["email"],
+
+            subject,
+
+            content
+
+        )
+
+        if email_ok:
+
+            flash(
+                "Đặt lịch thành công! Email xác nhận đã được gửi.",
+                "success"
+            )
+
+        else:
+
+            flash(
+                "Đặt lịch thành công nhưng không gửi được email.",
+                "warning"
+            )
+
         return redirect("/appointments")
 
     # ==========================
-    # HIỂN THỊ FORM ĐẶT LỊCH
+    # HIỂN THỊ FORM
     # ==========================
 
     doctors = list(
