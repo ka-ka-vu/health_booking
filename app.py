@@ -181,49 +181,50 @@ def register_choice():
 @app.route("/user-register", methods=["GET", "POST"])
 def register():
 
-    if request.method == "POST":
+    try:
 
-        fullname = request.form["fullname"]
-        email = request.form["email"]
-        password = request.form["password"]
+        if request.method == "POST":
 
-        existing_user = db.users.find_one({
-            "email": email
-        })
+            fullname = request.form.get("fullname")
+            email = request.form.get("email")
+            password = request.form.get("password")
 
-        if existing_user:
-            return """
-            <script>
-                alert('Email đã tồn tại!');
-                window.location.href='/user-register';
-            </script>
-            """
+            print("fullname =", fullname)
+            print("email =", email)
+            print("password =", password)
 
-        hashed_password = bcrypt.hashpw(
-            password.encode("utf-8"),
-            bcrypt.gensalt()
-        )
+            existing_user = db.users.find_one({"email": email})
 
-        result = db.users.insert_one({
-            "fullname": fullname,
-            "email": email,
-            "password": hashed_password,
-            "role": "user"
-        })
+            if existing_user:
+                return "Email đã tồn tại"
 
-        session["user_id"] = str(result.inserted_id)
-        session["fullname"] = fullname
-        session["role"] = "user"
+            hashed_password = bcrypt.hashpw(
+                password.encode(),
+                bcrypt.gensalt()
+            )
 
-        return """
-        <script>
-            alert('Đăng ký thành công!');
-            window.location.href='/dashboard';
-        </script>
-        """
+            result = db.users.insert_one({
+                "fullname": fullname,
+                "email": email,
+                "password": hashed_password,
+                "role": "user"
+            })
 
-    return render_template("register.html")
+            session["user_id"] = str(result.inserted_id)
+            session["fullname"] = fullname
+            session["role"] = "user"
 
+            return "Đăng ký thành công"
+
+        return render_template("register.html")
+
+    except Exception as e:
+
+        import traceback
+
+        traceback.print_exc()
+
+        return str(e), 500
 
 # ==========================
 # ĐĂNG KÝ TÀI KHOẢN BÁC SĨ
