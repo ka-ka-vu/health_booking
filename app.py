@@ -2439,6 +2439,118 @@ def medicines():
         "medicine_list.html",
         medicines=medicines
     )
+    
+# ==========================
+# DANH SÁCH THUỐC ADMIN
+# ==========================
+@app.route("/admin/medicines")
+def admin_medicines():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if session.get("role") != "admin":
+        return redirect("/dashboard")
+
+    medicines = list(
+        db.medicines.find().sort("created_at",-1)
+    )
+
+    return render_template(
+        "admin_medicines.html",
+        medicines=medicines
+    )
+    
+# ==========================
+# THÊM THUỐC ADMIN
+# ==========================
+@app.route("/admin/medicines/add",methods=["GET","POST"])
+def admin_add_medicine():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if session.get("role")!="admin":
+        return redirect("/dashboard")
+
+    if request.method=="POST":
+
+        db.medicines.insert_one({
+
+            "name":request.form["name"],
+            "price":int(request.form["price"]),
+            "quantity":int(request.form["quantity"]),
+            "description":request.form["description"],
+            "doctor_name":request.form["doctor_name"],
+            "image":request.form["image"],
+            "created_at":datetime.now()
+
+        })
+
+        return redirect("/admin/medicines")
+
+    return render_template("admin_add_medicine.html")
+
+# ==========================
+# SỬA THUỐC ADMIN
+# ==========================
+@app.route("/admin/medicines/edit/<id>",methods=["GET","POST"])
+def admin_edit_medicine(id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    medicine=db.medicines.find_one({
+        "_id":ObjectId(id)
+    })
+
+    if request.method=="POST":
+
+        db.medicines.update_one(
+
+            {
+                "_id":ObjectId(id)
+            },
+
+            {
+                "$set":{
+
+                    "name":request.form["name"],
+                    "price":int(request.form["price"]),
+                    "quantity":int(request.form["quantity"]),
+                    "description":request.form["description"],
+                    "doctor_name":request.form["doctor_name"],
+                    "image":request.form["image"]
+
+                }
+
+            }
+
+        )
+
+        return redirect("/admin/medicines")
+
+    return render_template(
+        "admin_edit_medicine.html",
+        medicine=medicine
+    )
+    
+# ==========================
+# XÓA THUỐC ADMIN
+# ==========================
+@app.route("/admin/medicines/delete/<id>")
+def admin_delete_medicine(id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    db.medicines.delete_one({
+
+        "_id":ObjectId(id)
+
+    })
+
+    return redirect("/admin/medicines")
 
 # ==========================
 # TƯ VẤN THUỐC

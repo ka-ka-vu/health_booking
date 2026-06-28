@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+<meta charset="UTF-8">
+
+<title>Thêm thuốc</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="card shadow p-4 mx-auto"
+style="max-width:700px">
+
+<h2 class="mb-4">
+
+➕ Thêm thuốc
+
+</h2>
+
+<form method="POST">
+
+<div class="mb-3">
+
+<label>Tên thuốc</label>
+
+<input
+name="name"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Giá</label>
+
+<input
+type="number"
+name="price"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Số lượng</label>
+
+<input
+type="number"
+name="quantity"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Mô tả</label>
+
+<textarea
+name="description"
+class="form-control"
+rows="3"></textarea>
+
+</div>
+
+<div class="mb-3">
+
+<label>Bác sĩ</label>
+
+<input
+name="doctor_name"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label>Link ảnh</label>
+
+<input
+name="image"
+class="form-control">
+
+</div>
+
+<button
+class="btn btn-success">
+
+Lưu thuốc
+
+</button>
+
+<a href="/admin/medicines"
+class="btn btn-secondary">
+
+Quay lại
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>
