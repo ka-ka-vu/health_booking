@@ -2441,30 +2441,6 @@ def medicines():
     )
 
 # ==========================
-# MUA THUỐC
-# ==========================
-
-@app.route("/buy-medicine/<medicine_id>")
-def buy_medicine(medicine_id):
-
-    if "user_id" not in session:
-        return redirect("/login")
-
-    medicine = db.medicines.find_one({
-        "_id": ObjectId(medicine_id)
-    })
-
-    if not medicine:
-        return "<h3>Không tìm thấy thuốc</h3>"
-
-    return f"""
-    <script>
-        alert('Chức năng thanh toán sẽ được xây dựng ở bước tiếp theo.');
-        window.location='/medicines';
-    </script>
-    """
-    
-# ==========================
 # TƯ VẤN THUỐC
 # ==========================
 
@@ -2490,6 +2466,30 @@ def medicine_consult(medicine_id):
 
     return redirect("/chat-doctor")
 
+# ==========================
+# MUA THUỐC
+# ==========================
+
+@app.route("/buy-medicine/<medicine_id>")
+def buy_medicine(medicine_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    medicine = db.medicines.find_one({
+        "_id": ObjectId(medicine_id)
+    })
+
+    if not medicine:
+        return "<h3>Không tìm thấy thuốc</h3>"
+
+    flash(
+        "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
+        "info"
+    )
+
+    return redirect("/medicines")
+    
 # ==========================
 # THÊM VÀO GIỎ HÀNG
 # ==========================
@@ -2763,12 +2763,13 @@ def confirm_payment():
     # ==========================
     # THÔNG BÁO THÀNH CÔNG
     # ==========================
-    return """
-    <script>
-        alert('Đơn hàng đã được tạo và đang chờ xác nhận thanh toán!');
-        window.location='/dashboard';
-    </script>
-    """
+
+    flash(
+        "🎉 Đặt hàng thành công! Đơn hàng đang chờ xác nhận thanh toán.",
+        "success"
+    )
+
+    return redirect("/order-history")
 
 # ==========================
 # LỊCH SỬ ĐƠN HÀNG

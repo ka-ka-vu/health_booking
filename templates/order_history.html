@@ -1,109 +1,179 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Lịch sử đơn hàng</title>
+<meta charset="UTF-8">
+<title>Lịch sử đơn hàng</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
 </head>
 
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container py-5">
 
-<div class="card shadow p-4 mx-auto" style="max-width:1000px">
+<div class="card shadow-lg border-0">
 
-    <h2 class="mb-4 text-center">
-        Lịch sử đơn hàng
-    </h2>
+<div class="card-header bg-primary text-white">
 
-    {% if orders %}
+<h2 class="mb-0">
+🛒 Lịch sử đơn hàng
+</h2>
 
-    <table class="table table-bordered table-hover">
+</div>
 
-        <thead class="table-dark">
+<div class="card-body">
 
-            <tr>
-                <th>Ngày đặt</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-                <th>Số sản phẩm</th>
-            </tr>
+{% with messages = get_flashed_messages(with_categories=true) %}
 
-        </thead>
+{% if messages %}
 
-        <tbody>
+{% for category,message in messages %}
 
-        {% for order in orders %}
+<div class="alert alert-{{ category }} alert-dismissible fade show">
 
-        <tr>
+{{ message }}
 
-            <td>
-                {{ order.created_at.strftime("%d/%m/%Y %H:%M") }}
-            </td>
+<button class="btn-close"
+        data-bs-dismiss="alert">
+</button>
 
-            <td>
-                {{ "{:,}".format(order.total) }} VNĐ
-            </td>
+</div>
 
-            <td>
+{% endfor %}
 
-                {% if order.status == "pending" %}
+{% endif %}
 
-                <span class="badge bg-warning text-dark">
-                    Chờ xác nhận
-                </span>
+{% endwith %}
 
-                {% elif order.status == "paid" %}
 
-                <span class="badge bg-success">
-                    Đã thanh toán
-                </span>
+{% if orders %}
 
-                {% elif order.status == "cancel" %}
+<table class="table table-hover align-middle">
 
-                <span class="badge bg-danger">
-                    Đã hủy
-                </span>
+<thead class="table-dark">
 
-                {% endif %}
+<tr>
 
-            </td>
+<th>Ngày đặt</th>
 
-            <td>
-                {{ order.items|length }}
-            </td>
+<th>Số sản phẩm</th>
 
-        </tr>
+<th>Tổng tiền</th>
 
-        {% endfor %}
+<th>Trạng thái</th>
 
-        </tbody>
+</tr>
 
-    </table>
+</thead>
 
-    {% else %}
+<tbody>
 
-    <div class="alert alert-info">
-        Bạn chưa có đơn hàng nào
-    </div>
+{% for order in orders %}
 
-    {% endif %}
+<tr>
 
-    <hr>
+<td>
 
-    <div class="text-center">
+{% if order.created_at %}
 
-        <a href="/dashboard"
-           class="btn btn-secondary">
-            Quay lại Dashboard
-        </a>
+{{ order.created_at.strftime("%d/%m/%Y %H:%M") }}
 
-    </div>
+{% else %}
+
+-
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ order.items|default([])|length }}
+
+</td>
+
+<td class="fw-bold text-danger">
+
+{{ "{:,}".format(order.total|default(0)) }} VNĐ
+
+</td>
+
+<td>
+
+{% if order.status=="pending" %}
+
+<span class="badge bg-warning text-dark">
+
+⏳ Chờ xác nhận
+
+</span>
+
+{% elif order.status=="paid" %}
+
+<span class="badge bg-success">
+
+✅ Đã thanh toán
+
+</span>
+
+{% elif order.status=="cancel" %}
+
+<span class="badge bg-danger">
+
+❌ Đã hủy
+
+</span>
+
+{% else %}
+
+<span class="badge bg-secondary">
+
+Không xác định
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<div class="alert alert-info text-center">
+
+<h5>📭 Bạn chưa có đơn hàng nào</h5>
+
+</div>
+
+{% endif %}
+
+<div class="mt-4">
+
+<a href="/dashboard"
+class="btn btn-secondary">
+
+⬅ Quay lại Dashboard
+
+</a>
 
 </div>
 
 </div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
