@@ -457,7 +457,8 @@ def dashboard():
 # USER DASHBOARD
 # ==========================
 
-@app.route("/dashboard")
+@app.route("/user-dashboard
+")
 def user_dashboard():
 
     # Chưa đăng nhập
@@ -2674,53 +2675,3 @@ scheduler.add_job(
 if __name__ == "__main__":
     scheduler.start()
     socketio.run(app)
-    
-# ==========================
-# TEST GỬI EMAIL
-# ==========================
-
-@app.route("/test-reminder")
-def test_reminder():
-
-    user = db.users.find_one({
-        "email": "kka719201@gmail.com"
-    })
-
-    if not user:
-        return "Không tìm thấy user"
-
-    subject = "🔔 Nhắc lịch khám"
-
-    content = f"""
-Xin chào {user['fullname']},
-
-Đây là email nhắc lịch khám.
-
-============================
-
-Bệnh nhân:
-{user['fullname']}
-
-Bác sĩ:
-Nguyễn Văn A
-
-Ngày khám:
-30/06/2026
-
-Giờ khám:
-08:30
-
-============================
-
-Vui lòng đến trước 15 phút.
-
-Health Booking
-"""
-
-    send_email(
-        user["email"],
-        subject,
-        content
-    )
-
-    return "Đã gửi email nhắc lịch!"
