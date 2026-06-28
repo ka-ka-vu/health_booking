@@ -2,7 +2,6 @@ import eventlet
 eventlet.monkey_patch()
 from flask import Flask, render_template, request, redirect, session, flash
 from flask import request, jsonify
-from medical_data import MEDICAL_DATA
 from flask import Flask, render_template, request, redirect, session
 from database import db
 from bson.objectid import ObjectId
