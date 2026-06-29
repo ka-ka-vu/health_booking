@@ -3176,7 +3176,7 @@ def approve_order(order_id):
     return redirect("/admin-orders")
 
 # ==========================
-# DOANH THU BÁC SĨ (admin)
+# DOANH THU BÁC SĨ (ADMIN)
 # ==========================
 
 @app.route("/admin-doctor-income")
@@ -3208,13 +3208,30 @@ def admin_doctor_income():
                 }
 
             }
+        },
+
+        {
+            "$sort": {
+                "total_income": -1
+            }
         }
 
     ]))
 
     return render_template(
+
         "doctor_income.html",
-        incomes=incomes
+
+        doctor=None,
+
+        incomes=incomes,
+
+        total=sum(item["total_income"] for item in incomes),
+
+        paid=0,
+
+        unpaid=0
+
     )
 
 # ==========================

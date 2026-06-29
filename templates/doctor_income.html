@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Doanh thu của tôi
+Doanh thu
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,17 @@ Doanh thu của tôi
 <div class="container py-5">
 
     <h2 class="mb-4">
-        💰 Doanh thu của {{ doctor.name }}
+
+        {% if doctor %}
+
+            💰 Doanh thu của {{ doctor.name }}
+
+        {% else %}
+
+            💰 Thống kê doanh thu bác sĩ
+
+        {% endif %}
+
     </h2>
 
     <div class="row mb-4">
@@ -90,15 +100,19 @@ Doanh thu của tôi
 
                     <tr>
 
-                        <th>STT</th>
-
-                        <th>Khách hàng</th>
-
-                        <th>Số tiền</th>
-
-                        <th>Trạng thái</th>
-
-                        <th>Ngày tạo</th>
+                        {% if doctor %}
+                            <th>STT</th>
+                            <th>Khách hàng</th>
+                            <th>Số tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                        {% else %}
+                            <th>STT</th>
+                            <th>Bác sĩ</th>
+                            <th>Số đơn</th>
+                            <th>Tổng doanh thu</th>
+                            <th>Chi tiết</th>
+                        {% endif %}
 
                     </tr>
 
@@ -112,37 +126,62 @@ Doanh thu của tôi
 
                         <td>{{ loop.index }}</td>
 
-                        <td>{{ item.customer_name }}</td>
+                        {% if doctor %}
 
-                        <td class="text-danger fw-bold">
+                            <td>{{ item.customer_name }}</td>
 
-                            {{ "{:,}".format(item.amount) }} VNĐ
+                            <td class="text-danger fw-bold">
+                                {{ "{:,}".format(item.amount) }} VNĐ
+                            </td>
 
-                        </td>
+                            <td>
 
-                        <td>
+                                {% if item.status=="paid" %}
 
-                            {% if item.status == "paid" %}
+                                    <span class="badge bg-success">
+                                        Đã thanh toán
+                                    </span>
 
-                                <span class="badge bg-success">
-                                    Đã thanh toán
-                                </span>
+                                {% else %}
 
-                            {% else %}
+                                    <span class="badge bg-warning text-dark">
+                                        Chưa thanh toán
+                                    </span>
 
-                                <span class="badge bg-warning text-dark">
-                                    Chưa thanh toán
-                                </span>
+                                {% endif %}
 
-                            {% endif %}
+                            </td>
 
-                        </td>
+                            <td>
 
-                        <td>
+                                {{ item.created_at.strftime("%d/%m/%Y %H:%M") }}
 
-                            {{ item.created_at.strftime("%d/%m/%Y %H:%M") }}
+                            </td>
 
-                        </td>
+                        {% else %}
+
+                            <td>{{ item.doctor_name }}</td>
+
+                            <td>{{ item.total_orders }}</td>
+
+                            <td class="text-danger fw-bold">
+
+                                {{ "{:,}".format(item.total_income) }} VNĐ
+
+                            </td>
+
+                            <td>
+
+                                <a href="/doctor-income/{{ item._id }}"
+                                   class="btn btn-primary btn-sm">
+
+                                    Xem chi tiết
+
+                                </a>
+
+                            </td>
+
+                        {% endif %}
 
                     </tr>
 
@@ -168,12 +207,25 @@ Doanh thu của tôi
 
     <div class="text-center mt-4">
 
-        <a href="/doctor-dashboard"
-           class="btn btn-secondary btn-lg">
+        {% if doctor %}
 
-            ⬅ Quay lại Dashboard
+            <a href="/doctor-dashboard"
+               class="btn btn-secondary btn-lg">
 
-        </a>
+                ⬅ Quay lại Dashboard
+
+            </a>
+
+        {% else %}
+
+            <a href="/admin-dashboard"
+               class="btn btn-secondary btn-lg">
+
+                ⬅ Quay lại Dashboard
+
+            </a>
+
+        {% endif %}
 
     </div>
 
