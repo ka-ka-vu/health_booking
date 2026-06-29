@@ -1,19 +1,45 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+
 <meta charset="UTF-8">
+
 <title>Danh sách thuốc</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
       rel="stylesheet">
 
+<style>
+
+body{
+    background:#f5f7fb;
+}
+
+.card{
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.price{
+    font-size:22px;
+    font-weight:bold;
+    color:#dc3545;
+}
+
+.stock{
+    font-weight:bold;
+}
+
+</style>
+
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-
-<div class="card shadow p-4">
+<div class="container py-5">
 
 <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -25,12 +51,16 @@
 
 <a href="/cart"
 class="btn btn-warning">
+
 🛒 Giỏ hàng
+
 </a>
 
 <a href="/dashboard"
 class="btn btn-secondary">
-Quay lại
+
+⬅ Quay lại
+
 </a>
 
 </div>
@@ -45,49 +75,45 @@ Quay lại
 
 <div class="col-lg-4 col-md-6 mb-4">
 
-<div class="card shadow h-100 border-0">
+<div class="card shadow border-0 h-100">
 
 {% if medicine.image %}
 
-<img
-src="{{ medicine.image }}"
-class="card-img-top"
-style="height:250px;object-fit:cover;">
+<img src="{{ medicine.image }}"
+     class="card-img-top"
+     style="height:260px;object-fit:cover;">
 
 {% else %}
 
-<img
-src="/static/uploads/thuoc/default.jpg"
-class="card-img-top"
-style="height:250px;object-fit:cover;">
+<img src="/static/uploads/thuoc/default.jpg"
+     class="card-img-top"
+     style="height:260px;object-fit:cover;">
 
 {% endif %}
 
 <div class="card-body">
 
 <h5 class="fw-bold">
+
 {{ medicine.name }}
+
 </h5>
 
 <hr>
 
-<p>
-
-<b>💰 Giá:</b>
-
-<span class="text-danger fw-bold">
+<div class="price">
 
 {{ "{:,}".format(medicine.price) }} VNĐ
 
-</span>
+</div>
 
-</p>
+<br>
 
 <p>
 
-<b>📦 Số lượng:</b>
+<b>👨‍⚕️ Bác sĩ:</b>
 
-{{ medicine.quantity }}
+{{ medicine.doctor_name }}
 
 </p>
 
@@ -99,11 +125,35 @@ style="height:250px;object-fit:cover;">
 
 </p>
 
-<p>
+<p class="stock">
 
-<b>👨‍⚕️ Bác sĩ:</b>
+📦 Còn lại:
 
-{{ medicine.doctor_name }}
+{% if medicine.quantity > 5 %}
+
+<span class="badge bg-success">
+
+{{ medicine.quantity }} hộp
+
+</span>
+
+{% elif medicine.quantity > 0 %}
+
+<span class="badge bg-warning text-dark">
+
+{{ medicine.quantity }} hộp (Sắp hết)
+
+</span>
+
+{% else %}
+
+<span class="badge bg-danger">
+
+Hết hàng
+
+</span>
+
+{% endif %}
 
 </p>
 
@@ -113,19 +163,47 @@ style="height:250px;object-fit:cover;">
 
 <div class="d-grid gap-2">
 
+{% if medicine.quantity > 0 %}
+
 <a href="/buy-medicine/{{ medicine._id }}"
 class="btn btn-success">
+
 🛍 Mua ngay
+
 </a>
 
 <a href="/add-cart/{{ medicine._id }}"
 class="btn btn-warning">
+
 🛒 Thêm vào giỏ hàng
+
 </a>
+
+{% else %}
+
+<button
+class="btn btn-secondary"
+disabled>
+
+❌ Hết hàng
+
+</button>
+
+<button
+class="btn btn-outline-secondary"
+disabled>
+
+🛒 Không thể mua
+
+</button>
+
+{% endif %}
 
 <a href="/medicine-consult/{{ medicine._id }}"
 class="btn btn-info text-white">
+
 💬 Tư vấn bác sĩ
+
 </a>
 
 </div>
@@ -152,7 +230,6 @@ Chưa có thuốc nào được đăng.
 
 </div>
 
-</div>
-
 </body>
+
 </html>

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}
+Doanh thu bác sĩ
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<div class="card shadow">
+
+<div class="card-header bg-success text-white">
+
+<h2 class="mb-0">
+💰 Thống kê doanh thu bác sĩ
+</h2>
+
+</div>
+
+<div class="card-body">
+
+{% if incomes %}
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>STT</th>
+
+<th>Bác sĩ</th>
+
+<th>Số đơn</th>
+
+<th>Tổng doanh thu</th>
+
+<th>Chi tiết</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for item in incomes %}
+
+<tr>
+
+<td>
+
+{{ loop.index }}
+
+</td>
+
+<td>
+
+{{ item.doctor_name }}
+
+</td>
+
+<td>
+
+{{ item.total_orders }}
+
+</td>
+
+<td class="text-danger fw-bold">
+
+{{ "{:,}".format(item.total_income) }}
+
+VNĐ
+
+</td>
+
+<td>
+
+<a href="/doctor-income/{{ item._id }}"
+class="btn btn-primary btn-sm">
+
+Xem
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<div class="alert alert-warning">
+
+Chưa có dữ liệu doanh thu.
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

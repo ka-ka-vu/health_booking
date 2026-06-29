@@ -656,12 +656,65 @@ def doctor_dashboard():
         "doctor_id": str(doctor["_id"])
     })
 
+    # ==========================
+    # THỐNG KÊ DOANH THU
+    # ==========================
+
+    incomes = list(db.doctor_income.find({
+        "doctor_id": str(doctor["_id"])
+    }))
+
+    total_income = 0
+    paid_income = 0
+    unpaid_income = 0
+
+    for item in incomes:
+
+        total_income += item["amount"]
+
+        if item["status"] == "paid":
+            paid_income += item["amount"]
+        else:
+            unpaid_income += item["amount"]
+
+    # ==========================
+    # THUỐC ĐÃ BÁN
+    # ==========================
+
+    medicine_sold = 0
+
+    orders = db.orders.find({
+        "status": "paid"
+    })
+
+    for order in orders:
+
+        for item in order["items"]:
+
+            if item.get("doctor_id") == str(doctor["_id"]):
+
+                medicine_sold += item["quantity"]
+
     return render_template(
+
         "doctor_dashboard.html",
+
         doctor=doctor,
+
         appointment_count=appointment_count,
+
         message_count=message_count,
-        medicine_count=medicine_count
+
+        medicine_count=medicine_count,
+
+        total_income=total_income,
+
+        paid_income=paid_income,
+
+        unpaid_income=unpaid_income,
+
+        medicine_sold=medicine_sold
+
     )
 
 # ==========================
@@ -2634,26 +2687,69 @@ def add_cart(medicine_id):
     })
 
     if not medicine:
+        flash("Không tìm thấy thuốc.", "danger")
         return redirect("/medicines")
 
+    # ==========================
+    # KIỂM TRA HẾT HÀNG
+    # ==========================
+    if medicine["quantity"] <= 0:
+
+        flash(
+            "❌ Thuốc này đã hết hàng.",
+            "danger"
+        )
+
+        return redirect("/medicines")
+
+    # ==========================
+    # KIỂM TRA ĐÃ CÓ TRONG GIỎ
+    # ==========================
     cart_item = db.cart.find_one({
+
         "user_id": str(session["user_id"]),
+
         "medicine_id": medicine_id
+
     })
 
+    # ==========================
+    # ĐÃ CÓ TRONG GIỎ
+    # ==========================
     if cart_item:
 
+        # Không cho vượt tồn kho
+        if cart_item["quantity"] >= medicine["quantity"]:
+
+            flash(
+                "❌ Bạn đã thêm tối đa số lượng còn lại.",
+                "warning"
+            )
+
+            return redirect("/medicines")
+
         db.cart.update_one(
+
             {
                 "_id": cart_item["_id"]
             },
+
             {
                 "$inc": {
                     "quantity": 1
                 }
             }
+
         )
 
+        flash(
+            "🛒 Đã cập nhật số lượng trong giỏ hàng.",
+            "success"
+        )
+
+    # ==========================
+    # THÊM MỚI
+    # ==========================
     else:
 
         db.cart.insert_one({
@@ -2664,12 +2760,22 @@ def add_cart(medicine_id):
 
             "medicine_name": medicine["name"],
 
+            "doctor_id": medicine["doctor_id"],
+
+            "doctor_name": medicine["doctor_name"],
+
             "price": medicine["price"],
 
             "image": medicine.get("image", ""),
 
             "quantity": 1
+
         })
+
+        flash(
+            "✅ Đã thêm thuốc vào giỏ hàng.",
+            "success"
+        )
 
     return redirect("/medicines")
 
@@ -2965,25 +3071,171 @@ def approve_order(order_id):
     if session.get("role") != "admin":
         return redirect("/dashboard")
 
+    # ==========================
+    # LẤY ĐƠN HÀNG
+    # ==========================
+
+    order = db.orders.find_one({
+        "_id": ObjectId(order_id)
+    })
+
+    if not order:
+        return redirect("/admin-orders")
+
+    # ==========================
+    # NẾU ĐÃ XÁC NHẬN THÌ KHÔNG TẠO LẠI
+    # ==========================
+
+    if order.get("status") == "paid":
+        return redirect("/admin-orders")
+
+    # ==========================
+    # TÍNH DOANH THU CHO TỪNG BÁC SĨ
+    # ==========================
+
+    doctor_total = {}
+
+    for item in order["items"]:
+
+        doctor_id = item["doctor_id"]
+
+        if doctor_id not in doctor_total:
+
+            doctor_total[doctor_id] = {
+
+                "doctor_name": item["doctor_name"],
+
+                "amount": 0
+
+            }
+
+        doctor_total[doctor_id]["amount"] += (
+            item["price"] *
+            item["quantity"]
+        )
+
+    # ==========================
+    # LƯU COLLECTION doctor_income
+    # ==========================
+
+    for doctor_id, data in doctor_total.items():
+
+        exists = db.doctor_income.find_one({
+
+            "order_id": str(order["_id"]),
+
+            "doctor_id": doctor_id
+
+        })
+
+        if not exists:
+
+            db.doctor_income.insert_one({
+
+                "doctor_id": doctor_id,
+
+                "doctor_name": data["doctor_name"],
+
+                "order_id": str(order["_id"]),
+
+                "customer_id": order["user_id"],
+
+                "customer_name": order["fullname"],
+
+                "amount": data["amount"],
+
+                "status": "unpaid",
+
+                "created_at": datetime.now()
+
+            })
+
+    # ==========================
+    # CẬP NHẬT TRẠNG THÁI ĐƠN
+    # ==========================
+
     db.orders.update_one(
+
         {
             "_id": ObjectId(order_id)
         },
+
         {
             "$set": {
                 "status": "paid"
             }
         }
+
+    )
+
+    flash(
+        "Đã xác nhận đơn hàng thành công.",
+        "success"
     )
 
     return redirect("/admin-orders")
 
 # ==========================
-# HỦY ĐƠN HÀNG
+# DOANH THU BÁC SĨ
 # ==========================
 
-@app.route("/cancel-order/<order_id>")
-def cancel_order(order_id):
+@app.route("/doctor-income")
+def doctor_income():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if session.get("role") != "doctor":
+        return redirect("/login")
+
+    user = db.users.find_one({
+        "_id": ObjectId(session["user_id"])
+    })
+
+    doctor = db.doctors.find_one({
+        "email": user["email"]
+    })
+
+    incomes = list(
+        db.doctor_income.find({
+            "doctor_id": str(doctor["_id"])
+        }).sort("created_at", -1)
+    )
+
+    total = 0
+
+    unpaid = 0
+
+    paid = 0
+
+    for item in incomes:
+
+        total += item["amount"]
+
+        if item["status"] == "paid":
+            paid += item["amount"]
+        else:
+            unpaid += item["amount"]
+
+    return render_template(
+
+        "doctor_income.html",
+
+        incomes=incomes,
+
+        total=total,
+
+        paid=paid,
+
+        unpaid=unpaid
+    )
+
+# ==========================
+# CHI TIẾT DOANH THU BÁC SĨ
+# ==========================
+
+@app.route("/doctor-income/<doctor_id>")
+def doctor_income_detail(doctor_id):
 
     if "user_id" not in session:
         return redirect("/login")
@@ -2991,18 +3243,77 @@ def cancel_order(order_id):
     if session.get("role") != "admin":
         return redirect("/dashboard")
 
-    db.orders.update_one(
-        {
-            "_id": ObjectId(order_id)
-        },
-        {
-            "$set": {
-                "status": "cancel"
-            }
-        }
+    incomes = list(db.doctor_income.find({
+
+        "doctor_id": doctor_id
+
+    }).sort("created_at", -1))
+
+    doctor_name = ""
+
+    if incomes:
+        doctor_name = incomes[0]["doctor_name"]
+
+    total = 0
+    paid = 0
+    unpaid = 0
+
+    for item in incomes:
+
+        total += item["amount"]
+
+        if item["status"] == "paid":
+            paid += item["amount"]
+        else:
+            unpaid += item["amount"]
+
+    return render_template(
+
+        "doctor_income_detail.html",
+
+        doctor_name=doctor_name,
+
+        incomes=incomes,
+
+        total=total,
+
+        paid=paid,
+
+        unpaid=unpaid
+
     )
 
-    return redirect("/admin-orders")
+# ==========================
+# ĐÃ CHUYỂN KHOẢN CHO BÁC SĨ
+# ==========================
+
+@app.route("/doctor-income-admin")
+def doctor_income_admin():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if session.get("role") != "admin":
+        return redirect("/dashboard")
+
+    incomes = list(
+        db.doctor_income.find().sort("created_at", -1)
+    )
+
+    total = 0
+
+    for item in incomes:
+        total += item["amount"]
+
+    return render_template(
+
+        "doctor_income_admin.html",
+
+        incomes=incomes,
+
+        total=total
+
+    )
 
 # ==========================
 # AUTO EMAIL REMINDER

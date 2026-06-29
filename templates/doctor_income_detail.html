@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}
+Chi tiết doanh thu
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h2>
+
+👨‍⚕️ {{ doctor_name }}
+
+</h2>
+
+</div>
+
+<div class="card-body">
+
+<div class="row mb-4">
+
+<div class="col-md-4">
+
+<div class="alert alert-primary">
+
+<h5>Tổng doanh thu</h5>
+
+<h3>
+
+{{ "{:,}".format(total) }}
+
+VNĐ
+
+</h3>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="alert alert-success">
+
+<h5>Đã chuyển</h5>
+
+<h3>
+
+{{ "{:,}".format(paid) }}
+
+VNĐ
+
+</h3>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="alert alert-danger">
+
+<h5>Chưa chuyển</h5>
+
+<h3>
+
+{{ "{:,}".format(unpaid) }}
+
+VNĐ
+
+</h3>
+
+</div>
+
+</div>
+
+</div>
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Khách hàng</th>
+
+<th>Mã đơn</th>
+
+<th>Số tiền</th>
+
+<th>Ngày</th>
+
+<th>Trạng thái</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for item in incomes %}
+
+<tr>
+
+<td>
+
+{{ item.customer_name }}
+
+</td>
+
+<td>
+
+{{ item.order_id[-6:] }}
+
+</td>
+
+<td class="text-primary fw-bold">
+
+{{ "{:,}".format(item.amount) }}
+
+VNĐ
+
+</td>
+
+<td>
+
+{{ item.created_at.strftime("%d/%m/%Y %H:%M") }}
+
+</td>
+
+<td>
+
+{% if item.status=="paid" %}
+
+<span class="badge bg-success">
+
+Đã chuyển
+
+</span>
+
+{% else %}
+
+<span class="badge bg-danger">
+
+Chưa chuyển
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<div class="mt-4 d-flex gap-2">
+
+<a
+
+href="/pay-doctor/{{ incomes[0].doctor_id }}"
+
+class="btn btn-success"
+
+onclick="return confirm('Đã chuyển khoản cho bác sĩ?')">
+
+💸 Đã chuyển khoản
+
+</a>
+
+<a
+
+href="/doctor-income"
+
+class="btn btn-secondary">
+
+⬅ Quay lại
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
