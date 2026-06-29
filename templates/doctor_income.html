@@ -1,111 +1,181 @@
 {% extends "base.html" %}
 
 {% block title %}
-Doanh thu bác sĩ
+Doanh thu của tôi
 {% endblock %}
 
 {% block content %}
 
 <div class="container py-5">
 
-<div class="card shadow">
+    <h2 class="mb-4">
+        💰 Doanh thu của {{ doctor.name }}
+    </h2>
 
-<div class="card-header bg-success text-white">
+    <div class="row mb-4">
 
-<h2 class="mb-0">
-💰 Thống kê doanh thu bác sĩ
-</h2>
+        <div class="col-md-4">
 
-</div>
+            <div class="card bg-danger text-white shadow">
 
-<div class="card-body">
+                <div class="card-body text-center">
 
-{% if incomes %}
+                    <h3>{{ "{:,}".format(total) }} VNĐ</h3>
 
-<table class="table table-bordered table-hover">
+                    <p class="mb-0">
+                        Tổng doanh thu
+                    </p>
 
-<thead class="table-dark">
+                </div>
 
-<tr>
+            </div>
 
-<th>STT</th>
+        </div>
 
-<th>Bác sĩ</th>
+        <div class="col-md-4">
 
-<th>Số đơn</th>
+            <div class="card bg-success text-white shadow">
 
-<th>Tổng doanh thu</th>
+                <div class="card-body text-center">
 
-<th>Chi tiết</th>
+                    <h3>{{ "{:,}".format(paid) }} VNĐ</h3>
 
-</tr>
+                    <p class="mb-0">
+                        Đã thanh toán
+                    </p>
 
-</thead>
+                </div>
 
-<tbody>
+            </div>
 
-{% for item in incomes %}
+        </div>
 
-<tr>
+        <div class="col-md-4">
 
-<td>
+            <div class="card bg-warning shadow">
 
-{{ loop.index }}
+                <div class="card-body text-center">
 
-</td>
+                    <h3>{{ "{:,}".format(unpaid) }} VNĐ</h3>
 
-<td>
+                    <p class="mb-0">
+                        Chưa thanh toán
+                    </p>
 
-{{ item.doctor_name }}
+                </div>
 
-</td>
+            </div>
 
-<td>
+        </div>
 
-{{ item.total_orders }}
+    </div>
 
-</td>
+    <div class="card shadow">
 
-<td class="text-danger fw-bold">
+        <div class="card-header bg-primary text-white">
 
-{{ "{:,}".format(item.total_income) }}
+            <h4 class="mb-0">
+                📋 Danh sách doanh thu
+            </h4>
 
-VNĐ
+        </div>
 
-</td>
+        <div class="card-body">
 
-<td>
+            {% if incomes %}
 
-<a href="/doctor-income/{{ item._id }}"
-class="btn btn-primary btn-sm">
+            <table class="table table-bordered table-hover align-middle">
 
-Xem
+                <thead class="table-dark">
 
-</a>
+                    <tr>
 
-</td>
+                        <th>STT</th>
 
-</tr>
+                        <th>Khách hàng</th>
 
-{% endfor %}
+                        <th>Số tiền</th>
 
-</tbody>
+                        <th>Trạng thái</th>
 
-</table>
+                        <th>Ngày tạo</th>
 
-{% else %}
+                    </tr>
 
-<div class="alert alert-warning">
+                </thead>
 
-Chưa có dữ liệu doanh thu.
+                <tbody>
 
-</div>
+                    {% for item in incomes %}
 
-{% endif %}
+                    <tr>
 
-</div>
+                        <td>{{ loop.index }}</td>
 
-</div>
+                        <td>{{ item.customer_name }}</td>
+
+                        <td class="text-danger fw-bold">
+
+                            {{ "{:,}".format(item.amount) }} VNĐ
+
+                        </td>
+
+                        <td>
+
+                            {% if item.status == "paid" %}
+
+                                <span class="badge bg-success">
+                                    Đã thanh toán
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Chưa thanh toán
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.created_at.strftime("%d/%m/%Y %H:%M") }}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="alert alert-warning">
+
+                Chưa có dữ liệu doanh thu.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="text-center mt-4">
+
+        <a href="/doctor-dashboard"
+           class="btn btn-secondary btn-lg">
+
+            ⬅ Quay lại Dashboard
+
+        </a>
+
+    </div>
 
 </div>
 
