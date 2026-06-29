@@ -3176,58 +3176,45 @@ def approve_order(order_id):
     return redirect("/admin-orders")
 
 # ==========================
-# DOANH THU BÁC SĨ
+# DOANH THU BÁC SĨ (admin)
 # ==========================
 
-@app.route("/doctor-income")
-def doctor_income():
+@app.route("/admin-doctor-income")
+def admin_doctor_income():
 
     if "user_id" not in session:
         return redirect("/login")
 
-    if session.get("role") != "doctor":
-        return redirect("/login")
+    if session.get("role") != "admin":
+        return redirect("/admin-dashboard")
 
-    user = db.users.find_one({
-        "_id": ObjectId(session["user_id"])
-    })
+    incomes = list(db.doctor_income.aggregate([
 
-    doctor = db.doctors.find_one({
-        "email": user["email"]
-    })
+        {
+            "$group": {
 
-    incomes = list(
-        db.doctor_income.find({
-            "doctor_id": str(doctor["_id"])
-        }).sort("created_at", -1)
-    )
+                "_id": "$doctor_id",
 
-    total = 0
+                "doctor_name": {
+                    "$first": "$doctor_name"
+                },
 
-    unpaid = 0
+                "total_income": {
+                    "$sum": "$amount"
+                },
 
-    paid = 0
+                "total_orders": {
+                    "$sum": 1
+                }
 
-    for item in incomes:
+            }
+        }
 
-        total += item["amount"]
-
-        if item["status"] == "paid":
-            paid += item["amount"]
-        else:
-            unpaid += item["amount"]
+    ]))
 
     return render_template(
-
         "doctor_income.html",
-
-        incomes=incomes,
-
-        total=total,
-
-        paid=paid,
-
-        unpaid=unpaid
+        incomes=incomes
     )
 
 # ==========================
