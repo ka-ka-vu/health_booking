@@ -3514,6 +3514,7 @@ def doctor_income_detail(doctor_id):
 # DOANH THU CỦA TÔI (BÁC SĨ)
 # ==========================
 
+@app.route("/doctor-income")
 @app.route("/doctor-my-income")
 def doctor_my_income():
 
@@ -3537,11 +3538,11 @@ def doctor_my_income():
     if not doctor:
         return redirect("/doctor-dashboard")
 
-    incomes = list(db.doctor_income.find({
-
-        "doctor_id": str(doctor["_id"])
-
-    }).sort("created_at", -1))
+    incomes = list(
+        db.doctor_income.find({
+            "doctor_id": str(doctor["_id"])
+        }).sort("created_at", -1)
+    )
 
     total = 0
     paid = 0
@@ -3557,19 +3558,12 @@ def doctor_my_income():
             unpaid += item["amount"]
 
     return render_template(
-
         "doctor_income.html",
-
         doctor=doctor,
-
         incomes=incomes,
-
         total=total,
-
         paid=paid,
-
         unpaid=unpaid
-
     )
 
 # ==========================
