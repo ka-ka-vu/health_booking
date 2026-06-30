@@ -1,296 +1,214 @@
 {% extends "base.html" %}
 
 {% block title %}
-Sửa thuốc
+Quản lý thuốc
 {% endblock %}
 
 {% block content %}
 
-<style>
+<div class="container py-4">
 
-.card{
-    border-radius:20px;
-    overflow:hidden;
-}
+    <!-- Header -->
+    <div class="card shadow-lg border-0 mb-4">
 
-.form-control,
-.form-select{
-    border-radius:12px;
-}
+        <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-.preview-image{
-    width:220px;
-    height:220px;
-    object-fit:cover;
-    border-radius:15px;
-    border:4px solid #dee2e6;
-    background:#f8f9fa;
-}
+            <div>
 
-.info-card{
-    background:#f8f9fa;
-    border-left:5px solid #ffc107;
-}
+                <h2 class="mb-1">
+                    💊 Quản lý thuốc
+                </h2>
 
-</style>
+                <p class="text-muted mb-0">
+                    Quản lý toàn bộ thuốc trong hệ thống
+                </p>
 
-<div class="container py-5">
+            </div>
 
-<div class="row justify-content-center">
+            <div>
 
-<div class="col-xl-10">
+                <a href="/admin/medicines/add"
+                   class="btn btn-success">
 
-<!-- Header -->
+                    ➕ Thêm thuốc
 
-<div class="card shadow-lg border-0 mb-4">
+                </a>
 
-<div class="card-header text-white p-4"
-style="background:linear-gradient(135deg,#ffc107,#ff9800);">
+                <a href="/admin-dashboard"
+                   class="btn btn-secondary">
 
-<div class="d-flex justify-content-between align-items-center">
+                    ⬅ Quay lại
 
-<div>
+                </a>
 
-<h2 class="mb-1">
+            </div>
 
-✏️ Sửa thuốc
+        </div>
 
-</h2>
+    </div>
 
-<p class="mb-0">
+    {% if medicines %}
 
-Cập nhật thông tin thuốc trong hệ thống
+    <div class="card shadow border-0">
 
-</p>
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-primary">
+
+                        <tr>
+
+                            <th width="120">Ảnh</th>
+
+                            <th>Tên thuốc</th>
+
+                            <th>Giá</th>
+
+                            <th>Số lượng</th>
+
+                            <th>Bác sĩ</th>
+
+                            <th>Mô tả</th>
+
+                            <th width="170">Thao tác</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for medicine in medicines %}
+
+                        <tr>
+
+                            <td>
+
+                                {% if medicine.get("image") %}
+
+                                <img
+                                    src="{{ medicine.image }}"
+                                    class="rounded border"
+                                    style="width:90px;height:90px;object-fit:cover;">
+
+                                {% else %}
+
+                                <div class="bg-light border rounded d-flex justify-content-center align-items-center"
+                                     style="width:90px;height:90px;font-size:35px;">
+
+                                    💊
+
+                                </div>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+
+                                    {{ medicine.get("name","") }}
+
+                                </strong>
+
+                            </td>
+
+                            <td class="text-success fw-bold">
+
+                                {{ "{:,}".format(medicine.get("price",0)) }} VNĐ
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-info">
+
+                                    {{ medicine.get("quantity",0) }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {{ medicine.get("doctor_name","Chưa có") }}
+
+                            </td>
+
+                            <td style="max-width:260px;">
+
+                                {{ medicine.get("description","") }}
+
+                            </td>
+
+                            <td>
+
+                                <a href="/admin/medicines/edit/{{ medicine._id }}"
+                                   class="btn btn-warning btn-sm">
+
+                                    ✏️ Sửa
+
+                                </a>
+
+                                <a href="/admin/medicines/delete/{{ medicine._id }}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn xóa thuốc này?')">
+
+                                    🗑 Xóa
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="card shadow">
+
+        <div class="card-body text-center py-5">
+
+            <h3>
+
+                📭 Chưa có thuốc nào
+
+            </h3>
+
+            <p class="text-muted">
+
+                Hãy thêm thuốc đầu tiên vào hệ thống.
+
+            </p>
+
+            <a href="/admin/medicines/add"
+               class="btn btn-success">
+
+                ➕ Thêm thuốc
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
 
 </div>
-
-<div style="font-size:60px;">
-
-💊
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- Form -->
-
-<div class="card shadow border-0">
-
-<div class="card-body p-4">
-
-<form method="POST">
-
-<div class="row">
-
-<!-- Preview -->
-
-<div class="col-lg-4 text-center">
-
-{% if medicine.image %}
-
-<img
-id="preview"
-src="{{ medicine.image }}"
-class="preview-image mb-3">
-
-{% else %}
-
-<img
-id="preview"
-src="/static/uploads/thuoc/default.jpg"
-class="preview-image mb-3">
-
-{% endif %}
-
-<div class="mb-3">
-
-<label class="form-label fw-bold">
-
-🖼 Link ảnh
-
-</label>
-
-<input
-id="image"
-name="image"
-value="{{ medicine.image }}"
-class="form-control"
-placeholder="https://..."
-oninput="previewImage()">
-
-</div>
-
-</div>
-
-<!-- Thông tin -->
-
-<div class="col-lg-8">
-
-<div class="mb-3">
-
-<label class="form-label fw-bold">
-
-💊 Tên thuốc
-
-</label>
-
-<input
-name="name"
-value="{{ medicine.name }}"
-class="form-control form-control-lg"
-required>
-
-</div>
-
-<div class="row">
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label fw-bold">
-
-💰 Giá bán (VNĐ)
-
-</label>
-
-<input
-type="number"
-name="price"
-value="{{ medicine.price }}"
-class="form-control form-control-lg"
-required>
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label fw-bold">
-
-📦 Số lượng
-
-</label>
-
-<input
-type="number"
-name="quantity"
-value="{{ medicine.quantity }}"
-class="form-control form-control-lg"
-required>
-
-</div>
-
-</div>
-
-<div class="mb-3">
-
-<label class="form-label fw-bold">
-
-👨‍⚕️ Bác sĩ phụ trách
-
-</label>
-
-<input
-name="doctor_name"
-value="{{ medicine.doctor_name }}"
-class="form-control form-control-lg">
-
-</div>
-
-<div class="mb-3">
-
-<label class="form-label fw-bold">
-
-📝 Mô tả
-
-</label>
-
-<textarea
-name="description"
-rows="5"
-class="form-control">{{ medicine.description }}</textarea>
-
-</div>
-
-<div class="alert info-card">
-
-<h6 class="fw-bold">
-
-ℹ️ Lưu ý
-
-</h6>
-
-<ul class="mb-0">
-
-<li>Kiểm tra kỹ tên thuốc trước khi lưu.</li>
-
-<li>Cập nhật đúng số lượng tồn kho.</li>
-
-<li>Có thể thay đổi giá bán bất kỳ lúc nào.</li>
-
-<li>Link ảnh hợp lệ sẽ được hiển thị ngay.</li>
-
-</ul>
-
-</div>
-
-</div>
-
-</div>
-
-<hr>
-
-<div class="d-flex justify-content-between flex-wrap gap-2">
-
-<a
-href="/admin/medicines"
-class="btn btn-secondary btn-lg">
-
-⬅ Quay lại
-
-</a>
-
-<button
-type="submit"
-class="btn btn-warning btn-lg">
-
-💾 Cập nhật thuốc
-
-</button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-function previewImage(){
-
-const url=document.getElementById("image").value.trim();
-
-const preview=document.getElementById("preview");
-
-if(url!==""){
-
-preview.src=url;
-
-}
-
-}
-
-</script>
 
 {% endblock %}
