@@ -197,7 +197,7 @@ Quản lý đơn hàng
 
                             <td>
 
-                                {{ order.items|length }}
+                                {{ order.get("items", [])|length }}
 
                             </td>
 
