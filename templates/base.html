@@ -1,137 +1,251 @@
 <!DOCTYPE html>
-
 <html lang="vi">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta charset="UTF-8">
+    <title>
+        {% block title %}
+        Health Booking
+        {% endblock %}
+    </title>
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1">
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 
-<title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    {% block title %}
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    Health Booking
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 
-    {% endblock %}
+    <style>
 
-</title>
+        body{
+            font-family:'Poppins',sans-serif;
+            background:#f4f7fb;
+        }
 
-<!-- Bootstrap -->
+        .navbar{
+            background:linear-gradient(90deg,#0d6efd,#4f8cff);
+        }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet">
+        .navbar-brand{
+            font-size:1.5rem;
+        }
 
-<!-- Bootstrap Icons -->
+        .nav-link{
+            border-radius:10px;
+            transition:.3s;
+            padding:8px 14px !important;
+        }
 
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        .nav-link:hover{
+            background:rgba(255,255,255,.15);
+            transform:translateY(-2px);
+        }
 
-<!-- CSS riêng -->
+        .hero{
+            background:white;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+        }
 
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
+        .card{
+            border:none;
+            border-radius:18px;
+            box-shadow:0 8px 25px rgba(0,0,0,.08);
+            transition:.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+            box-shadow:0 15px 35px rgba(0,0,0,.15);
+        }
+
+        .btn{
+            border-radius:12px;
+            font-weight:500;
+        }
+
+        footer{
+            background:#1d2636;
+        }
+
+        #topBtn{
+            position:fixed;
+            bottom:25px;
+            right:25px;
+            display:none;
+            z-index:999;
+            border-radius:50%;
+            width:50px;
+            height:50px;
+        }
+
+        .alert{
+            border-radius:15px;
+            border:none;
+        }
+
+    </style>
 
 </head>
 
-<body class="bg-light">
+<body>
 
 <!-- NAVBAR -->
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
 
 <div class="container">
 
-    <a class="navbar-brand fw-bold"
-       href="/dashboard">
+<a class="navbar-brand fw-bold"
+href="/dashboard">
 
-        <i class="bi bi-heart-pulse-fill"></i>
+<i class="bi bi-heart-pulse-fill me-2"></i>
 
-        Health Booking
+Health Booking
 
-    </a>
+</a>
 
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#menu">
+<button
+class="navbar-toggler"
+type="button"
+data-bs-toggle="collapse"
+data-bs-target="#menu">
 
-        <span class="navbar-toggler-icon"></span>
+<span class="navbar-toggler-icon"></span>
 
-    </button>
+</button>
 
-    <div class="collapse navbar-collapse"
-         id="menu">
+<div class="collapse navbar-collapse"
+id="menu">
 
-        <ul class="navbar-nav ms-auto">
+<ul class="navbar-nav ms-auto align-items-lg-center">
 
-        {% if session.get('user_id') %}
+{% if session.get('user_id') %}
 
-            <li class="nav-item">
-                <a class="nav-link" href="/dashboard">
-                    <i class="bi bi-house-door"></i>
-                    Dashboard
-                </a>
-            </li>
+<li class="nav-item">
 
-            <li class="nav-item">
-                <a class="nav-link" href="/appointments">
-                    <i class="bi bi-calendar-check"></i>
-                    Lịch khám
-                </a>
-            </li>
+<a class="nav-link"
+href="/dashboard">
 
-            <li class="nav-item">
-                <a class="nav-link" href="/doctor-list">
-                    <i class="bi bi-person-badge"></i>
-                    Bác sĩ
-                </a>
-            </li>
+<i class="bi bi-house-door"></i>
 
-            <li class="nav-item">
-                <a class="nav-link text-warning" href="/cart">
-                    <i class="bi bi-cart3"></i>
-                    Giỏ hàng
-                </a>
-            </li>
+Dashboard
 
-            <li class="nav-item">
-                <a class="nav-link text-danger" href="/logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    Đăng xuất
-                </a>
-            </li>
+</a>
 
-        {% else %}
+</li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/">
-                    <i class="bi bi-house"></i>
-                    Trang chủ
-                </a>
-            </li>
+<li class="nav-item">
 
-            <li class="nav-item">
-                <a class="nav-link text-light" href="/login">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Đăng nhập
-                </a>
-            </li>
+<a class="nav-link"
+href="/appointments">
 
-            <li class="nav-item">
-                <a class="nav-link text-warning" href="/register">
-                    <i class="bi bi-person-plus"></i>
-                    Đăng ký
-                </a>
-            </li>
+<i class="bi bi-calendar-check"></i>
 
-        {% endif %}
+Lịch khám
 
-        </ul>
+</a>
 
-    </div>
+</li>
+
+<li class="nav-item">
+
+<a class="nav-link"
+href="/doctor-list">
+
+<i class="bi bi-person-badge"></i>
+
+Bác sĩ
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a class="nav-link"
+href="/cart">
+
+<i class="bi bi-cart3"></i>
+
+Giỏ hàng
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a class="nav-link text-warning"
+href="/logout">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Đăng xuất
+
+</a>
+
+</li>
+
+{% else %}
+
+<li class="nav-item">
+
+<a class="nav-link"
+href="/">
+
+<i class="bi bi-house"></i>
+
+Trang chủ
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a class="nav-link"
+href="/login">
+
+<i class="bi bi-box-arrow-in-right"></i>
+
+Đăng nhập
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a class="nav-link text-warning"
+href="/register">
+
+<i class="bi bi-person-plus"></i>
+
+Đăng ký
+
+</a>
+
+</li>
+
+{% endif %}
+
+</ul>
+
+</div>
 
 </div>
 
@@ -139,15 +253,36 @@
 
 <!-- HERO -->
 
-<div class="bg-white border-bottom">
+<div class="hero">
 
-<div class="container py-3">
+<div class="container py-4">
 
-    <h5 class="mb-0 text-primary">
+<div class="row align-items-center">
 
-        🏥 Hệ thống quản lý khám chữa bệnh trực tuyến
+<div class="col-md-8">
 
-    </h5>
+<h2 class="fw-bold text-primary">
+
+🏥 Health Booking
+
+</h2>
+
+<p class="text-muted mb-0">
+
+Hệ thống đặt lịch khám bệnh và mua thuốc trực tuyến
+
+</p>
+
+</div>
+
+<div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+<i class="bi bi-hospital text-primary"
+style="font-size:60px;"></i>
+
+</div>
+
+</div>
 
 </div>
 
@@ -155,83 +290,170 @@
 
 <!-- CONTENT -->
 
-<div class="container py-4">
+<div class="container py-5">
 
-    <!-- THÔNG BÁO -->
+{% with messages = get_flashed_messages(with_categories=true) %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
 
-        {% if messages %}
+{% for category,message in messages %}
 
-            {% for category, message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible fade show shadow mb-4">
 
-            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm mb-4"
-                 role="alert">
+<strong>
 
-                <strong>
+{% if category=="success" %}
+✅ Thành công!
+{% elif category=="danger" %}
+❌ Lỗi!
+{% elif category=="warning" %}
+⚠ Cảnh báo!
+{% elif category=="info" %}
+ℹ Thông báo!
+{% endif %}
 
-                    {% if category == "success" %}
-                        ✅ Thành công!
-                    {% elif category == "danger" %}
-                        ❌ Lỗi!
-                    {% elif category == "warning" %}
-                        ⚠ Cảnh báo!
-                    {% elif category == "info" %}
-                        ℹ Thông báo!
-                    {% endif %}
+</strong>
 
-                </strong>
+{{ message }}
 
-                {{ message }}
+<button
+type="button"
+class="btn-close"
+data-bs-dismiss="alert">
+</button>
 
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-                </button>
+</div>
 
-            </div>
+{% endfor %}
 
-            {% endfor %}
+{% endif %}
 
-        {% endif %}
+{% endwith %}
 
-    {% endwith %}
-
-    {% block content %}
-    {% endblock %}
+{% block content %}
+{% endblock %}
 
 </div>
 
 <!-- FOOTER -->
 
-<footer class="bg-dark text-white mt-5">
+<footer class="text-light mt-5">
 
-<div class="container py-4 text-center">
+<div class="container">
 
-    <h5>
+<div class="row py-5">
 
-        Health Booking System
+<div class="col-md-6">
 
-    </h5>
+<h4 class="fw-bold">
 
-    <p class="mb-1">
+🏥 Health Booking
 
-        Đặt lịch khám, quản lý bác sĩ và mua thuốc trực tuyến
+</h4>
 
-    </p>
+<p>
 
-    <small>
+Nền tảng hỗ trợ đặt lịch khám bệnh, quản lý bác sĩ và mua thuốc trực tuyến một cách nhanh chóng, an toàn và tiện lợi.
 
-        © 2026 Health Booking
+</p>
 
-    </small>
+</div>
+
+<div class="col-md-3">
+
+<h5>Dịch vụ</h5>
+
+<ul class="list-unstyled">
+
+<li>Đặt lịch khám</li>
+
+<li>Mua thuốc</li>
+
+<li>Chat bác sĩ</li>
+
+<li>Bản đồ phòng khám</li>
+
+</ul>
+
+</div>
+
+<div class="col-md-3">
+
+<h5>Liên hệ</h5>
+
+<p>
+
+<i class="bi bi-envelope"></i>
+
+support@healthbooking.vn
+
+</p>
+
+<p>
+
+<i class="bi bi-telephone"></i>
+
+1900 1234
+
+</p>
+
+</div>
+
+</div>
+
+<hr class="border-secondary">
+
+<div class="text-center pb-3">
+
+© 2026 Health Booking. All Rights Reserved.
+
+</div>
 
 </div>
 
 </footer>
 
+<button
+id="topBtn"
+class="btn btn-primary shadow">
+
+<i class="bi bi-arrow-up"></i>
+
+</button>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+const topBtn=document.getElementById("topBtn");
+
+window.addEventListener("scroll",function(){
+
+if(window.scrollY>250){
+
+topBtn.style.display="block";
+
+}else{
+
+topBtn.style.display="none";
+
+}
+
+});
+
+topBtn.onclick=function(){
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+};
+
+</script>
 
 </body>
 

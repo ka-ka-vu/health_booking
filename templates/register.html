@@ -1,70 +1,231 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng ký</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block title %}
+Đăng ký tài khoản
+{% endblock %}
 
-<body class="bg-light">
+{% block content %}
 
-<div class="container mt-5">
+<div class="row justify-content-center align-items-center py-5">
 
-<div class="card shadow p-4 mx-auto" style="max-width:500px">
+    <div class="col-lg-10">
 
-    <h2 class="text-center mb-4">
-        Đăng ký tài khoản
-    </h2>
+        <div class="card overflow-hidden shadow-lg fade-up">
 
-    <form method="POST">
+            <div class="row g-0">
 
-        <input
-            type="text"
-            name="fullname"
-            class="form-control mb-3"
-            placeholder="Họ và tên"
-            required>
+                <!-- LEFT -->
 
-        <input
-            type="email"
-            name="email"
-            class="form-control mb-3"
-            placeholder="Email"
-            required>
+                <div class="col-lg-6 d-none d-lg-flex bg-primary text-white align-items-center">
 
-        <input
-            type="password"
-            name="password"
-            class="form-control mb-3"
-            placeholder="Mật khẩu"
-            required>
+                    <div class="p-5">
 
-        <button
-            class="btn btn-primary w-100 mb-3">
-            Đăng ký
-        </button>
+                        <h1 class="fw-bold mb-4">
 
-    </form>
+                            <i class="bi bi-heart-pulse-fill"></i>
 
-    <hr>
+                            Health Booking
 
-    <div class="text-center">
+                        </h1>
 
-        <p class="mb-3">
-            Đã có tài khoản?
-        </p>
+                        <p class="lead">
 
-        <a href="/login"
-           class="btn btn-secondary w-100">
-            Đăng nhập
-        </a>
+                            Chào mừng bạn đến với hệ thống đặt lịch khám bệnh trực tuyến.
+
+                        </p>
+
+                        <hr>
+
+                        <div class="mt-4">
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Đặt lịch khám nhanh chóng
+
+                            </p>
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Quản lý hồ sơ sức khỏe
+
+                            </p>
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Chat trực tiếp với bác sĩ
+
+                            </p>
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Mua thuốc trực tuyến
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- RIGHT -->
+
+                <div class="col-lg-6">
+
+                    <div class="p-5">
+
+                        <div class="text-center mb-4">
+
+                            <i class="bi bi-person-plus-fill text-primary"
+                               style="font-size:70px;"></i>
+
+                            <h2 class="fw-bold mt-3">
+
+                                Đăng ký tài khoản
+
+                            </h2>
+
+                            <p class="text-muted">
+
+                                Tạo tài khoản để sử dụng toàn bộ dịch vụ.
+
+                            </p>
+
+                        </div>
+
+                        <form method="POST">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Họ và tên
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="bi bi-person-fill"></i>
+
+                                    </span>
+
+                                    <input
+                                        type="text"
+                                        name="fullname"
+                                        class="form-control"
+                                        placeholder="Nhập họ và tên"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Email
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="bi bi-envelope-fill"></i>
+
+                                    </span>
+
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        class="form-control"
+                                        placeholder="Nhập email"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-4">
+
+                                <label class="form-label">
+
+                                    Mật khẩu
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="bi bi-lock-fill"></i>
+
+                                    </span>
+
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        class="form-control"
+                                        placeholder="Nhập mật khẩu"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-100">
+
+                                <i class="bi bi-person-check-fill me-2"></i>
+
+                                Đăng ký
+
+                            </button>
+
+                        </form>
+
+                        <div class="text-center my-4">
+
+                            <span class="text-muted">
+
+                                Đã có tài khoản?
+
+                            </span>
+
+                        </div>
+
+                        <a
+                            href="/login"
+                            class="btn btn-outline-primary w-100">
+
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                            Đăng nhập
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
 
-</div>
-
-</body>
-</html>
+{% endblock %}

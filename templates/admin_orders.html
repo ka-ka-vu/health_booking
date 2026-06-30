@@ -8,166 +8,285 @@ Quản lý đơn hàng
 
 <div class="container py-4">
 
-<div class="card shadow-lg border-0">
+    <!-- Header -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-    <div class="card-header bg-warning">
+            <div>
+                <h2 class="mb-1">
+                    🛒 Quản lý đơn hàng
+                </h2>
 
-        <h2 class="mb-0">
-            🛒 Quản lý đơn hàng
-        </h2>
+                <p class="text-muted mb-0">
+                    Theo dõi và quản lý tất cả đơn hàng trong hệ thống
+                </p>
+            </div>
+
+            <div>
+                <a href="/admin-dashboard"
+                   class="btn btn-secondary">
+
+                    ⬅ Quay lại Dashboard
+
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Thống kê -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow h-100 bg-primary text-white">
+                <div class="card-body text-center">
+                    <h2>{{ total_orders }}</h2>
+                    <p class="mb-0">📦 Tổng đơn hàng</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow h-100 bg-warning">
+                <div class="card-body text-center">
+                    <h2>{{ pending_orders }}</h2>
+                    <p class="mb-0">⏳ Chờ xác nhận</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow h-100 bg-success text-white">
+                <div class="card-body text-center">
+                    <h2>{{ paid_orders }}</h2>
+                    <p class="mb-0">✔ Đã thanh toán</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-0 shadow h-100 bg-danger text-white">
+                <div class="card-body text-center">
+                    <h2>{{ cancel_orders }}</h2>
+                    <p class="mb-0">❌ Đã hủy</p>
+                </div>
+            </div>
+        </div>
 
     </div>
 
-    <div class="card-body">
+    <!-- Tổng doanh thu + biểu đồ -->
+    <div class="row mb-4">
 
-        {% if orders %}
+        <div class="col-lg-5">
 
-        <div class="table-responsive">
+            <div class="card shadow border-0 h-100">
 
-            <table class="table table-hover align-middle">
+                <div class="card-body text-center">
 
-                <thead class="table-dark">
+                    <h5 class="mb-3">
 
-                    <tr>
+                        💰 Tổng doanh thu
 
-                        <th>Khách hàng</th>
+                    </h5>
 
-                        <th>Tổng tiền</th>
+                    <h2 class="text-success">
 
-                        <th>Sản phẩm</th>
+                        {{ "{:,}".format(total_revenue) }} VNĐ
 
-                        <th>Ngày đặt</th>
+                    </h2>
 
-                        <th>Trạng thái</th>
+                </div>
 
-                        <th>Thao tác</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for order in orders %}
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                {{ order["fullname"] }}
-                            </strong>
-
-                        </td>
-
-                        <td class="text-success fw-bold">
-
-                            {{ "{:,}".format(order["total"]) }}
-                            VNĐ
-
-                        </td>
-
-                        <td>
-
-                            {{ order["items"]|length }}
-
-                        </td>
-
-                        <td>
-
-                            {{ order["created_at"].strftime("%d/%m/%Y %H:%M") }}
-
-                        </td>
-
-                        <td>
-
-                            {% if order["status"] == "pending" %}
-
-                            <span class="badge bg-warning text-dark">
-
-                                ⏳ Chờ xác nhận
-
-                            </span>
-
-                            {% elif order["status"] == "paid" %}
-
-                            <span class="badge bg-success">
-
-                                ✔ Đã thanh toán
-
-                            </span>
-
-                            {% elif order["status"] == "cancel" %}
-
-                            <span class="badge bg-danger">
-
-                                ✖ Đã hủy
-
-                            </span>
-
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-
-                            {% if order["status"] == "pending" %}
-
-                            <a href="/approve-order/{{ order['_id'] }}"
-                               class="btn btn-success btn-sm">
-
-                                Xác nhận
-
-                            </a>
-
-                            <a href="/cancel-order/{{ order['_id'] }}"
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Hủy đơn hàng này?')">
-
-                                Hủy
-
-                            </a>
-
-                            {% else %}
-
-                            <span class="text-muted">
-
-                                Đã xử lý
-
-                            </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
 
-        {% else %}
+        <div class="col-lg-7">
 
-        <div class="alert alert-info text-center">
+            <div class="card shadow border-0">
 
-            📦 Chưa có đơn hàng nào
+                <div class="card-header bg-primary text-white">
+
+                    📊 Thống kê trạng thái đơn hàng
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="orderChart"></canvas>
+
+                </div>
+
+            </div>
 
         </div>
 
-        {% endif %}
+    </div>
 
-        <div class="mt-4">
+    <!-- Danh sách đơn hàng -->
+    <div class="card shadow-lg border-0">
 
-            <a href="/dashboard"
-               class="btn btn-secondary">
+        <div class="card-header bg-dark text-white">
 
-                ⬅ Quay lại Dashboard
+            <h4 class="mb-0">
 
-            </a>
+                📋 Danh sách đơn hàng
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if orders %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-primary">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Khách hàng</th>
+
+                            <th>Tổng tiền</th>
+
+                            <th>Số sản phẩm</th>
+
+                            <th>Ngày đặt</th>
+
+                            <th>Trạng thái</th>
+
+                            <th width="180">Thao tác</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for order in orders %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ loop.index }}
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+
+                                    {{ order.fullname }}
+
+                                </strong>
+
+                            </td>
+
+                            <td class="fw-bold text-success">
+
+                                {{ "{:,}".format(order.total) }} VNĐ
+
+                            </td>
+
+                            <td>
+
+                                {{ order.items|length }}
+
+                            </td>
+
+                            <td>
+
+                                {{ order.created_at.strftime("%d/%m/%Y %H:%M") }}
+
+                            </td>
+
+                            <td>
+
+                                {% if order.status=="pending" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    ⏳ Chờ xác nhận
+
+                                </span>
+
+                                {% elif order.status=="paid" %}
+
+                                <span class="badge bg-success">
+
+                                    ✔ Đã thanh toán
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    ❌ Đã hủy
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if order.status=="pending" %}
+
+                                <a href="/approve-order/{{ order._id }}"
+                                   class="btn btn-success btn-sm">
+
+                                    ✔ Xác nhận
+
+                                </a>
+
+                                <a href="/cancel-order/{{ order._id }}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
+
+                                    ✖ Hủy
+
+                                </a>
+
+                                {% else %}
+
+                                <span class="text-muted">
+
+                                    Đã xử lý
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="alert alert-info text-center">
+
+                📦 Chưa có đơn hàng nào.
+
+            </div>
+
+            {% endif %}
 
         </div>
 
@@ -175,6 +294,47 @@ Quản lý đơn hàng
 
 </div>
 
-</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const chartData = {{ chart_data|tojson }};
+
+new Chart(document.getElementById("orderChart"),{
+
+    type:"doughnut",
+
+    data:{
+
+        labels:[
+            "Chờ xác nhận",
+            "Đã thanh toán",
+            "Đã hủy"
+        ],
+
+        datasets:[{
+
+            data:[
+                chartData.pending,
+                chartData.paid,
+                chartData.cancel
+            ]
+
+        }]
+
+    },
+
+    options:{
+        responsive:true,
+        plugins:{
+            legend:{
+                position:"bottom"
+            }
+        }
+    }
+
+});
+
+</script>
 
 {% endblock %}

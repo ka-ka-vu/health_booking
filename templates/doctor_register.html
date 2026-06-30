@@ -12,79 +12,111 @@
 
 <div class="col-lg-8">
 
-    <div class="card border-0 shadow-lg">
+<div class="card shadow-lg border-0 rounded-4">
 
-        <div class="card-header bg-success text-white text-center p-4">
+    <!-- Header -->
 
-            <h2 class="mb-2">
-                👨‍⚕️ Đăng ký tài khoản bác sĩ
-            </h2>
+    <div class="card-header bg-success text-white text-center py-4">
 
-            <p class="mb-0">
-                Tham gia hệ thống Health Booking
-            </p>
+        <i class="bi bi-person-vcard-fill display-4 mb-2"></i>
 
-        </div>
+        <h2 class="fw-bold mb-2">
 
-        <div class="card-body p-4">
+            Đăng ký tài khoản bác sĩ
 
-            <form method="POST"
-                  enctype="multipart/form-data">
+        </h2>
 
-                <div class="mb-3">
+        <p class="mb-0">
 
-                    <label class="form-label fw-bold">
+            Tham gia hệ thống Health Booking để kết nối với bệnh nhân
+
+        </p>
+
+    </div>
+
+    <!-- Body -->
+
+    <div class="card-body p-5">
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        <i class="bi bi-person-fill"></i>
+
                         Họ và tên
+
                     </label>
 
                     <input
                         type="text"
                         name="fullname"
-                        class="form-control"
+                        class="form-control form-control-lg"
                         placeholder="Nhập họ và tên"
                         required>
 
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6 mb-4">
 
-                    <label class="form-label fw-bold">
+                    <label class="form-label fw-semibold">
+
+                        <i class="bi bi-envelope-fill"></i>
+
                         Email
+
                     </label>
 
                     <input
                         type="email"
                         name="email"
-                        class="form-control"
+                        class="form-control form-control-lg"
                         placeholder="example@gmail.com"
                         required>
 
                 </div>
 
-                <div class="mb-3">
+            </div>
 
-                    <label class="form-label fw-bold">
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        <i class="bi bi-lock-fill"></i>
+
                         Mật khẩu
+
                     </label>
 
                     <input
                         type="password"
                         name="password"
-                        class="form-control"
+                        class="form-control form-control-lg"
                         placeholder="Nhập mật khẩu"
                         required>
 
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6 mb-4">
 
-                    <label class="form-label fw-bold">
+                    <label class="form-label fw-semibold">
+
+                        <i class="bi bi-heart-pulse-fill"></i>
+
                         Chuyên khoa
+
                     </label>
 
                     <select
                         name="specialty"
-                        class="form-select"
+                        class="form-select form-select-lg"
                         required>
 
                         <option value="">
@@ -94,7 +126,9 @@
                         {% for specialty in specialties %}
 
                         <option value="{{ specialty.name }}">
+
                             {{ specialty.name }}
+
                         </option>
 
                         {% endfor %}
@@ -103,95 +137,142 @@
 
                 </div>
 
-                <div class="mb-3">
+            </div>
 
-                    <label class="form-label fw-bold">
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        <i class="bi bi-telephone-fill"></i>
+
                         Số điện thoại
+
                     </label>
 
                     <input
                         type="text"
                         name="phone"
-                        class="form-control"
+                        class="form-control form-control-lg"
                         placeholder="Nhập số điện thoại"
                         required>
 
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6 mb-4">
 
-                    <label class="form-label fw-bold">
-                        Địa chỉ phòng khám
-                    </label>
+                    <label class="form-label fw-semibold">
 
-                    <input
-                        type="text"
-                        name="clinic_address"
-                        class="form-control"
-                        placeholder="Nhập địa chỉ phòng khám"
-                        required>
+                        <i class="bi bi-briefcase-fill"></i>
 
-                </div>
+                        Kinh nghiệm
 
-                <div class="mb-3">
-
-                    <label class="form-label fw-bold">
-                        Số năm kinh nghiệm
                     </label>
 
                     <input
                         type="number"
                         name="experience"
-                        class="form-control"
                         min="0"
-                        placeholder="Ví dụ: 5"
+                        class="form-control form-control-lg"
+                        placeholder="Ví dụ: 10"
                         required>
 
                 </div>
 
-                <div class="mb-4">
+            </div>
 
-                    <label class="form-label fw-bold">
-                        🖼 Ảnh bác sĩ
-                    </label>
+            <div class="mb-4">
 
-                    <input
-                        type="file"
-                        name="image"
-                        class="form-control"
-                        accept="image/*"
-                        required>
+                <label class="form-label fw-semibold">
 
-                    <small class="text-muted">
-                        Chọn ảnh chân dung bác sĩ
-                    </small>
+                    <i class="bi bi-hospital-fill"></i>
 
-                </div>
+                    Địa chỉ phòng khám
+
+                </label>
+
+                <input
+                    type="text"
+                    name="clinic_address"
+                    class="form-control form-control-lg"
+                    placeholder="Nhập địa chỉ phòng khám"
+                    required>
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">
+
+                    <i class="bi bi-image-fill"></i>
+
+                    Ảnh đại diện bác sĩ
+
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    class="form-control form-control-lg"
+                    accept="image/*"
+                    required>
+
+                <small class="text-muted">
+
+                    Hỗ trợ JPG, PNG, JPEG
+
+                </small>
+
+            </div>
+
+            <div class="d-grid">
 
                 <button
                     type="submit"
-                    class="btn btn-success btn-lg w-100">
+                    class="btn btn-success btn-lg">
 
-                    🚀 Đăng ký bác sĩ
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    Đăng ký tài khoản
 
                 </button>
 
-            </form>
+            </div>
 
-        </div>
+        </form>
 
-        <div class="card-footer bg-light">
+    </div>
+
+    <!-- Footer -->
+
+    <div class="card-footer bg-light">
+
+        <div class="d-flex justify-content-between flex-wrap gap-2">
 
             <a href="/login"
-               class="btn btn-secondary w-100">
+               class="btn btn-secondary">
 
-                ⬅ Quay lại đăng nhập
+                <i class="bi bi-arrow-left-circle"></i>
+
+                Quay lại đăng nhập
+
+            </a>
+
+            <a href="/"
+               class="btn btn-outline-primary">
+
+                <i class="bi bi-house-door"></i>
+
+                Trang chủ
 
             </a>
 
         </div>
 
     </div>
+
+</div>
 
 </div>
 

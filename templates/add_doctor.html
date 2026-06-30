@@ -1,199 +1,341 @@
 {% extends "base.html" %}
 
+{% block title %}
+Thêm bác sĩ
+{% endblock %}
+
 {% block content %}
+
+<style>
+
+.card{
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.form-control,
+.form-select{
+    border-radius:12px;
+}
+
+.preview-image{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #dee2e6;
+    background:#f8f9fa;
+}
+
+.info-card{
+    background:#f8f9fa;
+    border-left:5px solid #0d6efd;
+}
+
+</style>
 
 <div class="container py-5">
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+<div class="col-xl-9 col-lg-10">
 
-        <div class="card border-0 shadow-lg rounded-4">
+<!-- Header -->
 
-            <div class="card-header bg-primary text-white p-4 rounded-top-4">
+<div class="card shadow-lg border-0 mb-4">
 
-                <h2 class="mb-0">
-                    👨‍⚕️ Thêm bác sĩ
-                </h2>
+<div class="card-header text-white p-4"
+style="background:linear-gradient(135deg,#0d6efd,#4f8dfd);">
 
-                <small>
-                    Thêm thông tin bác sĩ vào hệ thống
-                </small>
+<div class="d-flex justify-content-between align-items-center flex-wrap">
 
-            </div>
+<div>
 
-            <div class="card-body p-4">
+<h2 class="mb-1">
 
-                <form method="POST"
-                      enctype="multipart/form-data">
+👨‍⚕️ Thêm bác sĩ
 
-                    <!-- Ảnh bác sĩ -->
-                    <div class="mb-3">
+</h2>
 
-                        <label class="form-label fw-semibold">
-                            🖼 Ảnh bác sĩ
-                        </label>
+<p class="mb-0">
 
-                        <input
-                            type="file"
-                            name="image"
-                            class="form-control"
-                            accept="image/*"
-                            required>
+Thêm thông tin bác sĩ mới vào hệ thống
 
-                    </div>
+</p>
 
-                    <!-- Tên bác sĩ -->
-                    <div class="mb-3">
+</div>
 
-                        <label class="form-label fw-semibold">
-                            Họ và tên bác sĩ
-                        </label>
-
-                        <input
-                            type="text"
-                            name="name"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập họ tên bác sĩ"
-                            required>
-
-                    </div>
-
-                    <!-- Chuyên khoa -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            🩺 Chuyên khoa
-                        </label>
-
-                        <select
-                            name="specialty"
-                            class="form-select form-select-lg"
-                            required>
-
-                            <option value="">
-                                -- Chọn chuyên khoa --
-                            </option>
-
-                            {% for specialty in specialties %}
-
-                            <option value="{{ specialty.name }}">
-                                {{ specialty.name }}
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- Phòng khám -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            🏥 Phòng khám
-                        </label>
-
-                        <select
-                            name="clinic"
-                            class="form-select form-select-lg"
-                            required>
-
-                            <option value="">
-                                -- Chọn phòng khám --
-                            </option>
-
-                            {% for clinic in clinics %}
-
-                            <option value="{{ clinic.name }}">
-                                {{ clinic.name }}
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- Điện thoại -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            📞 Số điện thoại
-                        </label>
-
-                        <input
-                            type="text"
-                            name="phone"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập số điện thoại"
-                            required>
-
-                    </div>
-
-                    <!-- Email -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            📧 Email
-                        </label>
-
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control form-control-lg"
-                            placeholder="doctor@gmail.com"
-                            required>
-
-                    </div>
-
-                    <!-- Kinh nghiệm -->
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-                            ⭐ Số năm kinh nghiệm
-                        </label>
-
-                        <input
-                            type="number"
-                            name="experience"
-                            class="form-control form-control-lg"
-                            placeholder="Ví dụ: 10"
-                            min="0"
-                            required>
-
-                    </div>
-
-                    <div class="d-flex gap-2">
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary btn-lg">
-
-                            Lưu bác sĩ
-
-                        </button>
-
-                        <a
-                            href="/doctors"
-                            class="btn btn-outline-secondary btn-lg">
-
-                            Quay lại
-
-                        </a>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
+<i class="bi bi-person-plus-fill"
+style="font-size:60px;"></i>
 
 </div>
 
 </div>
+
+</div>
+
+<!-- Form -->
+
+<div class="card shadow border-0">
+
+<div class="card-body p-4">
+
+<form method="POST"
+      enctype="multipart/form-data">
+
+<div class="row">
+
+<!-- Ảnh -->
+
+<div class="col-md-4 text-center">
+
+<img
+id="preview"
+src="/static/uploads/avatar/default.png"
+class="preview-image mb-3">
+
+<div class="mb-3">
+
+<label class="form-label fw-bold">
+
+🖼 Ảnh bác sĩ
+
+</label>
+
+<input
+id="image"
+type="file"
+name="image"
+class="form-control"
+accept="image/*"
+required>
+
+</div>
+
+</div>
+
+<!-- Thông tin -->
+
+<div class="col-md-8">
+
+<div class="mb-3">
+
+<label class="form-label fw-semibold">
+
+👤 Họ và tên
+
+</label>
+
+<input
+type="text"
+name="name"
+class="form-control form-control-lg"
+placeholder="Ví dụ: BS Nguyễn Văn A"
+required>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label fw-semibold">
+
+🩺 Chuyên khoa
+
+</label>
+
+<select
+name="specialty"
+class="form-select form-select-lg"
+required>
+
+<option value="">
+-- Chọn chuyên khoa --
+</option>
+
+{% for specialty in specialties %}
+
+<option value="{{ specialty.name }}">
+
+{{ specialty.name }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label fw-semibold">
+
+🏥 Phòng khám
+
+</label>
+
+<select
+name="clinic"
+class="form-select form-select-lg"
+required>
+
+<option value="">
+-- Chọn phòng khám --
+</option>
+
+{% for clinic in clinics %}
+
+<option value="{{ clinic.name }}">
+
+{{ clinic.name }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label fw-semibold">
+
+📞 Số điện thoại
+
+</label>
+
+<input
+type="text"
+name="phone"
+class="form-control form-control-lg"
+placeholder="0987654321"
+pattern="[0-9]{10,11}"
+required>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label fw-semibold">
+
+📧 Email
+
+</label>
+
+<input
+type="email"
+name="email"
+class="form-control form-control-lg"
+placeholder="doctor@gmail.com"
+required>
+
+</div>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label fw-semibold">
+
+⭐ Số năm kinh nghiệm
+
+</label>
+
+<input
+type="number"
+name="experience"
+class="form-control form-control-lg"
+placeholder="Ví dụ: 10"
+min="0"
+required>
+
+</div>
+
+<div class="alert info-card">
+
+<h6 class="fw-bold">
+
+ℹ️ Lưu ý
+
+</h6>
+
+<ul class="mb-0">
+
+<li>Thông tin bác sĩ sẽ hiển thị trên hệ thống.</li>
+
+<li>Ảnh nên có kích thước vuông.</li>
+
+<li>Email không được trùng với tài khoản khác.</li>
+
+<li>Hãy kiểm tra thông tin trước khi lưu.</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="d-flex justify-content-between flex-wrap gap-2">
+
+<a
+href="/doctors"
+class="btn btn-secondary btn-lg">
+
+⬅ Quay lại
+
+</a>
+
+<button
+type="submit"
+class="btn btn-primary btn-lg">
+
+💾 Lưu bác sĩ
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const image=document.getElementById("image");
+
+image.onchange=function(e){
+
+const file=e.target.files[0];
+
+if(file){
+
+document.getElementById("preview").src=
+
+URL.createObjectURL(file);
+
+}
+
+}
+
+</script>
 
 {% endblock %}

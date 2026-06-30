@@ -1,179 +1,282 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Thuốc của tôi</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block title %}
+Thuốc của tôi
+{% endblock %}
 
-<body class="bg-light">
+{% block content %}
 
-<div class="container py-5">
+<!-- HEADER -->
 
-<div class="row justify-content-center">
+<div class="card mb-4 fade-up">
 
-<div class="col-lg-11">
+    <div class="card-body">
 
-<div class="card border-0 shadow-lg rounded-4">
+        <div class="row align-items-center">
 
-<div class="card-header bg-warning text-dark p-4 rounded-top-4">
+            <div class="col-lg-8">
 
-<div class="d-flex justify-content-between align-items-center">
+                <h2 class="fw-bold">
 
-    <h2 class="mb-0">
-        💊 Thuốc của tôi
-    </h2>
+                    <i class="bi bi-capsule-pill text-warning"></i>
 
-    <a href="/add-medicine"
-       class="btn btn-success">
-        + Thêm thuốc
-    </a>
+                    Thuốc của tôi
 
-</div>
+                </h2>
 
-</div>
+                <p class="text-muted mb-0">
 
-<div class="card-body p-4">
+                    Quản lý toàn bộ thuốc mà bạn đã đăng bán trên hệ thống.
 
-{% if medicines %}
+                </p>
 
-<div class="table-responsive">
+            </div>
 
-<table class="table table-bordered table-hover align-middle">
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
 
-    <thead class="table-primary">
+                <a href="/add-medicine"
+                   class="btn btn-success">
 
-        <tr>
-            <th>Hình ảnh</th>
-            <th>Tên thuốc</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Mô tả</th>
-            <th>Ngày đăng</th>
-            <th>Thao tác</th>
-        </tr>
+                    <i class="bi bi-plus-circle-fill"></i>
 
-    </thead>
+                    Thêm thuốc
 
-    <tbody>
-
-    {% for medicine in medicines %}
-
-    <tr>
-
-        <td width="120">
-
-            {% if medicine.image %}
-
-            <img src="{{ medicine.image }}"
-                 class="img-fluid rounded shadow-sm"
-                 style="max-height:100px;object-fit:cover;">
-
-            {% else %}
-
-            <span class="text-muted">
-                Không có ảnh
-            </span>
-
-            {% endif %}
-
-        </td>
-
-        <td>
-            <b>{{ medicine.name }}</b>
-        </td>
-
-        <td class="text-danger fw-bold">
-            {{ "{:,}".format(medicine.price) }} VNĐ
-        </td>
-
-        <td>
-            {{ medicine.quantity }}
-        </td>
-
-        <td>
-            {{ medicine.description }}
-        </td>
-
-        <td>
-
-            {% if medicine.created_at %}
-
-                {{ medicine.created_at.strftime('%d/%m/%Y') }}
-
-            {% else %}
-
-                -
-
-            {% endif %}
-
-        </td>
-
-        <td>
-
-            <div class="d-grid gap-1">
-
-                <a href="/edit-medicine/{{ medicine._id }}"
-                   class="btn btn-warning btn-sm">
-                    Sửa
-                </a>
-
-                <a href="/delete-medicine/{{ medicine._id }}"
-                   class="btn btn-danger btn-sm"
-                   onclick="return confirm('Bạn có chắc muốn xóa thuốc này?')">
-                    Xóa
                 </a>
 
             </div>
 
-        </td>
+        </div>
 
-    </tr>
+    </div>
 
-    {% endfor %}
+</div>
 
-    </tbody>
+{% if medicines %}
 
-</table>
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-primary">
+
+                    <tr>
+
+                        <th>Hình ảnh</th>
+
+                        <th>Tên thuốc</th>
+
+                        <th>Giá</th>
+
+                        <th>Số lượng</th>
+
+                        <th>Mô tả</th>
+
+                        <th>Ngày đăng</th>
+
+                        <th class="text-center">
+
+                            Thao tác
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td width="110">
+
+                        {% if medicine.image %}
+
+                        <img src="{{ medicine.image }}"
+                             class="rounded shadow"
+                             style="width:80px;height:80px;object-fit:cover;">
+
+                        {% else %}
+
+                        <div class="icon-box bg-primary-soft">
+
+                            <i class="bi bi-capsule-pill"></i>
+
+                        </div>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <strong>
+
+                            {{ medicine.name }}
+
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <span class="fw-bold text-danger">
+
+                            {{ "{:,}".format(medicine.price) }} VNĐ
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {% if medicine.quantity > 10 %}
+
+                        <span class="badge bg-success">
+
+                            {{ medicine.quantity }}
+
+                        </span>
+
+                        {% elif medicine.quantity > 0 %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            {{ medicine.quantity }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Hết hàng
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ medicine.description }}
+
+                    </td>
+
+                    <td>
+
+                        {% if medicine.created_at %}
+
+                            {{ medicine.created_at.strftime('%d/%m/%Y') }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <a href="/edit-medicine/{{ medicine._id }}"
+                           class="btn btn-warning btn-sm mb-2">
+
+                            <i class="bi bi-pencil-square"></i>
+
+                            Sửa
+
+                        </a>
+
+                        <br>
+
+                        <a href="/delete-medicine/{{ medicine._id }}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc muốn xóa thuốc này?')">
+
+                            <i class="bi bi-trash-fill"></i>
+
+                            Xóa
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
 {% else %}
 
-<div class="alert alert-info">
+<div class="card">
 
-    Bạn chưa đăng thuốc nào.
+    <div class="card-body text-center py-5">
+
+        <i class="bi bi-capsule display-1 text-secondary"></i>
+
+        <h3 class="mt-3">
+
+            Chưa có thuốc nào
+
+        </h3>
+
+        <p class="text-muted">
+
+            Bạn chưa đăng thuốc nào lên hệ thống.
+
+        </p>
+
+        <a href="/add-medicine"
+           class="btn btn-success">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Đăng thuốc đầu tiên
+
+        </a>
+
+    </div>
 
 </div>
 
 {% endif %}
 
-<hr>
-
-<div class="d-flex gap-2 mt-4">
+<div class="mt-4 d-flex gap-2 flex-wrap">
 
     <a href="/doctor-dashboard"
-       class="btn btn-secondary">
+       class="btn btn-outline-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
         Quay lại Dashboard
+
     </a>
 
     <a href="/add-medicine"
        class="btn btn-success">
+
+        <i class="bi bi-capsule-pill"></i>
+
         Đăng thuốc mới
+
     </a>
 
 </div>
 
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

@@ -1000,6 +1000,24 @@ def approve_doctor(user_id):
         return redirect("/doctor-requests")
 
 # ==========================
+# từ chối duyệt tài khoản bác sĩ 
+# ==========================
+@app.route("/delete-doctor-request/<id>")
+def delete_doctor_request(id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if session.get("role") != "admin":
+        return redirect("/dashboard")
+
+    db.doctor_requests.delete_one({
+        "_id": ObjectId(id)
+    })
+
+    return redirect("/doctor-requests")
+
+# ==========================
 # ĐĂNG XUẤT
 # ==========================
 
@@ -1119,29 +1137,31 @@ def add_clinic():
     if not is_admin():
         return "<h3>Không có quyền truy cập</h3>"
 
+    specialties = list(
+        db.specialties.find().sort("name", 1)
+    )
+
     if request.method == "POST":
 
         db.clinics.insert_one({
 
-            "name": request.form["name"],
+            "name": request.form["name"].strip(),
 
-            "address": request.form["address"],
+            "address": request.form["address"].strip(),
 
-            "phone": request.form["phone"],
+            "phone": request.form["phone"].strip(),
 
             "specialty": request.form["specialty"],
 
-            "lat": request.form["lat"],
+            "lat": float(request.form["lat"]),
 
-            "lng": request.form["lng"]
+            "lng": float(request.form["lng"])
 
         })
 
-        return redirect("/clinics")
+        flash("Thêm phòng khám thành công!", "success")
 
-    specialties = list(
-        db.specialties.find()
-    )
+        return redirect("/clinics")
 
     return render_template(
         "add_clinic.html",
@@ -1162,24 +1182,44 @@ def edit_clinic(id):
         "_id": ObjectId(id)
     })
 
+    if not clinic:
+        return "<h3>Không tìm thấy phòng khám</h3>"
+
+    specialties = list(
+        db.specialties.find().sort("name", 1)
+    )
+
     if request.method == "POST":
 
         db.clinics.update_one(
             {"_id": ObjectId(id)},
             {
                 "$set": {
+
                     "name": request.form["name"],
+
                     "address": request.form["address"],
-                    "phone": request.form["phone"]
+
+                    "phone": request.form["phone"],
+
+                    "specialty": request.form["specialty"],
+
+                    "lat": float(request.form["lat"]),
+
+                    "lng": float(request.form["lng"])
+
                 }
             }
         )
+
+        flash("Cập nhật phòng khám thành công!", "success")
 
         return redirect("/clinics")
 
     return render_template(
         "edit_clinic.html",
-        clinic=clinic
+        clinic=clinic,
+        specialties=specialties
     )
 
 
@@ -1219,7 +1259,6 @@ def doctors():
         doctors=doctors
     )
 
-
 # ==========================
 # DANH SÁCH BÁC SĨ (USER)
 # ==========================
@@ -1227,19 +1266,29 @@ def doctors():
 @app.route("/doctor-list")
 def doctor_list():
 
+    # Kiểm tra đăng nhập
     if "user_id" not in session:
         return redirect("/login")
 
-    doctors = list(db.doctors.find().sort("name", 1))
+    # Chỉ lấy bác sĩ đã được duyệt
+    doctors = list(
+        db.doctors.find(
+            {
+                "approved": True
+            }
+        ).sort("name", 1)
+    )
 
-    for doctor in doctors:
-        print(doctor)
+    # Danh sách chuyên khoa
+    specialties = list(
+        db.specialties.find().sort("name", 1)
+    )
 
     return render_template(
         "doctor_list_user.html",
-        doctors=doctors
+        doctors=doctors,
+        specialties=specialties
     )
-
 # ==========================
 # THÊM BÁC SĨ
 # ==========================
@@ -1314,7 +1363,7 @@ def add_doctor():
 # SỬA BÁC SĨ
 # ==========================
 @app.route("/doctors/edit/<id>", methods=["GET", "POST"])
-def edit_doctor(id):
+def edit_doctor():
 
     if not is_admin():
         return "<h3>Không có quyền truy cập</h3>"
@@ -1326,18 +1375,63 @@ def edit_doctor(id):
     if not doctor:
         return "<h3>Không tìm thấy bác sĩ</h3>"
 
-    specialties = list(db.specialties.find())
-    clinics = list(db.clinics.find())
+    specialties = list(db.specialties.find().sort("name", 1))
+    clinics = list(db.clinics.find().sort("name", 1))
 
     if request.method == "POST":
+
+        name = request.form["name"].strip()
+        specialty = request.form["specialty"]
+        clinic = request.form["clinic"]
+        phone = request.form["phone"].strip()
+        email = request.form["email"].strip().lower()
+        experience = int(request.form["experience"])
+
+        # Kiểm tra email trùng
+        existed = db.doctors.find_one({
+            "email": email,
+            "_id": {"$ne": ObjectId(id)}
+        })
+
+        if existed:
+
+            flash("Email đã tồn tại.", "danger")
+
+            return render_template(
+                "edit_doctor.html",
+                doctor=doctor,
+                specialties=specialties,
+                clinics=clinics
+            )
+
+        # Kiểm tra SĐT trùng
+        existed = db.doctors.find_one({
+            "phone": phone,
+            "_id": {"$ne": ObjectId(id)}
+        })
+
+        if existed:
+
+            flash("Số điện thoại đã tồn tại.", "danger")
+
+            return render_template(
+                "edit_doctor.html",
+                doctor=doctor,
+                specialties=specialties,
+                clinics=clinics
+            )
 
         image_path = doctor.get("image", "")
 
         file = request.files.get("image")
 
-        if file and file.filename != "":
+        if file and file.filename:
 
-            filename = secure_filename(file.filename)
+            filename = (
+                str(ObjectId())
+                + "_"
+                + secure_filename(file.filename)
+            )
 
             upload_folder = os.path.join(
                 app.root_path,
@@ -1348,33 +1442,38 @@ def edit_doctor(id):
 
             os.makedirs(upload_folder, exist_ok=True)
 
-            save_path = os.path.join(
-                upload_folder,
-                filename
+            file.save(
+                os.path.join(upload_folder, filename)
             )
 
-            file.save(save_path)
-
-            image_path = f"/static/uploads/doctors/{filename}"
+            image_path = "/static/uploads/doctors/" + filename
 
         db.doctors.update_one(
+
             {
                 "_id": ObjectId(id)
             },
+
             {
                 "$set": {
-                    "name": request.form["name"],
-                    "specialty": request.form["specialty"],
-                    "clinic": request.form["clinic"],
-                    "phone": request.form["phone"],
-                    "email": request.form["email"],
-                    "experience": request.form["experience"],
+
+                    "name": name,
+                    "specialty": specialty,
+                    "clinic": clinic,
+                    "phone": phone,
+                    "email": email,
+                    "experience": experience,
                     "image": image_path
+
                 }
             }
+
         )
 
-        flash("Cập nhật bác sĩ thành công!", "success")
+        flash(
+            "Cập nhật bác sĩ thành công!",
+            "success"
+        )
 
         return redirect("/doctors")
 
@@ -1742,12 +1841,14 @@ Giờ:
 # ==========================
 # SỬA LỊCH KHÁM
 # ==========================
+
 @app.route("/appointments/edit/<id>", methods=["GET", "POST"])
 def edit_appointment(id):
 
     if "user_id" not in session:
         return redirect("/login")
 
+    # Admin được sửa tất cả
     if is_admin():
 
         appointment = db.appointments.find_one({
@@ -1764,20 +1865,61 @@ def edit_appointment(id):
         if not appointment:
             return redirect("/appointments")
 
-    doctors = list(
-        db.doctors.find()
-    )
+    doctors = list(db.doctors.find().sort("name", 1))
 
     if request.method == "POST":
+
+        patient = request.form["patient"]
+        doctor = request.form["doctor"]
+        date = request.form["date"]
+        time = request.form["time"]
+
+        # Kiểm tra trùng lịch (bỏ qua chính lịch đang sửa)
+        existed = db.appointments.find_one({
+            "_id": {"$ne": ObjectId(id)},
+            "doctor": doctor,
+            "date": date,
+            "time": time
+        })
+
+        if existed:
+
+            suggestions = []
+
+            for h in range(7, 18):
+
+                if h == 12:
+                    continue
+
+                t = f"{h:02d}:00"
+
+                busy = db.appointments.find_one({
+                    "doctor": doctor,
+                    "date": date,
+                    "time": t,
+                    "_id": {"$ne": ObjectId(id)}
+                })
+
+                if not busy:
+                    suggestions.append(t)
+
+            return render_template(
+                "edit_appointment.html",
+                appointment=appointment,
+                doctors=doctors,
+                today=datetime.now().strftime("%Y-%m-%d"),
+                error="Bác sĩ đã có lịch khám vào thời gian này.",
+                suggestions=suggestions
+            )
 
         db.appointments.update_one(
             {"_id": ObjectId(id)},
             {
                 "$set": {
-                    "patient": request.form["patient"],
-                    "doctor": request.form["doctor"],
-                    "date": request.form["date"],
-                    "time": request.form["time"]
+                    "patient": patient,
+                    "doctor": doctor,
+                    "date": date,
+                    "time": time
                 }
             }
         )
@@ -1787,7 +1929,8 @@ def edit_appointment(id):
     return render_template(
         "edit_appointment.html",
         appointment=appointment,
-        doctors=doctors
+        doctors=doctors,
+        today=datetime.now().strftime("%Y-%m-%d")
     )
 
 
@@ -2547,39 +2690,72 @@ def admin_add_medicine():
 # ==========================
 # SỬA THUỐC ADMIN
 # ==========================
-@app.route("/admin/medicines/edit/<id>",methods=["GET","POST"])
+@app.route("/admin/medicines/edit/<id>", methods=["GET", "POST"])
 def admin_edit_medicine(id):
 
     if "user_id" not in session:
         return redirect("/login")
 
-    medicine=db.medicines.find_one({
-        "_id":ObjectId(id)
+    if session.get("role") != "admin":
+        return redirect("/dashboard")
+
+    medicine = db.medicines.find_one({
+        "_id": ObjectId(id)
     })
 
-    if request.method=="POST":
+    if not medicine:
+        return "<h3>Không tìm thấy thuốc</h3>"
+
+    if request.method == "POST":
+
+        image_path = medicine.get("image", "")
+
+        file = request.files.get("image")
+
+        if file and file.filename != "":
+
+            filename = secure_filename(file.filename)
+
+            upload_folder = os.path.join(
+                app.root_path,
+                "static",
+                "uploads",
+                "medicines"
+            )
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+            save_path = os.path.join(
+                upload_folder,
+                filename
+            )
+
+            file.save(save_path)
+
+            image_path = f"/static/uploads/medicines/{filename}"
 
         db.medicines.update_one(
-
             {
-                "_id":ObjectId(id)
+                "_id": ObjectId(id)
             },
-
             {
-                "$set":{
+                "$set": {
 
-                    "name":request.form["name"],
-                    "price":int(request.form["price"]),
-                    "quantity":int(request.form["quantity"]),
-                    "description":request.form["description"],
-                    "doctor_name":request.form["doctor_name"],
-                    "image":request.form["image"]
+                    "name": request.form["name"],
+
+                    "price": int(request.form["price"]),
+
+                    "quantity": int(request.form["quantity"]),
+
+                    "description": request.form["description"],
+
+                    "image": image_path
 
                 }
-
             }
-
         )
+
+        flash("Cập nhật thuốc thành công!", "success")
 
         return redirect("/admin/medicines")
 
@@ -3053,9 +3229,56 @@ def admin_orders():
         )
     )
 
+    # ==========================
+    # THỐNG KÊ
+    # ==========================
+
+    total_orders = len(orders)
+
+    pending_orders = sum(
+        1 for order in orders
+        if order.get("status") == "pending"
+    )
+
+    paid_orders = sum(
+        1 for order in orders
+        if order.get("status") == "paid"
+    )
+
+    cancel_orders = sum(
+        1 for order in orders
+        if order.get("status") == "cancel"
+    )
+
+    total_revenue = sum(
+        order.get("total", 0)
+        for order in orders
+        if order.get("status") == "paid"
+    )
+
+    # Dữ liệu biểu đồ
+    chart_data = {
+        "pending": pending_orders,
+        "paid": paid_orders,
+        "cancel": cancel_orders
+    }
+
     return render_template(
         "admin_orders.html",
-        orders=orders
+
+        orders=orders,
+
+        total_orders=total_orders,
+
+        pending_orders=pending_orders,
+
+        paid_orders=paid_orders,
+
+        cancel_orders=cancel_orders,
+
+        total_revenue=total_revenue,
+
+        chart_data=chart_data
     )
 
 # ==========================

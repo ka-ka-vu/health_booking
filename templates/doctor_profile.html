@@ -6,183 +6,245 @@ Hồ sơ bác sĩ
 
 {% block content %}
 
-<div class="container py-5">
+<!-- HEADER -->
 
-<div class="row justify-content-center">
+<div class="card mb-4 fade-up">
 
-    <div class="col-lg-8">
+    <div class="card-body">
 
-        <div class="card border-0 shadow-lg">
+        <div class="row align-items-center">
 
-            <div class="card-header bg-primary text-white text-center p-4">
+            <div class="col-lg-8">
 
-                <h2 class="mb-1">
+                <h2 class="fw-bold">
 
-                    👨‍⚕️ Hồ sơ bác sĩ
+                    <i class="bi bi-person-vcard-fill text-primary"></i>
+
+                    Hồ sơ bác sĩ
 
                 </h2>
 
-                <p class="mb-0">
+                <p class="text-muted mb-0">
 
-                    Cập nhật thông tin cá nhân và phòng khám
+                    Cập nhật thông tin cá nhân và phòng khám của bạn.
 
                 </p>
 
             </div>
 
-            <div class="card-body p-4">
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
 
-                <form method="POST">
+                <a href="/doctor-dashboard"
+                   class="btn btn-outline-secondary">
 
-                    <div class="mb-3">
+                    <i class="bi bi-arrow-left"></i>
 
-                        <label class="form-label fw-bold">
+                    Dashboard
 
-                            Họ và tên
-
-                        </label>
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            value="{{ doctor.name }}"
-                            disabled>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label fw-bold">
-
-                            Email
-
-                        </label>
-
-                        <input
-                            type="email"
-                            class="form-control"
-                            value="{{ doctor.email }}"
-                            disabled>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label fw-bold">
-
-                            📞 Số điện thoại
-
-                        </label>
-
-                        <input
-                            type="text"
-                            name="phone"
-                            class="form-control"
-                            value="{{ doctor.phone }}"
-                            required>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label fw-bold">
-
-                            🩺 Chuyên khoa
-
-                        </label>
-
-                        <input
-                            type="text"
-                            name="specialty"
-                            class="form-control"
-                            value="{{ doctor.specialty }}"
-                            required>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label fw-bold">
-
-                            📚 Kinh nghiệm
-
-                        </label>
-
-                        <input
-                            type="text"
-                            name="experience"
-                            class="form-control"
-                            value="{{ doctor.experience }}"
-                            required>
-
-                    </div>
-
-                    <div class="mb-4">
-
-                        <label class="form-label fw-bold">
-
-                            🏥 Địa chỉ phòng khám
-
-                        </label>
-
-                        <input
-                            type="text"
-                            name="clinic"
-                            class="form-control"
-                            value="{{ doctor.clinic }}"
-                            placeholder="Nhập địa chỉ phòng khám">
-
-                    </div>
-
-                    <div class="d-grid gap-2">
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary btn-lg">
-
-                            💾 Cập nhật hồ sơ
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-            <div class="card-footer bg-light p-3">
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-2">
-
-                        <a href="/doctor-dashboard"
-                           class="btn btn-secondary w-100">
-
-                            ⬅ Quay lại Dashboard
-
-                        </a>
-
-                    </div>
-
-                    <div class="col-md-6 mb-2">
-
-                        <a href="/logout"
-                           class="btn btn-danger w-100">
-
-                            🚪 Đăng xuất
-
-                        </a>
-
-                    </div>
-
-                </div>
+                </a>
 
             </div>
 
         </div>
 
     </div>
+
+</div>
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card">
+
+<div class="card-body p-4">
+
+<form method="POST">
+
+    <!-- Họ tên -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-person-fill"></i>
+
+            Họ và tên
+
+        </label>
+
+        <input
+            type="text"
+            class="form-control form-control-lg"
+            value="{{ doctor.name }}"
+            disabled>
+
+    </div>
+
+    <!-- Email -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-envelope-fill"></i>
+
+            Email
+
+        </label>
+
+        <input
+            type="email"
+            class="form-control form-control-lg"
+            value="{{ doctor.email }}"
+            disabled>
+
+    </div>
+
+    <!-- Điện thoại -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-telephone-fill"></i>
+
+            Số điện thoại
+
+        </label>
+
+        <input
+            type="text"
+            name="phone"
+            class="form-control form-control-lg"
+            value="{{ doctor.phone }}"
+            required>
+
+    </div>
+
+    <!-- Chuyên khoa -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-heart-pulse-fill"></i>
+
+            Chuyên khoa
+
+        </label>
+
+        <input
+            type="text"
+            name="specialty"
+            class="form-control form-control-lg"
+            value="{{ doctor.specialty }}"
+            required>
+
+    </div>
+
+    <!-- Kinh nghiệm -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-award-fill"></i>
+
+            Kinh nghiệm
+
+        </label>
+
+        <input
+            type="text"
+            name="experience"
+            class="form-control form-control-lg"
+            value="{{ doctor.experience }}"
+            required>
+
+    </div>
+
+    <!-- Phòng khám -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-hospital-fill"></i>
+
+            Địa chỉ phòng khám
+
+        </label>
+
+        <input
+            type="text"
+            name="clinic"
+            class="form-control form-control-lg"
+            value="{{ doctor.clinic }}"
+            placeholder="Nhập địa chỉ phòng khám">
+
+    </div>
+
+    <!-- Nút -->
+
+    <div class="d-grid gap-3">
+
+        <button
+            type="submit"
+            class="btn btn-primary btn-lg">
+
+            <i class="bi bi-floppy-fill"></i>
+
+            Cập nhật hồ sơ
+
+        </button>
+
+        <a href="/doctor-dashboard"
+           class="btn btn-outline-secondary btn-lg">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Quay lại Dashboard
+
+        </a>
+
+    </div>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- Thông tin -->
+
+<div class="card mt-4">
+
+    <div class="card-body">
+
+        <h5 class="fw-bold mb-3">
+
+            <i class="bi bi-info-circle-fill text-primary"></i>
+
+            Lưu ý
+
+        </h5>
+
+        <ul class="mb-0">
+
+            <li>Thông tin họ tên và email được cố định.</li>
+
+            <li>Luôn cập nhật đúng chuyên khoa để bệnh nhân dễ tìm kiếm.</li>
+
+            <li>Địa chỉ phòng khám sẽ được hiển thị trên bản đồ của hệ thống.</li>
+
+            <li>Thông tin chính xác giúp tăng độ tin cậy với bệnh nhân.</li>
+
+        </ul>
+
+    </div>
+
+</div>
 
 </div>
 

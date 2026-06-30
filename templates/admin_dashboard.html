@@ -6,20 +6,43 @@ Admin Dashboard
 
 {% block content %}
 
-<div class="container py-4">
+<!-- HEADER -->
 
-<!-- Header -->
-<div class="card border-0 shadow-lg mb-4">
+<div class="card mb-4 fade-up">
 
     <div class="card-body">
 
-        <h2 class="fw-bold">
-            👑 Xin chào Admin {{ fullname }}
-        </h2>
+        <div class="row align-items-center">
 
-        <div class="alert alert-danger mt-3 mb-0">
+            <div class="col-md-8">
 
-            Bạn đang đăng nhập với quyền quản trị hệ thống
+                <h2 class="fw-bold">
+
+                    <i class="bi bi-speedometer2 text-primary"></i>
+
+                    Xin chào Admin {{ fullname }}
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Chào mừng bạn trở lại hệ thống quản trị Health Booking.
+
+                </p>
+
+            </div>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                <span class="badge bg-danger fs-6">
+
+                    <i class="bi bi-shield-lock-fill"></i>
+
+                    Quyền quản trị
+
+                </span>
+
+            </div>
 
         </div>
 
@@ -27,42 +50,41 @@ Admin Dashboard
 
 </div>
 
-<!-- Thống kê -->
+<!-- THỐNG KÊ -->
+
 <div class="row g-4">
 
     <div class="col-md-3">
 
-        <div class="card bg-primary text-white shadow-lg h-100">
+        <div class="card dashboard-card h-100">
 
-            <div class="card-body text-center">
+            <div class="card-body">
 
-                <h1>👨‍⚕️</h1>
+                <div class="d-flex justify-content-between">
 
-                <h2>{{ doctor_count }}</h2>
+                    <div>
 
-                <p class="mb-0">
-                    Bác sĩ
-                </p>
+                        <small class="text-muted">
 
-            </div>
+                            Bác sĩ
 
-        </div>
+                        </small>
 
-    </div>
+                        <h2 class="dashboard-number">
 
-    <div class="col-md-3">
+                            {{ doctor_count }}
 
-        <div class="card bg-success text-white shadow-lg h-100">
+                        </h2>
 
-            <div class="card-body text-center">
+                    </div>
 
-                <h1>🏥</h1>
+                    <div class="icon-box bg-primary-soft">
 
-                <h2>{{ clinic_count }}</h2>
+                        <i class="bi bi-person-badge-fill"></i>
 
-                <p class="mb-0">
-                    Phòng khám
-                </p>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -72,17 +94,35 @@ Admin Dashboard
 
     <div class="col-md-3">
 
-        <div class="card bg-warning shadow-lg h-100">
+        <div class="card dashboard-card h-100">
 
-            <div class="card-body text-center">
+            <div class="card-body">
 
-                <h1>📅</h1>
+                <div class="d-flex justify-content-between">
 
-                <h2>{{ appointment_count }}</h2>
+                    <div>
 
-                <p class="mb-0">
-                    Lịch khám
-                </p>
+                        <small class="text-muted">
+
+                            Phòng khám
+
+                        </small>
+
+                        <h2 class="dashboard-number">
+
+                            {{ clinic_count }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon-box bg-success-soft">
+
+                        <i class="bi bi-hospital-fill"></i>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -92,17 +132,73 @@ Admin Dashboard
 
     <div class="col-md-3">
 
-        <div class="card bg-danger text-white shadow-lg h-100">
+        <div class="card dashboard-card h-100">
 
-            <div class="card-body text-center">
+            <div class="card-body">
 
-                <h1>⏰</h1>
+                <div class="d-flex justify-content-between">
 
-                <h2>{{ today_appointments }}</h2>
+                    <div>
 
-                <p class="mb-0">
-                    Hôm nay
-                </p>
+                        <small class="text-muted">
+
+                            Lịch khám
+
+                        </small>
+
+                        <h2 class="dashboard-number">
+
+                            {{ appointment_count }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon-box bg-warning-soft">
+
+                        <i class="bi bi-calendar-check-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card dashboard-card h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Hôm nay
+
+                        </small>
+
+                        <h2 class="dashboard-number">
+
+                            {{ today_appointments }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon-box bg-danger-soft">
+
+                        <i class="bi bi-clock-fill"></i>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -112,16 +208,19 @@ Admin Dashboard
 
 </div>
 
-<!-- Biểu đồ -->
-<div class="card shadow-lg mt-5">
+<!-- BIỂU ĐỒ -->
 
-    <div class="card-header bg-dark text-white">
-
-        📊 Thống kê lịch khám theo tháng
-
-    </div>
+<div class="card mt-5">
 
     <div class="card-body">
+
+        <h4 class="fw-bold mb-4">
+
+            <i class="bi bi-bar-chart-fill text-primary"></i>
+
+            Thống kê lịch khám theo tháng
+
+        </h4>
 
         <canvas id="appointmentChart"></canvas>
 
@@ -129,87 +228,140 @@ Admin Dashboard
 
 </div>
 
-<!-- Chức năng -->
-<div class="card shadow-lg mt-5">
+<!-- CHỨC NĂNG -->
 
-    <div class="card-header bg-primary text-white">
-
-        ⚙ Quản trị hệ thống
-
-    </div>
+<div class="card mt-5">
 
     <div class="card-body">
 
-        <div class="row g-3">
+        <h4 class="fw-bold mb-4">
 
-            <div class="col-md-4">
-                <a href="/specialties"
-                   class="btn btn-primary w-100 p-3">
-                    🩺 Chuyên khoa
+            <i class="bi bi-grid-fill text-primary"></i>
+
+            Quản trị hệ thống
+
+        </h4>
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/specialties" class="btn btn-primary w-100 py-3">
+
+                    <i class="bi bi-heart-pulse-fill"></i><br>
+
+                    Chuyên khoa
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/clinics"
-                   class="btn btn-success w-100 p-3">
-                    🏥 Phòng khám
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/clinics" class="btn btn-success w-100 py-3">
+
+                    <i class="bi bi-hospital-fill"></i><br>
+
+                    Phòng khám
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/doctors"
-                   class="btn btn-warning w-100 p-3">
-                    👨‍⚕️ Bác sĩ
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/doctors" class="btn btn-warning w-100 py-3">
+
+                    <i class="bi bi-person-badge-fill"></i><br>
+
+                    Bác sĩ
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/appointments"
-                   class="btn btn-info w-100 p-3">
-                    📅 Lịch khám
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/appointments" class="btn btn-info w-100 py-3">
+
+                    <i class="bi bi-calendar-check-fill"></i><br>
+
+                    Lịch khám
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/doctor-requests"
-                   class="btn btn-secondary w-100 p-3">
-                    ✔ Duyệt bác sĩ
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/doctor-requests" class="btn btn-secondary w-100 py-3">
+
+                    <i class="bi bi-person-check-fill"></i><br>
+
+                    Duyệt bác sĩ
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/map"
-                   class="btn btn-dark w-100 p-3">
-                    🗺 Bản đồ
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/map" class="btn btn-dark w-100 py-3">
+
+                    <i class="bi bi-geo-alt-fill"></i><br>
+
+                    Bản đồ
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/admin-orders"
-                   class="btn btn-warning w-100 p-3">
-                    🛒 Đơn hàng
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/admin-orders" class="btn btn-warning w-100 py-3">
+
+                    <i class="bi bi-cart-fill"></i><br>
+
+                    Đơn hàng
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/admin/medicines"
-                    class="btn btn-success w-100 p-3">
-                    💊 Quản lý thuốc
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/admin/medicines" class="btn btn-success w-100 py-3">
+
+                    <i class="bi bi-capsule-pill"></i><br>
+
+                    Thuốc
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/admin-doctor-income"
-                    class="btn btn-danger w-100 p-3">
-                    💰 Doanh thu bác sĩ
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/admin-doctor-income" class="btn btn-danger w-100 py-3">
+
+                    <i class="bi bi-cash-stack"></i><br>
+
+                    Doanh thu
+
                 </a>
+
             </div>
 
-            <div class="col-md-4">
-                <a href="/logout"
-                   class="btn btn-danger w-100 p-3">
-                    🚪 Đăng xuất
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/logout" class="btn btn-outline-danger w-100 py-3">
+
+                    <i class="bi bi-box-arrow-right"></i><br>
+
+                    Đăng xuất
+
                 </a>
+
             </div>
 
         </div>
@@ -218,51 +370,59 @@ Admin Dashboard
 
 </div>
 
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 
-const ctx = document.getElementById('appointmentChart');
+const ctx=document.getElementById("appointmentChart");
 
-new Chart(ctx, {
+new Chart(ctx,{
 
-    type: 'bar',
+type:"bar",
 
-    data: {
+data:{
 
-        labels: [
-            'T1','T2','T3','T4',
-            'T5','T6','T7','T8',
-            'T9','T10','T11','T12'
-        ],
+labels:["T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"],
 
-        datasets: [{
+datasets:[{
 
-            label: 'Số lịch khám',
+label:"Lịch khám",
 
-            data: {{ months|tojson }},
+data:{{ months|tojson }},
 
-            borderWidth: 1
+backgroundColor:"#0d6efd",
 
-        }]
+borderRadius:8
 
-    },
+}]
 
-    options: {
+},
 
-        responsive: true,
+options:{
 
-        scales: {
+responsive:true,
 
-            y: {
-                beginAtZero: true
-            }
+plugins:{
 
-        }
+legend:{
 
-    }
+display:false
+
+}
+
+},
+
+scales:{
+
+y:{
+
+beginAtZero:true
+
+}
+
+}
+
+}
 
 });
 

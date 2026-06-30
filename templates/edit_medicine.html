@@ -10,181 +10,212 @@ Sửa thuốc
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+<div class="col-lg-8">
 
-        <div class="card border-0 shadow-lg rounded-4">
+<div class="card border-0 shadow-lg rounded-4">
 
-            <div class="card-header bg-warning text-dark p-4 rounded-top-4">
+<div class="card-header bg-warning text-dark p-4">
 
-                <h2 class="mb-0">
+<h2 class="mb-0">
+💊 Sửa thông tin thuốc
+</h2>
 
-                    💊 Sửa thông tin thuốc
+<p class="mb-0">
+Cập nhật thông tin thuốc trong hệ thống
+</p>
 
-                </h2>
+</div>
 
-                <small>
+<div class="card-body p-4">
 
-                    Cập nhật sản phẩm đang bán
+{% with messages=get_flashed_messages(with_categories=true) %}
+{% if messages %}
 
-                </small>
+{% for category,message in messages %}
 
-            </div>
+<div class="alert alert-{{ category }}">
 
-            <div class="card-body p-4">
+{{ message }}
 
-                <form method="POST" enctype="multipart/form-data">
+</div>
 
-                    <div class="mb-3">
+{% endfor %}
 
-                        <label class="form-label fw-semibold">
+{% endif %}
+{% endwith %}
 
-                            Tên thuốc
+<form method="POST" enctype="multipart/form-data">
 
-                        </label>
+<div class="mb-3">
 
-                        <input
-                            type="text"
-                            name="name"
-                            class="form-control form-control-lg"
-                            value="{{ medicine.name }}"
-                            required>
+<label class="form-label fw-bold">
 
-                    </div>
+Tên thuốc
 
-                    <div class="mb-4">
+</label>
 
-                        <label class="form-label fw-semibold">
+<input
+type="text"
+name="name"
+class="form-control form-control-lg"
+value="{{ medicine.name }}"
+placeholder="Nhập tên thuốc"
+required>
 
-                            Ảnh hiện tại
+</div>
 
-                        </label>
+<div class="row">
 
-                        <div class="text-center">
+<div class="col-md-6 mb-3">
 
-                            {% if medicine.image %}
+<label class="form-label fw-bold">
 
-                            <img
-                                src="{{ medicine.image }}"
-                                class="img-fluid rounded shadow-sm border mb-3"
-                                style="max-height:250px;">
+💰 Giá bán
 
-                            {% else %}
+</label>
 
-                            <div class="alert alert-warning">
+<input
+type="number"
+name="price"
+class="form-control form-control-lg"
+value="{{ medicine.price }}"
+required>
 
-                                Chưa có ảnh thuốc
+</div>
 
-                            </div>
+<div class="col-md-6 mb-3">
 
-                            {% endif %}
+<label class="form-label fw-bold">
 
-                        </div>
+📦 Số lượng
 
-                        <label class="form-label fw-semibold">
+</label>
 
-                            📷 Chọn ảnh mới
+<input
+type="number"
+name="quantity"
+class="form-control form-control-lg"
+value="{{ medicine.quantity }}"
+required>
 
-                        </label>
+</div>
 
-                        <input
-                            type="file"
-                            name="image"
-                            class="form-control">
+</div>
 
-                        <small class="text-muted">
+<div class="mb-3">
 
-                            Để trống nếu không muốn thay đổi ảnh.
+<label class="form-label fw-bold">
 
-                        </small>
+📝 Mô tả
 
-                    </div>
+</label>
 
-                    <div class="row">
+<textarea
+name="description"
+rows="5"
+class="form-control"
+placeholder="Mô tả thuốc...">{{ medicine.description }}</textarea>
 
-                        <div class="col-md-6 mb-3">
+</div>
 
-                            <label class="form-label fw-semibold">
+<div class="mb-3">
 
-                                💰 Giá bán (VNĐ)
+<label class="form-label fw-bold">
 
-                            </label>
+👨‍⚕️ Bác sĩ phụ trách
 
-                            <input
-                                type="number"
-                                name="price"
-                                class="form-control form-control-lg"
-                                value="{{ medicine.price }}"
-                                required>
+</label>
 
-                        </div>
+<input
+type="text"
+class="form-control"
+value="{{ medicine.doctor_name }}"
+readonly>
 
-                        <div class="col-md-6 mb-3">
+</div>
 
-                            <label class="form-label fw-semibold">
+<div class="mb-4">
 
-                                📦 Số lượng
+<label class="form-label fw-bold">
 
-                            </label>
+Ảnh hiện tại
 
-                            <input
-                                type="number"
-                                name="quantity"
-                                class="form-control form-control-lg"
-                                value="{{ medicine.quantity }}"
-                                required>
+</label>
 
-                        </div>
+<div class="text-center">
 
-                    </div>
+{% if medicine.image %}
 
-                    <div class="mb-3">
+<img
+src="{{ medicine.image }}"
+class="img-fluid rounded shadow border mb-3"
+style="max-height:250px;">
 
-                        <label class="form-label fw-semibold">
+{% else %}
 
-                            📝 Mô tả thuốc
+<div class="alert alert-warning">
 
-                        </label>
+Chưa có ảnh thuốc
 
-                        <textarea
-                            name="description"
-                            rows="5"
-                            class="form-control">{{ medicine.description }}</textarea>
+</div>
 
-                    </div>
+{% endif %}
 
-                    <div class="alert alert-info">
+</div>
 
-                        💡 Hãy kiểm tra lại giá và số lượng trước khi lưu.
+<label class="form-label fw-bold">
 
-                    </div>
+📷 Chọn ảnh mới
 
-                    <div class="d-flex gap-2 mt-4">
+</label>
 
-                        <button
-                            type="submit"
-                            class="btn btn-success btn-lg">
+<input
+type="file"
+name="image"
+accept="image/*"
+class="form-control">
 
-                            💾 Lưu thay đổi
+<small class="text-muted">
 
-                        </button>
+Để trống nếu không muốn thay đổi ảnh.
 
-                        <a
-                            href="/my-medicines"
-                            class="btn btn-outline-secondary btn-lg">
+</small>
 
-                            ⬅ Quay lại
+</div>
 
-                        </a>
+<div class="alert alert-info">
 
-                    </div>
+💡 Kiểm tra lại thông tin trước khi lưu.
 
-                </form>
+</div>
 
-            </div>
+<div class="d-flex gap-2">
 
-        </div>
+<button
+type="submit"
+class="btn btn-success btn-lg">
 
-    </div>
+💾 Cập nhật thuốc
+
+</button>
+
+<a
+href="/my-medicines"
+class="btn btn-secondary btn-lg">
+
+⬅ Quay lại
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

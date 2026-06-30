@@ -1,20 +1,428 @@
+/* =====================================================
+   HEALTH BOOKING SYSTEM
+   Global Style
+===================================================== */
+
+:root{
+
+    --primary:#0d6efd;
+    --primary-dark:#0b5ed7;
+    --success:#198754;
+    --danger:#dc3545;
+    --warning:#ffc107;
+    --info:#0dcaf0;
+
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#2d3748;
+    --muted:#6c757d;
+
+    --radius:18px;
+    --shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
 body{
-background:#f5f7fb;
+
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Poppins',sans-serif;
 }
 
-.card{
-border:none;
-border-radius:20px;
-}
-
-.btn{
-border-radius:12px;
-}
+/* =======================
+        NAVBAR
+======================= */
 
 .navbar{
-box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+    background:linear-gradient(90deg,#0d6efd,#3b82f6)!important;
+    box-shadow:0 4px 18px rgba(0,0,0,.12);
 }
 
+.navbar-brand{
+
+    font-size:1.45rem;
+    font-weight:700;
+}
+
+.nav-link{
+
+    border-radius:10px;
+    transition:.3s;
+    padding:8px 15px!important;
+}
+
+.nav-link:hover{
+
+    background:rgba(255,255,255,.15);
+    transform:translateY(-2px);
+}
+
+/* =======================
+        HERO
+======================= */
+
+.hero{
+
+    background:#fff;
+    border-radius:0 0 25px 25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+/* =======================
+        CARD
+======================= */
+
+.card{
+
+    border:none;
+    border-radius:var(--radius);
+    background:var(--card);
+    box-shadow:var(--shadow);
+    transition:.3s;
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+}
+
+.card-title{
+
+    font-weight:600;
+}
+
+/* =======================
+        BUTTON
+======================= */
+
+.btn{
+
+    border-radius:12px;
+    font-weight:500;
+    padding:10px 20px;
+    transition:.25s;
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+}
+
+.btn-primary{
+
+    background:var(--primary);
+    border-color:var(--primary);
+}
+
+.btn-primary:hover{
+
+    background:var(--primary-dark);
+}
+
+/* =======================
+        FORM
+======================= */
+
+.form-control,
+.form-select{
+
+    border-radius:12px;
+    padding:12px;
+    border:1px solid #d8dee8;
+}
+
+.form-control:focus,
+.form-select:focus{
+
+    box-shadow:0 0 0 .2rem rgba(13,110,253,.15);
+    border-color:var(--primary);
+}
+
+label{
+
+    font-weight:500;
+    margin-bottom:6px;
+}
+
+/* =======================
+        TABLE
+======================= */
+
+.table{
+
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.table thead{
+
+    background:#0d6efd;
+    color:white;
+}
+
+.table th{
+
+    border:none;
+}
+
+.table td{
+
+    vertical-align:middle;
+}
+
+.table tbody tr{
+
+    transition:.2s;
+}
+
+.table tbody tr:hover{
+
+    background:#f3f8ff;
+}
+
+/* =======================
+        BADGE
+======================= */
+
+.badge{
+
+    border-radius:8px;
+    padding:8px 12px;
+}
+
+/* =======================
+        ALERT
+======================= */
+
+.alert{
+
+    border:none;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+/* =======================
+        LIST GROUP
+======================= */
+
+.list-group-item{
+
+    border:none;
+    padding:15px;
+}
+
+/* =======================
+        DROPDOWN
+======================= */
+
+.dropdown-menu{
+
+    border:none;
+    border-radius:15px;
+    box-shadow:var(--shadow);
+}
+
+/* =======================
+        MODAL
+======================= */
+
+.modal-content{
+
+    border:none;
+    border-radius:20px;
+}
+
+/* =======================
+        PAGINATION
+======================= */
+
+.page-link{
+
+    border:none;
+    margin:0 3px;
+    border-radius:10px!important;
+}
+
+/* =======================
+        IMAGE
+======================= */
+
+img{
+
+    max-width:100%;
+}
+
+.avatar{
+
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+/* =======================
+        DOCTOR CARD
+======================= */
+
+.doctor-card img{
+
+    height:220px;
+    object-fit:cover;
+    border-radius:18px 18px 0 0;
+}
+
+/* =======================
+        MEDICINE CARD
+======================= */
+
+.medicine-card img{
+
+    height:180px;
+    object-fit:contain;
+    padding:20px;
+}
+
+/* =======================
+        DASHBOARD
+======================= */
+
+.dashboard-card{
+
+    border-left:5px solid var(--primary);
+}
+
+.dashboard-number{
+
+    font-size:2rem;
+    font-weight:700;
+}
+
+/* =======================
+        ICON BOX
+======================= */
+
+.icon-box{
+
+    width:65px;
+    height:65px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:18px;
+    font-size:30px;
+    color:white;
+}
+
+.bg-primary-soft{
+
+    background:#0d6efd;
+}
+
+.bg-success-soft{
+
+    background:#198754;
+}
+
+.bg-warning-soft{
+
+    background:#ffc107;
+}
+
+.bg-danger-soft{
+
+    background:#dc3545;
+}
+
+/* =======================
+        FOOTER
+======================= */
+
 footer{
-margin-top:50px;
+
+    background:#1d2636;
+    color:white;
+}
+
+footer a{
+
+    color:#ddd;
+    text-decoration:none;
+}
+
+footer a:hover{
+
+    color:white;
+}
+
+/* =======================
+        BACK TO TOP
+======================= */
+
+#topBtn{
+
+    width:50px;
+    height:50px;
+    border-radius:50%;
+}
+
+/* =======================
+        ANIMATION
+======================= */
+
+.fade-up{
+
+    animation:fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0);
+
+    }
+
+}
+
+/* =======================
+        RESPONSIVE
+======================= */
+
+@media(max-width:768px){
+
+    .display-4{
+
+        font-size:2rem;
+    }
+
+    .navbar-brand{
+
+        font-size:1.2rem;
+    }
+
+    .card{
+
+        margin-bottom:15px;
+    }
+
+    .btn{
+
+        width:100%;
+    }
+
 }

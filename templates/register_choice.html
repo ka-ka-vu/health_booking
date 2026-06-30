@@ -1,50 +1,185 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Chọn loại tài khoản</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block title %}
+Chọn loại tài khoản
+{% endblock %}
 
-<body class="bg-light">
+{% block content %}
 
-<div class="container mt-5">
+<style>
 
-<div class="card shadow p-4 mx-auto" style="max-width:500px">
+.choice-card{
+    border:none;
+    border-radius:20px;
+    transition:.3s;
+}
 
-    <h2 class="text-center mb-4">
-        Chọn loại tài khoản
-    </h2>
+.choice-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+}
 
-    <div class="d-grid gap-3">
+.icon-circle{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:42px;
+    margin:auto;
+}
 
-        <a href="/user-register"
-           class="btn btn-primary">
-            Đăng ký người dùng
-        </a>
+.user-icon{
+    background:#0d6efd;
+    color:white;
+}
 
-        <a href="/doctor-register"
-           class="btn btn-success">
-            Đăng ký bác sĩ
-        </a>
+.doctor-icon{
+    background:#198754;
+    color:white;
+}
 
-    </div>
+.page-header{
+    border:none;
+    border-radius:20px;
+}
 
-    <hr>
+</style>
 
-    <div class="text-center">
+<div class="container py-5">
 
-        <a href="/login"
-           class="btn btn-secondary w-100">
-            Quay lại đăng nhập
-        </a>
+<!-- Header -->
 
-    </div>
+<div class="card page-header shadow-lg mb-5">
+
+<div class="card-body text-center">
+
+<h2 class="fw-bold mb-2">
+
+👤 Chọn loại tài khoản
+
+</h2>
+
+<p class="text-muted mb-0">
+
+Đăng ký tài khoản để sử dụng hệ thống Health Booking
+
+</p>
 
 </div>
 
 </div>
 
-</body>
-</html>
+<div class="row justify-content-center g-4">
+
+<!-- Người dùng -->
+
+<div class="col-lg-5">
+
+<div class="card choice-card shadow h-100">
+
+<div class="card-body text-center p-5">
+
+<div class="icon-circle user-icon mb-4">
+
+🙋
+
+</div>
+
+<h3 class="fw-bold">
+
+Người dùng
+
+</h3>
+
+<p class="text-muted mt-3">
+
+Đăng ký tài khoản để tìm bác sĩ, đặt lịch khám,
+mua thuốc trực tuyến và theo dõi lịch sử khám bệnh.
+
+</p>
+
+<div class="d-grid mt-4">
+
+<a href="/user-register"
+class="btn btn-primary btn-lg">
+
+📝 Đăng ký người dùng
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Bác sĩ -->
+
+<div class="col-lg-5">
+
+<div class="card choice-card shadow h-100">
+
+<div class="card-body text-center p-5">
+
+<div class="icon-circle doctor-icon mb-4">
+
+👨‍⚕️
+
+</div>
+
+<h3 class="fw-bold">
+
+Bác sĩ
+
+</h3>
+
+<p class="text-muted mt-3">
+
+Đăng ký tài khoản bác sĩ để quản lý lịch khám,
+trao đổi với bệnh nhân, đăng bán thuốc và theo dõi doanh thu.
+
+</p>
+
+<div class="d-grid mt-4">
+
+<a href="/doctor-register"
+class="btn btn-success btn-lg">
+
+🩺 Đăng ký bác sĩ
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Footer -->
+
+<div class="card border-0 shadow mt-5">
+
+<div class="card-body text-center">
+
+<a href="/login"
+class="btn btn-outline-secondary btn-lg">
+
+⬅ Quay lại đăng nhập
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

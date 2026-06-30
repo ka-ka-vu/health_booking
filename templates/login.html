@@ -6,107 +6,220 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="row justify-content-center align-items-center py-5">
 
-    <div class="col-md-6 col-lg-5">
+    <div class="col-lg-10">
 
-        <div class="card border-0 shadow-lg rounded-4">
+        <div class="card overflow-hidden shadow-lg fade-up">
 
-            <div class="card-header bg-primary text-white text-center p-4 rounded-top-4">
+            <div class="row g-0">
 
-                <h2 class="mb-0">
-                    🔐 Đăng nhập
-                </h2>
+                <!-- LEFT -->
 
-                <small>
-                    Truy cập hệ thống Health Booking
-                </small>
+                <div class="col-lg-6 d-none d-lg-flex bg-primary text-white align-items-center">
 
-            </div>
+                    <div class="p-5">
 
-            <div class="card-body p-4">
+                        <h1 class="fw-bold mb-4">
 
-                {% if error %}
-                <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="bi bi-heart-pulse-fill"></i>
 
-                    {{ error }}
+                            Health Booking
 
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                    </button>
+                        </h1>
 
-                </div>
-                {% endif %}
+                        <p class="lead">
 
-                <form method="POST">
+                            Hệ thống đặt lịch khám bệnh trực tuyến giúp bạn kết nối với bác sĩ, đặt lịch khám và quản lý hồ sơ sức khỏe một cách nhanh chóng.
 
-                    <div class="mb-3">
+                        </p>
 
-                        <label class="form-label fw-semibold">
-                            Email
-                        </label>
+                        <hr>
 
-                        <input
-                            type="email"
-                            name="email"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập email"
-                            required>
+                        <div class="mt-4">
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Đặt lịch khám nhanh
+
+                            </p>
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Chat trực tiếp với bác sĩ
+
+                            </p>
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Quản lý hồ sơ khám bệnh
+
+                            </p>
+
+                            <p>
+
+                                <i class="bi bi-check-circle-fill me-2"></i>
+
+                                Mua thuốc trực tuyến
+
+                            </p>
+
+                        </div>
 
                     </div>
 
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-                            Mật khẩu
-                        </label>
-
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập mật khẩu"
-                            required>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary btn-lg w-100">
-
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Đăng nhập
-
-                    </button>
-
-                </form>
-
-                <hr>
-
-                <div class="text-center">
-
-                    <p class="text-muted">
-                        Chưa có tài khoản?
-                    </p>
-
-                    <a
-                        href="/user-register"
-                        class="btn btn-outline-success w-100">
-
-                        <i class="bi bi-person-plus"></i>
-                        Đăng ký tài khoản
-
-                    </a>
-
                 </div>
 
-                <div class="text-center mt-3">
+                <!-- RIGHT -->
 
-                    <a href="/doctor-register">
-                        👨‍⚕️ Đăng ký tài khoản bác sĩ
-                    </a>
+                <div class="col-lg-6">
+
+                    <div class="p-5">
+
+                        <div class="text-center mb-4">
+
+                            <div class="mb-3">
+
+                                <i class="bi bi-person-circle text-primary"
+                                   style="font-size:70px;"></i>
+
+                            </div>
+
+                            <h2 class="fw-bold">
+
+                                Đăng nhập
+
+                            </h2>
+
+                            <p class="text-muted">
+
+                                Chào mừng bạn quay trở lại.
+
+                            </p>
+
+                        </div>
+
+                        {% if error %}
+
+                        <div class="alert alert-danger alert-dismissible fade show">
+
+                            {{ error }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                            </button>
+
+                        </div>
+
+                        {% endif %}
+
+                        <form method="POST">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Email
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="bi bi-envelope-fill"></i>
+
+                                    </span>
+
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        class="form-control"
+                                        placeholder="Nhập email"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-4">
+
+                                <label class="form-label">
+
+                                    Mật khẩu
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="bi bi-lock-fill"></i>
+
+                                    </span>
+
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        class="form-control"
+                                        placeholder="Nhập mật khẩu"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-100">
+
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                                Đăng nhập
+
+                            </button>
+
+                        </form>
+
+                        <div class="text-center my-4">
+
+                            <span class="text-muted">
+
+                                Chưa có tài khoản?
+
+                            </span>
+
+                        </div>
+
+                        <a
+                            href="/user-register"
+                            class="btn btn-outline-success w-100 mb-3">
+
+                            <i class="bi bi-person-plus-fill me-2"></i>
+
+                            Đăng ký tài khoản người dùng
+
+                        </a>
+
+                        <a
+                            href="/doctor-register"
+                            class="btn btn-outline-primary w-100">
+
+                            <i class="bi bi-person-badge-fill me-2"></i>
+
+                            Đăng ký tài khoản bác sĩ
+
+                        </a>
+
+                    </div>
 
                 </div>
 

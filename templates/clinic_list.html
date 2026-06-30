@@ -1,121 +1,110 @@
 {% extends "base.html" %}
 
 {% block title %}
-Danh sách phòng khám
+Quản lý phòng khám
 {% endblock %}
 
 {% block content %}
 
 <div class="container py-4">
 
-<!-- Header -->
+    <!-- Header -->
 
-<div class="card shadow-lg border-0 mb-4">
+    <div class="card shadow-lg border-0 mb-4">
 
-    <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+        <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-        <div>
+            <div>
 
-            <h2 class="mb-1">
-                🏥 Danh sách phòng khám
-            </h2>
+                <h2 class="fw-bold mb-1">
+                    🏥 Quản lý phòng khám
+                </h2>
 
-            <p class="text-muted mb-0">
-                Quản lý toàn bộ phòng khám trong hệ thống
-            </p>
+                <p class="text-muted mb-0">
+                    Danh sách toàn bộ phòng khám trong hệ thống
+                </p>
 
-        </div>
+            </div>
 
-        <div class="mt-2">
+            <div>
 
-            <a href="/clinics/add"
-               class="btn btn-success">
+                <a href="/clinics/add"
+                   class="btn btn-success">
 
-                ➕ Thêm phòng khám
+                    ➕ Thêm phòng khám
 
-            </a>
+                </a>
 
-            <a href="/dashboard"
-               class="btn btn-secondary">
+                <a href="/admin-dashboard"
+                   class="btn btn-secondary">
 
-                ⬅ Quay lại
+                    ⬅ Quay lại
 
-            </a>
+                </a>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
+    <!-- Thống kê -->
 
-{% if clinics %}
+    <div class="row g-4 mb-4">
 
-<div class="row g-4">
+        <div class="col-md-4">
 
-    {% for clinic in clinics %}
+            <div class="card bg-primary text-white shadow-lg border-0 h-100">
 
-    <div class="col-lg-6">
+                <div class="card-body text-center">
 
-        <div class="card shadow-sm border-0 h-100">
+                    <h1>🏥</h1>
 
-            <div class="card-body">
+                    <h2>{{ clinics|length }}</h2>
 
-                <h4 class="text-primary">
+                    <p class="mb-0">
+                        Tổng phòng khám
+                    </p>
 
-                    🏥 {{ clinic.name }}
+                </div>
 
-                </h4>
+            </div>
 
-                <hr>
+        </div>
 
-                <p>
+        <div class="col-md-4">
 
-                    <strong>📍 Địa chỉ:</strong>
+            <div class="card bg-success text-white shadow-lg border-0 h-100">
 
-                    {{ clinic.address }}
+                <div class="card-body text-center">
 
-                </p>
+                    <h1>📍</h1>
 
-                <p>
+                    <h2>{{ clinics|length }}</h2>
 
-                    <strong>📞 Điện thoại:</strong>
+                    <p class="mb-0">
+                        Đang hoạt động
+                    </p>
 
-                    {{ clinic.phone }}
+                </div>
 
-                </p>
+            </div>
 
-                {% if clinic.specialty %}
+        </div>
 
-                <p>
+        <div class="col-md-4">
 
-                    <strong>🩺 Chuyên khoa:</strong>
+            <div class="card bg-info text-white shadow-lg border-0 h-100">
 
-                    <span class="badge bg-info">
+                <div class="card-body text-center">
 
-                        {{ clinic.specialty }}
+                    <h1>🩺</h1>
 
-                    </span>
+                    <h2>Health Booking</h2>
 
-                </p>
-
-                {% endif %}
-
-                <div class="mt-3">
-
-                    <a href="/clinics/edit/{{ clinic._id }}"
-                       class="btn btn-warning btn-sm">
-
-                        ✏️ Sửa
-
-                    </a>
-
-                    <a href="/clinics/delete/{{ clinic._id }}"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Bạn có chắc muốn xóa phòng khám này?')">
-
-                        🗑 Xóa
-
-                    </a>
+                    <p class="mb-0">
+                        Hệ thống quản lý
+                    </p>
 
                 </div>
 
@@ -125,40 +114,150 @@ Danh sách phòng khám
 
     </div>
 
-    {% endfor %}
+    <!-- Danh sách phòng khám -->
 
-</div>
+    {% if clinics %}
 
-{% else %}
+    <div class="row g-4">
 
-<div class="card shadow-sm">
+        {% for clinic in clinics %}
 
-    <div class="card-body text-center p-5">
+        <div class="col-lg-6">
 
-        <h4>
+            <div class="card shadow-lg border-0 h-100">
 
-            📭 Chưa có phòng khám nào
+                <div class="card-body">
 
-        </h4>
+                    <div class="d-flex align-items-center mb-3">
 
-        <p class="text-muted">
+                        <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center shadow"
+                             style="width:70px;height:70px;font-size:30px;">
 
-            Hãy thêm phòng khám đầu tiên
+                            🏥
 
-        </p>
+                        </div>
 
-        <a href="/clinics/add"
-           class="btn btn-success">
+                        <div class="ms-3">
 
-            Thêm phòng khám
+                            <h4 class="mb-1">
 
-        </a>
+                                {{ clinic.name }}
+
+                            </h4>
+
+                            <small class="text-muted">
+
+                                Phòng khám
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <p>
+
+                        <strong>📍 Địa chỉ:</strong>
+
+                        {{ clinic.address }}
+
+                    </p>
+
+                    <p>
+
+                        <strong>📞 Điện thoại:</strong>
+
+                        {{ clinic.phone }}
+
+                    </p>
+
+                    {% if clinic.specialty %}
+
+                    <p>
+
+                        <strong>🩺 Chuyên khoa:</strong>
+
+                        <span class="badge bg-info fs-6">
+
+                            {{ clinic.specialty }}
+
+                        </span>
+
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-grid gap-2">
+
+                        <a href="/clinics/edit/{{ clinic._id }}"
+                           class="btn btn-warning">
+
+                            ✏️ Chỉnh sửa
+
+                        </a>
+
+                        <a href="/clinics/delete/{{ clinic._id }}"
+                           class="btn btn-danger"
+                           onclick="return confirm('Bạn có chắc muốn xóa phòng khám này?')">
+
+                            🗑 Xóa phòng khám
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
 
     </div>
 
-</div>
+    {% else %}
 
-{% endif %}
+    <div class="card shadow-lg border-0">
+
+        <div class="card-body text-center py-5">
+
+            <h1>
+
+                🏥
+
+            </h1>
+
+            <h4>
+
+                Chưa có phòng khám nào
+
+            </h4>
+
+            <p class="text-muted">
+
+                Hãy thêm phòng khám đầu tiên vào hệ thống.
+
+            </p>
+
+            <a href="/clinics/add"
+               class="btn btn-success">
+
+                ➕ Thêm phòng khám
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
 
 </div>
 

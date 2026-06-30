@@ -1,162 +1,473 @@
 {% extends "base.html" %}
 
+{% block title %}
+Đặt lịch khám
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-5">
+<style>
+
+.info-card{
+    border:none;
+    border-radius:18px;
+    transition:.25s;
+}
+
+.info-card:hover{
+    transform:translateY(-5px);
+}
+
+.icon-circle{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    color:#fff;
+}
+
+.bg-blue{
+    background:#0d6efd;
+}
+
+.bg-success2{
+    background:#198754;
+}
+
+.bg-warning2{
+    background:#fd7e14;
+}
+
+.bg-danger2{
+    background:#dc3545;
+}
+
+.form-control,
+.form-select{
+    border-radius:12px;
+}
+
+.card{
+    border-radius:18px;
+}
+
+</style>
+
+<div class="container py-4">
+
+<!-- Header -->
+
+<div class="card shadow-lg border-0 mb-4">
+
+<div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+<h2 class="mb-1">
+
+📅 Đặt lịch khám
+
+</h2>
+
+<p class="text-muted mb-0">
+
+Đặt lịch khám nhanh chóng với bác sĩ phù hợp
+
+</p>
+
+</div>
+
+<div>
+
+<a href="/appointments"
+class="btn btn-secondary">
+
+⬅ Quay lại
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Thông tin -->
+
+<div class="row mb-4">
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card info-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="icon-circle bg-blue">
+
+👨‍⚕️
+
+</div>
+
+<div class="ms-3">
+
+<h5 class="mb-1">
+
+{{ doctors|length }}
+
+</h5>
+
+<small class="text-muted">
+
+Bác sĩ
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card info-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="icon-circle bg-success2">
+
+📆
+
+</div>
+
+<div class="ms-3">
+
+<h5 class="mb-1">
+
+Hôm nay
+
+</h5>
+
+<small class="text-muted">
+
+{{ today }}
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card info-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="icon-circle bg-warning2">
+
+🕘
+
+</div>
+
+<div class="ms-3">
+
+<h5 class="mb-1">
+
+07:00-18:00
+
+</h5>
+
+<small class="text-muted">
+
+Giờ làm việc
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card info-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="icon-circle bg-danger2">
+
+✔
+
+</div>
+
+<div class="ms-3">
+
+<h5 class="mb-1">
+
+Đặt lịch
+
+</h5>
+
+<small class="text-muted">
+
+Nhanh chóng
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Form -->
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+<div class="col-lg-8">
 
-        <div class="card border-0 shadow-lg rounded-4">
+<div class="card shadow-lg border-0">
 
-            <div class="card-header bg-primary text-white rounded-top-4 p-4">
+<div class="card-header bg-primary text-white">
 
-                <h2 class="mb-0">
-                    📅 Đặt lịch khám
-                </h2>
+<h3 class="mb-0">
 
-                <small>
-                    Vui lòng chọn bác sĩ và thời gian phù hợp
-                </small>
+🩺 Thông tin đặt lịch
 
-            </div>
+</h3>
 
-            <div class="card-body p-4">
+</div>
 
-                {% if error %}
-                <div class="alert alert-warning border-0 shadow-sm">
+<div class="card-body">
 
-                    <h5 class="fw-bold">
-                        ⚠ {{ error }}
-                    </h5>
+{% if error %}
 
-                    {% if suggestions %}
+<div class="alert alert-warning shadow-sm">
 
-                    <hr>
+<h5>
 
-                    <p class="mb-2">
-                        Các khung giờ còn trống:
-                    </p>
+⚠ {{ error }}
 
-                    {% for time in suggestions %}
-                    <span class="badge bg-success p-2 me-2 mb-2">
-                        {{ time }}
-                    </span>
-                    {% endfor %}
+</h5>
 
-                    {% endif %}
+{% if suggestions %}
 
-                </div>
-                {% endif %}
+<hr>
 
-                <form method="POST">
+<p>
 
-                    <div class="mb-3">
+Khung giờ còn trống:
 
-                        <label class="form-label fw-semibold">
-                            👤 Tên bệnh nhân
-                        </label>
+</p>
 
-                        <input
-                            type="text"
-                            name="patient"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập họ tên"
-                            required>
+{% for time in suggestions %}
 
-                    </div>
+<span class="badge bg-success me-2 mb-2 p-2">
 
-                    <div class="mb-3">
+{{ time }}
 
-                        <label class="form-label fw-semibold">
-                            🩺 Chọn bác sĩ
-                        </label>
+</span>
 
-                        <select
-                            name="doctor"
-                            class="form-select form-select-lg"
-                            required>
+{% endfor %}
 
-                            {% for doctor in doctors %}
-                            <option value="{{ doctor.name }}">
-                                {{ doctor.name }}
-                            </option>
-                            {% endfor %}
+{% endif %}
 
-                        </select>
+</div>
 
-                    </div>
+{% endif %}
 
-                    <div class="row">
+<form method="POST">
 
-                        <div class="col-md-6 mb-3">
+<div class="mb-3">
 
-                            <label class="form-label fw-semibold">
-                                📆 Ngày khám
-                            </label>
+<label class="form-label">
 
-                            <input
-                                type="date"
-                                name="date"
-                                class="form-control form-control-lg"
-                                min="{{ today }}"
-                                required>
+👤 Họ tên bệnh nhân
 
-                        </div>
+</label>
 
-                        <div class="col-md-6 mb-3">
+<input
 
-                            <label class="form-label fw-semibold">
-                                ⏰ Giờ khám
-                            </label>
+type="text"
 
-                            <input
-                                type="time"
-                                name="time"
-                                class="form-control form-control-lg"
-                                required>
+name="patient"
 
-                        </div>
+class="form-control form-control-lg"
 
-                    </div>
+placeholder="Nhập họ tên"
 
-                    <div class="alert alert-info mt-3">
+required>
 
-                        Giờ làm việc:
-                        <strong>07:00 - 11:30</strong>
-                        và
-                        <strong>13:00 - 18:00</strong>
+</div>
 
-                    </div>
+<div class="mb-3">
 
-                    <div class="d-flex gap-2 mt-4">
+<label class="form-label">
 
-                        <button
-                            type="submit"
-                            class="btn btn-primary btn-lg">
+👨‍⚕️ Chọn bác sĩ
 
-                            Xác nhận đặt lịch
+</label>
 
-                        </button>
+<select
 
-                        <a
-                            href="/appointments"
-                            class="btn btn-outline-secondary btn-lg">
+name="doctor"
 
-                            Quay lại
+class="form-select form-select-lg"
 
-                        </a>
+required>
 
-                    </div>
+<option value="">
 
-                </form>
+-- Chọn bác sĩ --
 
-            </div>
+</option>
 
-        </div>
+{% for doctor in doctors %}
 
-    </div>
+<option value="{{ doctor.name }}">
+
+{{ doctor.name }}
+
+{% if doctor.specialty %}
+
+- {{ doctor.specialty }}
+
+{% endif %}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label">
+
+📅 Ngày khám
+
+</label>
+
+<input
+
+type="date"
+
+name="date"
+
+class="form-control form-control-lg"
+
+min="{{ today }}"
+
+required>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label">
+
+⏰ Giờ khám
+
+</label>
+
+<input
+
+type="time"
+
+name="time"
+
+class="form-control form-control-lg"
+
+required>
+
+</div>
+
+</div>
+
+<div class="alert alert-info">
+
+<h6>
+
+🕒 Giờ làm việc
+
+</h6>
+
+<hr>
+
+07:00 - 11:30
+
+<br>
+
+13:00 - 18:00
+
+</div>
+
+<div class="alert alert-light border">
+
+<b>Lưu ý</b>
+
+<ul class="mb-0">
+
+<li>Đến trước giờ khám khoảng 15 phút.</li>
+
+<li>Mang theo CCCD hoặc BHYT.</li>
+
+<li>Nếu trùng lịch hệ thống sẽ gợi ý giờ khác.</li>
+
+</ul>
+
+</div>
+
+<div class="d-flex gap-2 flex-wrap">
+
+<button
+
+type="submit"
+
+class="btn btn-primary btn-lg">
+
+📅 Xác nhận đặt lịch
+
+</button>
+
+<a
+
+href="/appointments"
+
+class="btn btn-outline-secondary btn-lg">
+
+⬅ Quay lại
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
 
 </div>
 

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>Bản đồ phòng khám</title>
+{% extends "base.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block title %}
+Bản đồ phòng khám
+{% endblock %}
+
+{% block content %}
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet/dist/leaflet.css">
@@ -13,42 +13,412 @@ href="https://unpkg.com/leaflet/dist/leaflet.css">
 href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
 
 <style>
-#map{
-    height:700px;
-    border-radius:10px;
+
+body{
+    background:#f5f7fb;
 }
+
+.stat-card{
+    border:none;
+    border-radius:18px;
+    transition:.25s;
+    overflow:hidden;
+}
+
+.stat-card:hover{
+    transform:translateY(-6px);
+}
+
+.stat-icon{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    color:#fff;
+}
+
+.bg-blue{
+    background:#0d6efd;
+}
+
+.bg-green{
+    background:#198754;
+}
+
+.bg-orange{
+    background:#fd7e14;
+}
+
+.bg-red{
+    background:#dc3545;
+}
+
+#map{
+    width:100%;
+    height:75vh;
+    border-radius:15px;
+}
+
+.clinic-card{
+
+    cursor:pointer;
+
+    border:none;
+
+    border-radius:15px;
+
+    transition:.25s;
+
+    margin-bottom:15px;
+
+}
+
+.clinic-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 12px 25px rgba(0,0,0,.15);
+
+}
+
+.sidebar{
+
+    max-height:75vh;
+
+    overflow-y:auto;
+
+}
+
+.badge-distance{
+
+    font-size:14px;
+
+}
+
+.search-box{
+
+    border-radius:30px;
+
+}
+
 </style>
 
-</head>
+<div class="container-fluid py-4">
 
-<body class="bg-light">
+<div class="card shadow-lg border-0 mb-4">
 
-<div class="container mt-5">
+<div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-<div class="card shadow p-4">
+<div>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<h2 class="mb-1">
 
-<h2>🗺️ Bản đồ phòng khám</h2>
+🗺️ Bản đồ phòng khám
+
+</h2>
+
+<p class="text-muted mb-0">
+
+Tìm phòng khám gần bạn và nhận chỉ đường nhanh nhất
+
+</p>
+
+</div>
+
+<div>
 
 <a href="/dashboard"
 class="btn btn-secondary">
-Quay lại
+
+⬅ Quay lại Dashboard
+
 </a>
 
 </div>
 
-<div class="alert alert-info">
-
-<b>Phòng khám gần nhất:</b>
-
-<span id="nearestClinic">
-Đang xác định...
-</span>
+</div>
 
 </div>
 
+<!-- Thống kê -->
+
+<div class="row mb-4">
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card stat-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="stat-icon bg-blue">
+
+🏥
+
+</div>
+
+<div class="ms-3">
+
+<h3 class="mb-0">
+
+{{ clinics|length }}
+
+</h3>
+
+<small class="text-muted">
+
+Tổng phòng khám
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card stat-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="stat-icon bg-green">
+
+📍
+
+</div>
+
+<div class="ms-3">
+
+<h5 id="nearestClinic">
+
+Đang xác định...
+
+</h5>
+
+<small class="text-muted">
+
+Gần bạn nhất
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card stat-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="stat-icon bg-orange">
+
+📏
+
+</div>
+
+<div class="ms-3">
+
+<h3 id="nearestDistance">
+
+--
+
+</h3>
+
+<small class="text-muted">
+
+Khoảng cách
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-3 col-md-6 mb-3">
+
+<div class="card stat-card shadow">
+
+<div class="card-body d-flex align-items-center">
+
+<div class="stat-icon bg-red">
+
+🛰️
+
+</div>
+
+<div class="ms-3">
+
+<h3 id="locationStatus">
+
+...
+
+</h3>
+
+<small class="text-muted">
+
+Vị trí
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- tìm kiếm -->
+
+<div class="card shadow border-0 mb-4">
+
+<div class="card-body">
+
+<input
+
+type="text"
+
+id="searchClinic"
+
+class="form-control form-control-lg search-box"
+
+placeholder="🔍 Tìm theo tên phòng khám, địa chỉ hoặc chuyên khoa...">
+
+</div>
+
+</div>
+
+<div class="row">
+
+<!-- Sidebar -->
+
+<div class="col-lg-4">
+
+<div class="sidebar">
+
+{% for clinic in clinics %}
+
+<div
+class="card clinic-card shadow-sm clinic-item"
+
+data-name="{{ clinic.name|lower }}"
+
+data-address="{{ clinic.address|lower }}"
+
+data-specialty="{{ clinic.specialty|default('', true)|lower }}"
+
+data-lat="{{ clinic.lat }}"
+
+data-lng="{{ clinic.lng }}">
+
+<div class="card-body">
+
+<h5 class="text-primary">
+
+🏥 {{ clinic.name }}
+
+</h5>
+
+<hr>
+
+<p class="mb-2">
+
+📍 {{ clinic.address }}
+
+</p>
+
+<p class="mb-2">
+
+📞 {{ clinic.phone }}
+
+</p>
+
+{% if clinic.specialty %}
+
+<span class="badge bg-info">
+
+{{ clinic.specialty }}
+
+</span>
+
+{% endif %}
+
+<div class="mt-3">
+
+<button
+
+class="btn btn-success btn-sm"
+
+onclick="zoomClinic(
+
+{{ clinic.lat }},
+
+{{ clinic.lng }}
+
+)">
+
+📍 Xem trên bản đồ
+
+</button>
+
+<button
+
+class="btn btn-primary btn-sm"
+
+onclick="navigateToClinic(
+
+{{ clinic.lat }},
+
+{{ clinic.lng }}
+
+)">
+
+🚗 Chỉ đường
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<!-- Map -->
+
+<div class="col-lg-8">
+
+<div class="card shadow border-0">
+
+<div class="card-body p-2">
+
 <div id="map"></div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -60,19 +430,19 @@ Quay lại
 
 <script>
 
-let map = L.map('map').setView(
+let map=L.map("map").setView(
     [21.0285,105.8542],
     12
 );
 
 L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-        attribution:'© OpenStreetMap'
-    }
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'© OpenStreetMap'
+}
 ).addTo(map);
 
-let clinics = [];
+let clinics=[];
 
 {% for clinic in clinics %}
 
@@ -80,15 +450,17 @@ let clinics = [];
 
 clinics.push({
 
-    name:"{{ clinic.name }}",
+name:`{{ clinic.name }}`,
 
-    address:"{{ clinic.address }}",
+address:`{{ clinic.address }}`,
 
-    phone:"{{ clinic.phone }}",
+phone:`{{ clinic.phone }}`,
 
-    lat:parseFloat("{{ clinic.lat }}"),
+specialty:`{{ clinic.specialty }}`,
 
-    lng:parseFloat("{{ clinic.lng }}")
+lat:parseFloat("{{ clinic.lat }}"),
+
+lng:parseFloat("{{ clinic.lng }}")
 
 });
 
@@ -96,186 +468,345 @@ clinics.push({
 
 {% endfor %}
 
-console.log(clinics);
+let markers=[];
 
-let markers = [];
+let routingControl=null;
 
-clinics.forEach(c => {
+let userLat=null;
 
-    let marker = L.marker(
-        [c.lat,c.lng]
-    ).addTo(map);
+let userLng=null;
+// =========================
+// Marker phòng khám
+// =========================
+
+clinics.forEach(function(c){
+
+    let marker=L.marker([c.lat,c.lng]).addTo(map);
 
     marker.bindPopup(
-        "<b>"+c.name+"</b><br>"
-        + c.address + "<br>"
-        + c.phone + "<br><br>"
-        + "<button class='btn btn-primary btn-sm' "
-        + "onclick='navigateToClinic("
-        + c.lat + ","
-        + c.lng
-        + ")'>🚗 Chỉ đường</button>"
+
+        `
+        <div style="min-width:220px">
+
+            <h6 class="text-primary mb-2">
+                🏥 ${c.name}
+            </h6>
+
+            <p class="mb-1">
+                📍 ${c.address}
+            </p>
+
+            <p class="mb-1">
+                📞 ${c.phone}
+            </p>
+
+            ${
+                c.specialty
+                ?
+                `<span class="badge bg-info">
+                    ${c.specialty}
+                 </span><br><br>`
+                :
+                "<br>"
+            }
+
+            <button
+                class="btn btn-success btn-sm"
+                onclick="navigateToClinic(${c.lat},${c.lng})">
+
+                🚗 Chỉ đường
+
+            </button>
+
+        </div>
+
+        `
+
     );
 
-    markers.push(
-        [c.lat,c.lng]
-    );
+    markers.push(marker);
 
 });
 
-if(markers.length > 0){
-    map.fitBounds(markers);
+
+// =========================
+// Fit toàn bộ marker
+// =========================
+
+if(markers.length>0){
+
+    let group=L.featureGroup(markers);
+
+    map.fitBounds(group.getBounds());
+
 }
 
-function distance(lat1,lon1,lat2,lon2){
 
-    let R = 6371;
 
-    let dLat =
-        (lat2-lat1)*Math.PI/180;
+// =========================
+// Zoom tới phòng khám
+// =========================
 
-    let dLon =
-        (lon2-lon1)*Math.PI/180;
+function zoomClinic(lat,lng){
 
-    let a =
-        Math.sin(dLat/2) *
-        Math.sin(dLat/2)
-        +
-        Math.cos(lat1*Math.PI/180)
-        *
-        Math.cos(lat2*Math.PI/180)
-        *
-        Math.sin(dLon/2)
-        *
-        Math.sin(dLon/2);
-
-    let c =
-        2 *
-        Math.atan2(
-            Math.sqrt(a),
-            Math.sqrt(1-a)
-        );
-
-    return R*c;
-}
-
-function navigateToClinic(clinicLat, clinicLng){
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position){
-
-            let userLat =
-                position.coords.latitude;
-
-            let userLng =
-                position.coords.longitude;
-
-            window.open(
-                `https://www.google.com/maps/dir/${userLat},${userLng}/${clinicLat},${clinicLng}`,
-                "_blank"
-            );
-
-        },
-
-        function(){
-
-            alert(
-                "Không lấy được vị trí hiện tại"
-            );
-
-        }
-
+    map.setView(
+        [lat,lng],
+        17
     );
 
 }
+
+
+
+// =========================
+// Công thức Haversine
+// =========================
+
+function distance(lat1,lon1,lat2,lon2){
+
+    let R=6371;
+
+    let dLat=(lat2-lat1)*Math.PI/180;
+
+    let dLon=(lon2-lon1)*Math.PI/180;
+
+    let a=
+
+        Math.sin(dLat/2)*Math.sin(dLat/2)
+
+        +
+
+        Math.cos(lat1*Math.PI/180)
+
+        *
+
+        Math.cos(lat2*Math.PI/180)
+
+        *
+
+        Math.sin(dLon/2)
+
+        *
+
+        Math.sin(dLon/2);
+
+    let c=
+
+        2*Math.atan2(
+
+            Math.sqrt(a),
+
+            Math.sqrt(1-a)
+
+        );
+
+    return R*c;
+
+}
+
+
+
+// =========================
+// Google Maps
+// =========================
+
+function navigateToClinic(clinicLat,clinicLng){
+
+    if(userLat!=null){
+
+        window.open(
+
+            `https://www.google.com/maps/dir/${userLat},${userLng}/${clinicLat},${clinicLng}`,
+
+            "_blank"
+
+        );
+
+    }
+
+    else{
+
+        window.open(
+
+            `https://www.google.com/maps/search/${clinicLat},${clinicLng}`,
+
+            "_blank"
+
+        );
+
+    }
+
+}
+
+
+
+// =========================
+// Lấy vị trí
+// =========================
 
 navigator.geolocation.getCurrentPosition(
 
 function(position){
 
-    let userLat =
-        position.coords.latitude;
+    userLat=position.coords.latitude;
 
-    let userLng =
-        position.coords.longitude;
+    userLng=position.coords.longitude;
 
-    let userMarker = L.marker(
+    document.getElementById(
+
+        "locationStatus"
+
+    ).innerHTML="✔";
+
+
+
+    let userMarker=L.marker(
+
         [userLat,userLng]
+
     ).addTo(map);
 
     userMarker.bindPopup(
+
         "📍 Vị trí của bạn"
+
     );
 
-    let nearest = null;
 
-    let minDistance = 999999;
 
-    clinics.forEach(c => {
+    let nearest=null;
 
-        let d = distance(
+    let minDistance=999999;
+
+
+
+    clinics.forEach(function(c){
+
+        let d=distance(
+
             userLat,
+
             userLng,
+
             c.lat,
+
             c.lng
+
         );
 
-        if(d < minDistance){
 
-            minDistance = d;
 
-            nearest = c;
+        if(d<minDistance){
+
+            minDistance=d;
+
+            nearest=c;
 
         }
 
     });
 
+
+
     if(nearest){
 
         document.getElementById(
+
             "nearestClinic"
-        ).innerHTML =
-            nearest.name
-            +
-            " ("
-            +
-            minDistance.toFixed(2)
-            +
-            " km)";
+
+        ).innerHTML=nearest.name;
+
+
+
+        document.getElementById(
+
+            "nearestDistance"
+
+        ).innerHTML=
+
+        minDistance.toFixed(2)
+
+        +
+
+        " km";
+
+
 
         L.marker(
-            [nearest.lat, nearest.lng]
+
+            [
+
+                nearest.lat,
+
+                nearest.lng
+
+            ]
+
         )
+
         .addTo(map)
+
         .bindPopup(
+
             "🏥 Phòng khám gần nhất<br><b>"
-            + nearest.name
-            + "</b>"
+
+            +
+
+            nearest.name
+
+            +
+
+            "</b>"
+
         )
+
         .openPopup();
 
-        let route = L.Routing.control({
+
+
+        if(routingControl){
+
+            map.removeControl(
+
+                routingControl
+
+            );
+
+        }
+
+
+
+        routingControl=L.Routing.control({
 
             waypoints:[
+
                 L.latLng(
+
                     userLat,
+
                     userLng
+
                 ),
+
                 L.latLng(
+
                     nearest.lat,
+
                     nearest.lng
+
                 )
+
             ],
 
-            routeWhileDragging:false
+            routeWhileDragging:false,
+
+            draggableWaypoints:false,
+
+            addWaypoints:false,
+
+            show:false
 
         }).addTo(map);
-
-        map.setView(
-            [nearest.lat, nearest.lng],
-            15
-        );
 
     }
 
@@ -284,9 +815,92 @@ function(position){
 function(){
 
     document.getElementById(
+
+        "locationStatus"
+
+    ).innerHTML="❌";
+
+
+
+    document.getElementById(
+
         "nearestClinic"
-    ).innerHTML =
-        "Không lấy được vị trí hiện tại";
+
+    ).innerHTML=
+
+    "Không lấy được vị trí";
+
+}
+
+);
+
+
+
+// =========================
+// Tìm kiếm realtime
+// =========================
+
+document.getElementById(
+
+    "searchClinic"
+
+).addEventListener(
+
+"keyup",
+
+function(){
+
+    let keyword=this.value.toLowerCase();
+
+    let cards=document.querySelectorAll(
+
+        ".clinic-item"
+
+    );
+
+
+
+    cards.forEach(function(card){
+
+        let name=
+
+            card.dataset.name;
+
+        let address=
+
+            card.dataset.address;
+
+        let specialty=
+
+            card.dataset.specialty;
+
+
+
+        if(
+
+            name.includes(keyword)
+
+            ||
+
+            address.includes(keyword)
+
+            ||
+
+            specialty.includes(keyword)
+
+        ){
+
+            card.style.display="block";
+
+        }
+
+        else{
+
+            card.style.display="none";
+
+        }
+
+    });
 
 }
 
@@ -294,5 +908,4 @@ function(){
 
 </script>
 
-</body>
-</html>
+{% endblock %}

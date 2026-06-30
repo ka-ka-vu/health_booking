@@ -12,202 +12,230 @@ Sửa bác sĩ
 
 <div class="col-lg-8">
 
-    <div class="card border-0 shadow-lg rounded-4">
+<div class="card border-0 shadow-lg rounded-4">
 
-        <div class="card-header bg-warning text-dark p-4 rounded-top-4">
+<div class="card-header bg-warning text-dark p-4">
 
-            <h2 class="mb-0">
-                👨‍⚕️ Sửa thông tin bác sĩ
-            </h2>
+<h2 class="mb-0">
+👨‍⚕️ Sửa thông tin bác sĩ
+</h2>
 
-            <small>
-                Cập nhật hồ sơ bác sĩ trong hệ thống
-            </small>
+<p class="mb-0">
+Cập nhật hồ sơ bác sĩ
+</p>
 
-        </div>
+</div>
 
-        <div class="card-body p-4">
+<div class="card-body p-4">
 
-            <form method="POST"
-                  enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data">
 
-                <!-- Ảnh bác sĩ -->
+<div class="text-center mb-4">
 
-                <div class="mb-4 text-center">
+{% if doctor.image %}
 
-                    <label class="form-label fw-semibold">
-                        🖼 Ảnh bác sĩ
-                    </label>
+<img
+src="{{ doctor.image }}"
+class="rounded-circle shadow border mb-3"
+style="width:150px;height:150px;object-fit:cover;">
 
-                    <br>
+{% else %}
 
-                    {% if doctor.image %}
+<div
+class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center mx-auto shadow"
+style="width:150px;height:150px;font-size:60px;">
 
-                    <img
-                        src="{{ doctor.image }}"
-                        width="140"
-                        height="140"
-                        class="rounded-circle border shadow mb-3"
-                        style="object-fit:cover;">
+👨‍⚕️
 
-                    {% endif %}
+</div>
 
-                    <input
-                        type="file"
-                        name="image"
-                        class="form-control"
-                        accept="image/*">
+{% endif %}
 
-                </div>
+<label class="form-label fw-bold mt-3">
 
-                <div class="mb-3">
+🖼 Đổi ảnh bác sĩ
 
-                    <label class="form-label fw-semibold">
-                        Họ và tên
-                    </label>
+</label>
 
-                    <input
-                        type="text"
-                        name="name"
-                        class="form-control form-control-lg"
-                        value="{{ doctor.name }}"
-                        required>
+<input
+type="file"
+name="image"
+class="form-control"
+accept="image/*">
 
-                </div>
+<small class="text-muted">
 
-                <div class="mb-3">
+Để trống nếu không muốn thay đổi ảnh.
 
-                    <label class="form-label fw-semibold">
-                        Chuyên khoa
-                    </label>
+</small>
 
-                    <select
-                        name="specialty"
-                        class="form-select form-select-lg"
-                        required>
+</div>
 
-                        {% for specialty in specialties %}
+<div class="mb-3">
 
-                        <option
-                            value="{{ specialty.name }}"
-                            {% if specialty.name == doctor.specialty %}
-                            selected
-                            {% endif %}>
+<label class="form-label fw-bold">
 
-                            {{ specialty.name }}
+Họ và tên
 
-                        </option>
+</label>
 
-                        {% endfor %}
+<input
+type="text"
+name="name"
+class="form-control form-control-lg"
+value="{{ doctor.name }}"
+placeholder="Nhập họ tên bác sĩ"
+required>
 
-                    </select>
+</div>
 
-                </div>
+<div class="mb-3">
 
-                <div class="mb-3">
+<label class="form-label fw-bold">
 
-                    <label class="form-label fw-semibold">
-                        🏥 Phòng khám
-                    </label>
+🩺 Chuyên khoa
 
-                    <select
-                        name="clinic"
-                        class="form-select form-select-lg"
-                        required>
+</label>
 
-                        {% for clinic in clinics %}
+<select
+name="specialty"
+class="form-select form-select-lg"
+required>
 
-                        <option
-                            value="{{ clinic.name }}"
-                            {% if clinic.name == doctor.clinic %}
-                            selected
-                            {% endif %}>
+{% for specialty in specialties %}
 
-                            {{ clinic.name }}
+<option
+value="{{ specialty.name }}"
+{% if specialty.name==doctor.specialty %}
+selected
+{% endif %}>
 
-                        </option>
+{{ specialty.name }}
 
-                        {% endfor %}
+</option>
 
-                    </select>
+{% endfor %}
 
-                </div>
+</select>
 
-                <div class="mb-3">
+</div>
 
-                    <label class="form-label fw-semibold">
-                        📞 Số điện thoại
-                    </label>
+<div class="mb-3">
 
-                    <input
-                        type="text"
-                        name="phone"
-                        class="form-control form-control-lg"
-                        value="{{ doctor.phone }}"
-                        required>
+<label class="form-label fw-bold">
 
-                </div>
+🏥 Phòng khám
 
-                <div class="mb-3">
+</label>
 
-                    <label class="form-label fw-semibold">
-                        📧 Email
-                    </label>
+<select
+name="clinic"
+class="form-select form-select-lg"
+required>
 
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-control form-control-lg"
-                        value="{{ doctor.email }}"
-                        required>
+{% for clinic in clinics %}
 
-                </div>
+<option
+value="{{ clinic.name }}"
+{% if clinic.name==doctor.clinic %}
+selected
+{% endif %}>
 
-                <div class="mb-3">
+{{ clinic.name }}
 
-                    <label class="form-label fw-semibold">
-                        ⭐ Kinh nghiệm (năm)
-                    </label>
+</option>
 
-                    <input
-                        type="number"
-                        name="experience"
-                        class="form-control form-control-lg"
-                        value="{{ doctor.experience }}"
-                        min="0"
-                        required>
+{% endfor %}
 
-                </div>
+</select>
 
-                <div class="alert alert-info">
-                    💡 Kiểm tra kỹ thông tin trước khi cập nhật.
-                </div>
+</div>
 
-                <div class="d-flex gap-2 mt-4">
+<div class="mb-3">
 
-                    <button
-                        type="submit"
-                        class="btn btn-warning btn-lg">
+<label class="form-label fw-bold">
 
-                        💾 Cập nhật
+📞 Số điện thoại
 
-                    </button>
+</label>
 
-                    <a
-                        href="/doctors"
-                        class="btn btn-outline-secondary btn-lg">
+<input
+type="text"
+name="phone"
+class="form-control form-control-lg"
+value="{{ doctor.phone }}"
+placeholder="Nhập số điện thoại"
+required>
 
-                        ⬅ Quay lại
+</div>
 
-                    </a>
+<div class="mb-3">
 
-                </div>
+<label class="form-label fw-bold">
 
-            </form>
+📧 Email
 
-        </div>
+</label>
 
-    </div>
+<input
+type="email"
+name="email"
+class="form-control form-control-lg"
+value="{{ doctor.email }}"
+placeholder="doctor@gmail.com"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label fw-bold">
+
+⭐ Số năm kinh nghiệm
+
+</label>
+
+<input
+type="number"
+name="experience"
+class="form-control form-control-lg"
+value="{{ doctor.experience }}"
+min="0"
+required>
+
+</div>
+
+<div class="alert alert-info">
+
+💡 Sau khi cập nhật, thông tin bác sĩ sẽ được hiển thị cho người dùng trong hệ thống.
+
+</div>
+
+<div class="d-flex gap-2 mt-4">
+
+<button
+type="submit"
+class="btn btn-warning btn-lg">
+
+💾 Cập nhật bác sĩ
+
+</button>
+
+<a
+href="/doctors"
+class="btn btn-secondary btn-lg">
+
+⬅ Quay lại
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
 
 </div>
 

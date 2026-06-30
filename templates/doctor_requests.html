@@ -6,66 +6,190 @@ Duyệt tài khoản bác sĩ
 
 {% block content %}
 
-<div class="container py-5">
+<div class="container py-4">
 
-<div class="card border-0 shadow-lg">
+    <!-- Header -->
+    <div class="card shadow-lg border-0 mb-4">
 
-    <div class="card-header bg-warning text-dark p-4">
+        <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-        <h2 class="mb-1">
+            <div>
 
-            👨‍⚕️ Duyệt tài khoản bác sĩ
+                <h2 class="fw-bold mb-1">
+                    👨‍⚕️ Duyệt tài khoản bác sĩ
+                </h2>
 
-        </h2>
+                <p class="text-muted mb-0">
+                    Quản lý các yêu cầu đăng ký bác sĩ trong hệ thống
+                </p>
 
-        <p class="mb-0">
+            </div>
 
-            Quản lý các yêu cầu đăng ký bác sĩ
+            <a href="/admin-dashboard"
+               class="btn btn-secondary">
 
-        </p>
+                ⬅ Quay lại Dashboard
+
+            </a>
+
+        </div>
 
     </div>
 
-    <div class="card-body">
+    <!-- Thống kê -->
 
-        {% if doctors %}
+    <div class="row g-4 mb-4">
 
-        <div class="table-responsive">
+        <div class="col-md-4">
 
-            <table class="table table-hover align-middle">
+            <div class="card bg-warning text-dark shadow-lg border-0 h-100">
 
-                <thead class="table-dark">
+                <div class="card-body text-center">
+
+                    <h1>📝</h1>
+
+                    <h2>{{ doctors|length }}</h2>
+
+                    <p class="mb-0">
+                        Yêu cầu chờ duyệt
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-primary text-white shadow-lg border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <h1>👨‍⚕️</h1>
+
+                    <h2>{{ doctors|length }}</h2>
+
+                    <p class="mb-0">
+                        Bác sĩ đăng ký mới
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-success text-white shadow-lg border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    <h1>✔</h1>
+
+                    <h2>
+                        {% if doctors|length == 0 %}
+                            Hoàn tất
+                        {% else %}
+                            Đang xử lý
+                        {% endif %}
+                    </h2>
+
+                    <p class="mb-0">
+                        Trạng thái hệ thống
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Danh sách -->
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4 class="mb-0">
+
+                📋 Danh sách yêu cầu đăng ký
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if doctors %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Ảnh</th>
+
+                            <th>Họ tên</th>
+
+                            <th>Email</th>
+
+                            <th>Chuyên khoa</th>
+
+                            <th>SĐT</th>
+
+                            <th>Kinh nghiệm</th>
+
+                            <th>Trạng thái</th>
+
+                            <th class="text-center">
+                                Thao tác
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for doctor in doctors %}
 
                     <tr>
 
-                        <th>Họ tên</th>
+                        <td width="90">
 
-                        <th>Email</th>
+                            {% if doctor.image %}
 
-                        <th>Chuyên khoa</th>
+                                <img
+                                    src="{{ doctor.image }}"
+                                    class="rounded-circle shadow"
+                                    style="width:65px;height:65px;object-fit:cover;">
 
-                        <th>SĐT</th>
+                            {% else %}
 
-                        <th>Kinh nghiệm</th>
+                                <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
+                                     style="width:65px;height:65px;font-size:28px;">
 
-                        <th>Trạng thái</th>
+                                    👨‍⚕️
 
-                        <th>Thao tác</th>
+                                </div>
 
-                    </tr>
+                            {% endif %}
 
-                </thead>
-
-                <tbody>
-
-                {% for doctor in doctors %}
-
-                    <tr>
+                        </td>
 
                         <td>
 
                             <strong>
+
                                 {{ doctor.fullname }}
+
                             </strong>
 
                         </td>
@@ -78,7 +202,7 @@ Duyệt tài khoản bác sĩ
 
                         <td>
 
-                            <span class="badge bg-info">
+                            <span class="badge bg-info fs-6">
 
                                 {{ doctor.specialty }}
 
@@ -102,13 +226,13 @@ Duyệt tài khoản bác sĩ
 
                             <span class="badge bg-warning text-dark">
 
-                                Chờ duyệt
+                                ⏳ Chờ duyệt
 
                             </span>
 
                         </td>
 
-                        <td>
+                        <td class="text-center">
 
                             <a href="/approve-doctor/{{ doctor._id }}"
                                class="btn btn-success btn-sm">
@@ -117,42 +241,55 @@ Duyệt tài khoản bác sĩ
 
                             </a>
 
+                            <a href="/delete-doctor-request/{{ doctor._id }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Bạn có chắc muốn từ chối yêu cầu này?')">
+
+                                ✖ Từ chối
+
+                            </a>
+
                         </td>
 
                     </tr>
 
-                {% endfor %}
+                    {% endfor %}
 
-                </tbody>
+                    </tbody>
 
-            </table>
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h1>
+
+                    🎉
+
+                </h1>
+
+                <h4>
+
+                    Không có yêu cầu nào chờ duyệt
+
+                </h4>
+
+                <p class="text-muted">
+
+                    Tất cả tài khoản bác sĩ đã được xử lý.
+
+                </p>
+
+            </div>
+
+            {% endif %}
 
         </div>
 
-        {% else %}
-
-        <div class="alert alert-success text-center">
-
-            🎉 Hiện không có tài khoản bác sĩ nào chờ duyệt
-
-        </div>
-
-        {% endif %}
-
     </div>
-
-    <div class="card-footer bg-light">
-
-        <a href="/dashboard"
-           class="btn btn-secondary">
-
-            ⬅ Quay lại Dashboard
-
-        </a>
-
-    </div>
-
-</div>
 
 </div>
 

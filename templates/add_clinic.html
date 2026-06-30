@@ -1,170 +1,424 @@
 {% extends "base.html" %}
 
+{% block title %}
+Thêm phòng khám
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-5">
+<style>
 
-<div class="row justify-content-center">
+.page-header{
+    background:linear-gradient(135deg,#0d6efd,#0dcaf0);
+    color:white;
+    border-radius:20px;
+}
 
-    <div class="col-lg-8">
+.info-card{
+    border:none;
+    border-radius:18px;
+    transition:.3s;
+}
 
-        <div class="card border-0 shadow-lg rounded-4">
+.info-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+}
 
-            <div class="card-header bg-success text-white p-4 rounded-top-4">
+.form-control,
+.form-select{
+    border-radius:12px;
+}
 
-                <h2 class="mb-0">
-                    🏥 Thêm phòng khám
-                </h2>
+.btn{
+    border-radius:12px;
+}
 
-                <small>
-                    Nhập thông tin phòng khám mới
-                </small>
+.section-title{
+    font-weight:700;
+    color:#0d6efd;
+}
 
-            </div>
+</style>
 
-            <div class="card-body p-4">
+<div class="container py-4">
 
-                <form method="POST">
+<!-- HEADER -->
 
-                    <div class="mb-3">
+<div class="page-header shadow p-4 mb-4">
 
-                        <label class="form-label fw-semibold">
-                            Tên phòng khám
-                        </label>
+<div class="row align-items-center">
 
-                        <input
-                            type="text"
-                            name="name"
-                            class="form-control form-control-lg"
-                            placeholder="Ví dụ: Phòng khám Đa khoa ABC"
-                            required>
+<div class="col-md-8">
 
-                    </div>
+<h2 class="fw-bold mb-2">
 
-                    <div class="mb-3">
+🏥 Thêm phòng khám mới
 
-                        <label class="form-label fw-semibold">
-                            Địa chỉ
-                        </label>
+</h2>
 
-                        <input
-                            type="text"
-                            name="address"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập địa chỉ phòng khám"
-                            required>
+<p class="mb-0 opacity-75">
 
-                    </div>
+Nhập đầy đủ thông tin để thêm phòng khám vào hệ thống.
 
-                    <div class="mb-3">
+</p>
 
-                        <label class="form-label fw-semibold">
-                            Số điện thoại
-                        </label>
+</div>
 
-                        <input
-                            type="text"
-                            name="phone"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập số điện thoại"
-                            required>
+<div class="col-md-4 text-md-end mt-3 mt-md-0">
 
-                    </div>
+<a href="/clinics"
+class="btn btn-light">
 
-                    <div class="mb-3">
+📋 Danh sách phòng khám
 
-                        <label class="form-label fw-semibold">
-                            Chuyên khoa
-                        </label>
+</a>
 
-                        <select
-                            name="specialty"
-                            class="form-select form-select-lg"
-                            required>
+<a href="/dashboard"
+class="btn btn-outline-light">
 
-                            <option value="">
-                                -- Chọn chuyên khoa --
-                            </option>
+⬅ Dashboard
 
-                            {% for specialty in specialties %}
+</a>
 
-                            <option value="{{ specialty.name }}">
-                                {{ specialty.name }}
-                            </option>
+</div>
 
-                            {% endfor %}
+</div>
 
-                        </select>
+</div>
 
-                    </div>
+<div class="row">
 
-                    <div class="row">
+<div class="col-lg-8">
 
-                        <div class="col-md-6 mb-3">
+<div class="card info-card shadow">
 
-                            <label class="form-label fw-semibold">
-                                🌍 Vĩ độ (Latitude)
-                            </label>
+<div class="card-header bg-primary text-white">
 
-                            <input
-                                type="text"
-                                name="lat"
-                                class="form-control form-control-lg"
-                                placeholder="21.0285"
-                                required>
+<h4 class="mb-0">
 
-                        </div>
+📝 Thông tin phòng khám
 
-                        <div class="col-md-6 mb-3">
+</h4>
 
-                            <label class="form-label fw-semibold">
-                                📍 Kinh độ (Longitude)
-                            </label>
+</div>
 
-                            <input
-                                type="text"
-                                name="lng"
-                                class="form-control form-control-lg"
-                                placeholder="105.8542"
-                                required>
+<div class="card-body p-4">
 
-                        </div>
+<form method="POST">
 
-                    </div>
+<div class="mb-4">
 
-                    <div class="alert alert-info">
+<label class="form-label fw-bold">
 
-                        💡 Bạn có thể lấy tọa độ từ Google Maps.
+🏥 Tên phòng khám
 
-                    </div>
+</label>
 
-                    <div class="d-flex gap-2 mt-4">
+<input
+type="text"
+name="name"
+class="form-control form-control-lg"
+placeholder="Ví dụ: Phòng khám Đa khoa ABC"
+required>
 
-                        <button
-                            type="submit"
-                            class="btn btn-success btn-lg">
+</div>
 
-                            Lưu phòng khám
+<div class="mb-4">
 
-                        </button>
+<label class="form-label fw-bold">
 
-                        <a
-                            href="/clinics"
-                            class="btn btn-outline-secondary btn-lg">
+📍 Địa chỉ
 
-                            Hủy
+</label>
 
-                        </a>
+<input
+type="text"
+name="address"
+class="form-control form-control-lg"
+placeholder="Nhập địa chỉ phòng khám"
+required>
 
-                    </div>
+</div>
 
-                </form>
+<div class="row">
 
-            </div>
+<div class="col-md-6 mb-4">
 
-        </div>
+<label class="form-label fw-bold">
 
-    </div>
+📞 Số điện thoại
+
+</label>
+
+<input
+type="text"
+name="phone"
+class="form-control form-control-lg"
+placeholder="090xxxxxxx"
+required>
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label fw-bold">
+
+🩺 Chuyên khoa
+
+</label>
+
+<select
+name="specialty"
+class="form-select form-select-lg"
+required>
+
+<option value="">
+
+-- Chọn chuyên khoa --
+
+</option>
+
+{% for specialty in specialties %}
+
+<option value="{{ specialty.name }}">
+
+{{ specialty.name }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+</div>
+<div class="row">
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label fw-bold">
+
+🌍 Vĩ độ (Latitude)
+
+</label>
+
+<input
+type="text"
+name="lat"
+class="form-control form-control-lg"
+placeholder="Ví dụ: 21.028511"
+required>
+
+</div>
+
+<div class="col-md-6 mb-4">
+
+<label class="form-label fw-bold">
+
+📍 Kinh độ (Longitude)
+
+</label>
+
+<input
+type="text"
+name="lng"
+class="form-control form-control-lg"
+placeholder="Ví dụ: 105.804817"
+required>
+
+</div>
+
+</div>
+
+<div class="alert alert-info border-0 shadow-sm">
+
+<h5 class="mb-3">
+
+💡 Hướng dẫn lấy tọa độ
+
+</h5>
+
+<ol class="mb-0">
+
+<li>Mở <b>Google Maps</b>.</li>
+
+<li>Tìm địa chỉ phòng khám.</li>
+
+<li>Click chuột phải vào vị trí.</li>
+
+<li>Chọn dòng có dạng <b>21.xxxxxx,105.xxxxxx</b>.</li>
+
+<li>Dán lần lượt vào ô Latitude và Longitude.</li>
+
+</ol>
+
+</div>
+
+<div class="card bg-light border-0 mt-4">
+
+<div class="card-body">
+
+<h5 class="section-title">
+
+📌 Lưu ý
+
+</h5>
+
+<ul class="mb-0">
+
+<li>Địa chỉ và tọa độ phải khớp nhau.</li>
+
+<li>Số điện thoại nên đúng định dạng.</li>
+
+<li>Chuyên khoa phải tồn tại trong hệ thống.</li>
+
+<li>Phòng khám sau khi thêm sẽ xuất hiện trên bản đồ.</li>
+
+</ul>
+
+</div>
+
+</div>
+
+<div class="d-flex gap-3 mt-4">
+
+<button
+type="submit"
+class="btn btn-success btn-lg">
+
+💾 Lưu phòng khám
+
+</button>
+
+<a
+href="/clinics"
+class="btn btn-outline-secondary btn-lg">
+
+❌ Hủy
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4">
+
+<div class="card info-card shadow mb-4">
+
+<div class="card-header bg-success text-white">
+
+<h5 class="mb-0">
+
+📊 Thông tin
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>🏥 Phòng khám</span>
+
+<span class="badge bg-primary">
+
+Mới
+
+</span>
+
+</div>
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>📍 Bản đồ</span>
+
+<span class="badge bg-success">
+
+Có hỗ trợ
+
+</span>
+
+</div>
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>🩺 Chuyên khoa</span>
+
+<span class="badge bg-info">
+
+Liên kết
+
+</span>
+
+</div>
+
+<div class="d-flex justify-content-between">
+
+<span>📞 Liên hệ</span>
+
+<span class="badge bg-warning text-dark">
+
+Bắt buộc
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card info-card shadow">
+
+<div class="card-header bg-warning">
+
+<h5 class="mb-0">
+
+🗺 Xem trước bản đồ
+
+</h5>
+
+</div>
+
+<div class="card-body text-center">
+
+<div
+class="border rounded d-flex justify-content-center align-items-center bg-light"
+style="height:250px;">
+
+<div>
+
+<h1 class="display-3">
+
+📍
+
+</h1>
+
+<p class="text-muted mb-0">
+
+Sau khi lưu, phòng khám sẽ hiển thị trên bản đồ.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

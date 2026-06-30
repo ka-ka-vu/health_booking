@@ -1,73 +1,291 @@
 {% extends "base.html" %}
 
+{% block title %}
+Thêm chuyên khoa
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-5">
+<style>
 
-<div class="row justify-content-center">
+.page-header{
+    background:linear-gradient(135deg,#0d6efd,#0dcaf0);
+    color:white;
+    border-radius:20px;
+}
 
-    <div class="col-lg-6">
+.info-card{
+    border:none;
+    border-radius:18px;
+    transition:.3s;
+}
 
-        <div class="card border-0 shadow-lg rounded-4">
+.info-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+}
 
-            <div class="card-header bg-info text-white p-4 rounded-top-4">
+.form-control{
+    border-radius:12px;
+}
 
-                <h2 class="mb-0">
-                    🩺 Thêm chuyên khoa
-                </h2>
+.btn{
+    border-radius:12px;
+}
 
-                <small>
-                    Tạo chuyên khoa mới cho hệ thống
-                </small>
+.section-title{
+    font-weight:700;
+    color:#0d6efd;
+}
 
-            </div>
+</style>
 
-            <div class="card-body p-4">
+<div class="container py-4">
 
-                <form method="POST">
+<!-- Header -->
 
-                    <div class="mb-4">
+<div class="page-header shadow p-4 mb-4">
 
-                        <label class="form-label fw-semibold">
-                            Tên chuyên khoa
-                        </label>
+<div class="row align-items-center">
 
-                        <input
-                            type="text"
-                            name="name"
-                            class="form-control form-control-lg"
-                            placeholder="Ví dụ: Tim mạch"
-                            required>
+<div class="col-md-8">
 
-                    </div>
+<h2 class="fw-bold mb-2">
 
-                    <div class="d-flex gap-2">
+🩺 Thêm chuyên khoa mới
 
-                        <button
-                            type="submit"
-                            class="btn btn-info btn-lg text-white">
+</h2>
 
-                            Lưu chuyên khoa
+<p class="mb-0 opacity-75">
 
-                        </button>
+Tạo chuyên khoa mới để quản lý bác sĩ và phòng khám trong hệ thống.
 
-                        <a
-                            href="/specialties"
-                            class="btn btn-outline-secondary btn-lg">
+</p>
 
-                            Quay lại
+</div>
 
-                        </a>
+<div class="col-md-4 text-md-end mt-3 mt-md-0">
 
-                    </div>
+<a href="/specialties"
+class="btn btn-light">
 
-                </form>
+📋 Danh sách chuyên khoa
 
-            </div>
+</a>
 
-        </div>
+<a href="/dashboard"
+class="btn btn-outline-light">
 
-    </div>
+⬅ Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<!-- Form -->
+
+<div class="col-lg-8">
+
+<div class="card info-card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h4 class="mb-0">
+
+📝 Thông tin chuyên khoa
+
+</h4>
+
+</div>
+
+<div class="card-body p-4">
+
+<form method="POST">
+
+<div class="mb-4">
+
+<label class="form-label fw-bold">
+
+🩺 Tên chuyên khoa
+
+</label>
+
+<input
+type="text"
+name="name"
+class="form-control form-control-lg"
+placeholder="Ví dụ: Tim mạch"
+required>
+
+</div>
+
+<div class="alert alert-info border-0 shadow-sm">
+
+<h5>
+
+💡 Lưu ý
+
+</h5>
+
+<ul class="mb-0">
+
+<li>Tên chuyên khoa không nên trùng với chuyên khoa đã có.</li>
+
+<li>Nên sử dụng tên ngắn gọn, dễ hiểu.</li>
+
+<li>Chuyên khoa mới sẽ xuất hiện khi đăng ký bác sĩ và thêm phòng khám.</li>
+
+</ul>
+
+</div>
+
+<div class="d-flex gap-3 mt-4">
+
+<button
+type="submit"
+class="btn btn-success btn-lg">
+
+💾 Lưu chuyên khoa
+
+</button>
+
+<a
+href="/specialties"
+class="btn btn-outline-secondary btn-lg">
+
+❌ Hủy
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Thông tin -->
+
+<div class="col-lg-4">
+
+<div class="card info-card shadow mb-4">
+
+<div class="card-header bg-success text-white">
+
+<h5 class="mb-0">
+
+📊 Trạng thái
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>🩺 Chuyên khoa</span>
+
+<span class="badge bg-success">
+
+Mới
+
+</span>
+
+</div>
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>👨‍⚕️ Bác sĩ</span>
+
+<span class="badge bg-primary">
+
+Có thể liên kết
+
+</span>
+
+</div>
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>🏥 Phòng khám</span>
+
+<span class="badge bg-info">
+
+Có thể liên kết
+
+</span>
+
+</div>
+
+<div class="d-flex justify-content-between">
+
+<span>📋 Hệ thống</span>
+
+<span class="badge bg-warning text-dark">
+
+Sẵn sàng
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card info-card shadow">
+
+<div class="card-header bg-warning">
+
+<h5 class="mb-0">
+
+📌 Gợi ý
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<ul class="mb-0">
+
+<li>Tim mạch</li>
+
+<li>Nội khoa</li>
+
+<li>Ngoại khoa</li>
+
+<li>Da liễu</li>
+
+<li>Nhi khoa</li>
+
+<li>Sản phụ khoa</li>
+
+<li>Thần kinh</li>
+
+<li>Tiêu hóa</li>
+
+<li>Hô hấp</li>
+
+<li>Tai - Mũi - Họng</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

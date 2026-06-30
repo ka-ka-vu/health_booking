@@ -6,155 +6,237 @@ Thanh toán đơn hàng
 
 {% block content %}
 
-<div class="container py-5">
+<!-- HEADER -->
+
+<div class="card mb-4 fade-up">
+
+    <div class="card-body">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-8">
+
+                <h2 class="fw-bold">
+
+                    <i class="bi bi-credit-card-fill text-success"></i>
+
+                    Thanh toán đơn hàng
+
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Hoàn tất thanh toán để xác nhận đơn thuốc của bạn.
+
+                </p>
+
+            </div>
+
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+
+                <a href="/cart"
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Quay lại giỏ hàng
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+<div class="col-lg-8">
 
-        <div class="card shadow-lg border-0">
+    <!-- TỔNG TIỀN -->
 
-            <div class="card-header bg-success text-white">
+    <div class="card mb-4">
 
-                <h2 class="mb-0">
-                    💳 Thanh toán đơn hàng
-                </h2>
+        <div class="card-body text-center">
 
-            </div>
+            <small class="text-muted">
 
-            <div class="card-body">
+                Tổng thanh toán
 
-                <!-- Tổng tiền -->
+            </small>
 
-                <div class="alert alert-danger text-center">
+            <h2 class="fw-bold text-danger mt-2">
 
-                    <h3 class="mb-0">
+                {{ "{:,}".format(total) }} VNĐ
 
-                        Tổng tiền:
-                        {{ "{:,}".format(total) }} VNĐ
+            </h2>
 
-                    </h3>
+        </div>
 
-                </div>
+    </div>
 
-                <!-- Thông tin ngân hàng -->
+    <!-- THÔNG TIN CHUYỂN KHOẢN -->
 
-                <div class="card border-primary mb-4">
+    <div class="card mb-4">
 
-                    <div class="card-header bg-primary text-white">
+        <div class="card-body">
 
-                        🏦 Thông tin chuyển khoản
+            <h4 class="fw-bold mb-4">
 
-                    </div>
+                <i class="bi bi-bank text-primary"></i>
 
-                    <div class="card-body">
+                Thông tin chuyển khoản
 
-                        <p>
+            </h4>
 
-                            <strong>Ngân hàng:</strong>
+            <div class="row">
 
-                            MB BANK
+                <div class="col-md-4 mb-3">
 
-                        </p>
+                    <small class="text-muted">
 
-                        <p>
+                        Ngân hàng
 
-                            <strong>Số tài khoản:</strong>
+                    </small>
 
-                            191421072006
+                    <h5 class="fw-bold">
 
-                        </p>
-
-                        <p>
-
-                            <strong>Chủ tài khoản:</strong>
-
-                            NGUYEN VIET HOANG VU
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <!-- QR -->
-
-                <div class="text-center">
-
-                    <h5>
-
-                        📱 Quét mã QR để thanh toán
+                        MB BANK
 
                     </h5>
 
-                    <img
-                        src="{{ url_for('static', filename='uploads/QR.jpg') }}"
-                        class="img-fluid border rounded shadow"
-                        style="max-width:350px;">
-
                 </div>
 
-                <!-- Nội dung CK -->
+                <div class="col-md-4 mb-3">
 
-                <div class="alert alert-info mt-4">
+                    <small class="text-muted">
 
-                    <h5>
-                        Nội dung chuyển khoản
+                        Số tài khoản
+
+                    </small>
+
+                    <h5 class="fw-bold">
+
+                        191421072006
+
                     </h5>
 
-                    <div class="text-center">
-
-                        <span class="badge bg-dark p-3 fs-6">
-
-                            THANHTOANTHUOC
-
-                        </span>
-
-                    </div>
-
                 </div>
 
-                <!-- Cảnh báo -->
+                <div class="col-md-4 mb-3">
 
-                <div class="alert alert-warning">
+                    <small class="text-muted">
 
-                    ⚠ Sau khi hoàn tất chuyển khoản, vui lòng nhấn nút
+                        Chủ tài khoản
 
-                    <strong>
-                        "Tôi đã thanh toán"
-                    </strong>
+                    </small>
 
-                    để hệ thống ghi nhận đơn hàng.
+                    <h5 class="fw-bold">
+
+                        NGUYEN VIET HOANG VU
+
+                    </h5>
 
                 </div>
-
-                <!-- Button -->
-
-                <form action="/confirm-payment"
-                      method="POST">
-
-                    <div class="d-flex gap-2 flex-wrap">
-
-                        <button
-                            type="submit"
-                            class="btn btn-success btn-lg">
-
-                            ✔ Tôi đã thanh toán
-
-                        </button>
-
-                        <a href="/cart"
-                           class="btn btn-secondary btn-lg">
-
-                            ⬅ Quay lại giỏ hàng
-
-                        </a>
-
-                    </div>
-
-                </form>
 
             </div>
+
+        </div>
+
+    </div>
+
+    <!-- QR -->
+
+    <div class="card mb-4">
+
+        <div class="card-body text-center">
+
+            <h4 class="fw-bold mb-4">
+
+                <i class="bi bi-qr-code"></i>
+
+                Quét mã QR để thanh toán
+
+            </h4>
+
+            <img
+                src="{{ url_for('static', filename='uploads/QR.jpg') }}"
+                class="img-fluid rounded shadow"
+                style="max-width:320px;">
+
+        </div>
+
+    </div>
+
+    <!-- NỘI DUNG -->
+
+    <div class="card mb-4">
+
+        <div class="card-body text-center">
+
+            <h5 class="fw-bold mb-3">
+
+                Nội dung chuyển khoản
+
+            </h5>
+
+            <span class="badge bg-dark fs-5 p-3">
+
+                THANHTOANTHUOC
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- LƯU Ý -->
+
+    <div class="alert alert-warning">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+        Sau khi hoàn tất chuyển khoản, vui lòng nhấn nút
+        <strong>"Tôi đã thanh toán"</strong>
+        để hệ thống ghi nhận đơn hàng.
+
+    </div>
+
+    <!-- BUTTON -->
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form action="/confirm-payment"
+                  method="POST">
+
+                <div class="d-grid gap-3">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success btn-lg">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Tôi đã thanh toán
+
+                    </button>
+
+                    <a href="/cart"
+                       class="btn btn-outline-secondary btn-lg">
+
+                        <i class="bi bi-arrow-left-circle"></i>
+
+                        Quay lại giỏ hàng
+
+                    </a>
+
+                </div>
+
+            </form>
 
         </div>
 

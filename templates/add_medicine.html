@@ -1,137 +1,209 @@
 {% extends "base.html" %}
 
+{% block title %}
+Đăng bán thuốc
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-5">
+<!-- HEADER -->
 
-<div class="row justify-content-center">
+<div class="card mb-4 fade-up">
 
-    <div class="col-lg-8">
+    <div class="card-body">
 
-        <div class="card border-0 shadow-lg rounded-4">
+        <div class="row align-items-center">
 
-            <div class="card-header bg-success text-white p-4 rounded-top-4">
+            <div class="col-lg-8">
 
-                <h2 class="mb-0">
-                    💊 Đăng bán thuốc
+                <h2 class="fw-bold">
+
+                    <i class="bi bi-capsule-pill text-success"></i>
+
+                    Đăng bán thuốc
+
                 </h2>
 
-                <small>
-                    Thêm thuốc mới vào hệ thống
-                </small>
+                <p class="text-muted mb-0">
+
+                    Thêm thuốc mới để bệnh nhân có thể tìm kiếm và mua trực tuyến.
+
+                </p>
 
             </div>
 
-            <div class="card-body p-4">
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
 
-                <form method="POST" enctype="multipart/form-data">
+                <a href="/my-medicines"
+                   class="btn btn-outline-secondary">
 
-                    <!-- Tên thuốc -->
-                    <div class="mb-3">
+                    <i class="bi bi-arrow-left"></i>
 
-                        <label class="form-label fw-semibold">
-                            Tên thuốc
-                        </label>
+                    Thuốc của tôi
 
-                        <input
-                            type="text"
-                            name="name"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập tên thuốc"
-                            required>
-
-                    </div>
-
-                    <!-- Ảnh thuốc -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            🖼 Hình ảnh thuốc
-                        </label>
-
-                        <input
-                            type="file"
-                            name="image"
-                            class="form-control form-control-lg"
-                            accept="image/*"
-                            required>
-
-                    </div>
-
-                    <!-- Giá -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            💰 Giá bán (VNĐ)
-                        </label>
-
-                        <input
-                            type="number"
-                            name="price"
-                            class="form-control form-control-lg"
-                            placeholder="Ví dụ: 150000"
-                            required>
-
-                    </div>
-
-                    <!-- Số lượng -->
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-                            📦 Số lượng
-                        </label>
-
-                        <input
-                            type="number"
-                            name="quantity"
-                            class="form-control form-control-lg"
-                            placeholder="Nhập số lượng"
-                            required>
-
-                    </div>
-
-                    <!-- Mô tả -->
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-                            📝 Mô tả thuốc
-                        </label>
-
-                        <textarea
-                            name="description"
-                            rows="5"
-                            class="form-control"
-                            placeholder="Mô tả công dụng, thành phần, hướng dẫn sử dụng..."></textarea>
-
-                    </div>
-
-                    <div class="d-flex gap-2">
-
-                        <button
-                            type="submit"
-                            class="btn btn-success btn-lg">
-
-                            Đăng thuốc
-
-                        </button>
-
-                        <a
-                            href="/doctor-dashboard"
-                            class="btn btn-outline-secondary btn-lg">
-
-                            Quay lại
-
-                        </a>
-
-                    </div>
-
-                </form>
+                </a>
 
             </div>
 
         </div>
 
     </div>
+
+</div>
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card">
+
+<div class="card-body p-4">
+
+<form method="POST" enctype="multipart/form-data">
+
+    <!-- Tên thuốc -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-capsule"></i>
+
+            Tên thuốc
+
+        </label>
+
+        <input
+            type="text"
+            name="name"
+            class="form-control form-control-lg"
+            placeholder="Ví dụ: Paracetamol 500mg"
+            required>
+
+    </div>
+
+    <!-- Hình ảnh -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-image"></i>
+
+            Hình ảnh thuốc
+
+        </label>
+
+        <input
+            type="file"
+            name="image"
+            class="form-control form-control-lg"
+            accept="image/*"
+            required>
+
+        <div class="form-text">
+
+            Hỗ trợ định dạng JPG, PNG, JPEG.
+
+        </div>
+
+    </div>
+
+    <!-- Giá -->
+
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label fw-semibold">
+
+                <i class="bi bi-cash-stack"></i>
+
+                Giá bán (VNĐ)
+
+            </label>
+
+            <input
+                type="number"
+                name="price"
+                class="form-control form-control-lg"
+                placeholder="150000"
+                required>
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label fw-semibold">
+
+                <i class="bi bi-box-seam"></i>
+
+                Số lượng
+
+            </label>
+
+            <input
+                type="number"
+                name="quantity"
+                class="form-control form-control-lg"
+                placeholder="100"
+                required>
+
+        </div>
+
+    </div>
+
+    <!-- Mô tả -->
+
+    <div class="mb-4">
+
+        <label class="form-label fw-semibold">
+
+            <i class="bi bi-card-text"></i>
+
+            Mô tả thuốc
+
+        </label>
+
+        <textarea
+            name="description"
+            rows="6"
+            class="form-control"
+            placeholder="Nhập công dụng, thành phần, hướng dẫn sử dụng, chống chỉ định..."></textarea>
+
+    </div>
+
+    <!-- BUTTON -->
+
+    <div class="d-grid gap-3">
+
+        <button
+            type="submit"
+            class="btn btn-success btn-lg">
+
+            <i class="bi bi-cloud-upload-fill"></i>
+
+            Đăng thuốc
+
+        </button>
+
+        <a
+            href="/my-medicines"
+            class="btn btn-outline-secondary btn-lg">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Quay lại danh sách thuốc
+
+        </a>
+
+    </div>
+
+</form>
+
+</div>
+
+</div>
 
 </div>
 

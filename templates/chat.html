@@ -1,88 +1,179 @@
 {% extends "base.html" %}
 
 {% block title %}
-Nhắn tin bác sĩ
+Nhắn tin với bác sĩ
 {% endblock %}
 
 {% block content %}
 
 <div class="container py-4">
 
-<div class="card shadow-lg border-0">
+    <!-- Header -->
+    <div class="card shadow-lg border-0 mb-4">
 
-    <div class="card-header bg-primary text-white">
+        <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
 
-        <h2 class="mb-0">
-            💬 Nhắn tin với bác sĩ
-        </h2>
+            <div>
 
-    </div>
+                <h2 class="mb-1">
 
-    <div class="card-body">
+                    💬 Nhắn tin với bác sĩ
 
-        {% if consult_medicine %}
+                </h2>
 
-        <div class="alert alert-info shadow-sm">
+                <p class="text-muted mb-0">
 
-            <h5>
-                💊 Tư vấn sản phẩm
-            </h5>
+                    Trao đổi trực tiếp với bác sĩ để được tư vấn
 
-            <p class="mb-1">
+                </p>
 
-                <strong>Thuốc:</strong>
+            </div>
 
-                {{ consult_medicine.medicine_name }}
+            <a href="/dashboard"
+               class="btn btn-secondary">
 
-            </p>
-
-            <p>
-
-                <strong>Bác sĩ:</strong>
-
-                {{ consult_medicine.doctor_name }}
-
-            </p>
-
-            <a href="/chat/{{ consult_medicine.doctor_id }}"
-               class="btn btn-primary">
-
-                💬 Chat ngay
+                ⬅ Quay lại Dashboard
 
             </a>
 
         </div>
 
-        {% endif %}
+    </div>
 
-        {% if doctors %}
+    <!-- Tư vấn thuốc -->
 
-        <div class="row">
+    {% if consult_medicine %}
 
-            {% for doctor in doctors %}
+    <div class="card shadow border-0 mb-4">
 
-            <div class="col-md-6 mb-4">
+        <div class="card-header bg-info text-white">
 
-                <div class="card h-100 border-0 shadow-sm">
+            <h5 class="mb-0">
 
-                    <div class="card-body">
+                💊 Tư vấn về thuốc
 
-                        <h5 class="text-primary">
+            </h5>
 
-                            👨‍⚕️ {{ doctor.name }}
+        </div>
 
-                        </h5>
+        <div class="card-body">
 
-                        <p class="text-muted mb-3">
+            <div class="row align-items-center">
 
-                            {{ doctor.specialty }}
+                <div class="col-md-8">
 
-                        </p>
+                    <h5 class="fw-bold">
+
+                        {{ consult_medicine.medicine_name }}
+
+                    </h5>
+
+                    <p class="mb-1">
+
+                        <strong>Bác sĩ:</strong>
+
+                        {{ consult_medicine.doctor_name }}
+
+                    </p>
+
+                    <small class="text-muted">
+
+                        Nhấn nút bên phải để trao đổi trực tiếp với bác sĩ.
+
+                    </small>
+
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <a href="/chat/{{ consult_medicine.doctor_id }}"
+                       class="btn btn-primary btn-lg">
+
+                        💬 Chat ngay
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <!-- Danh sách bác sĩ -->
+
+    {% if doctors %}
+
+    <div class="row g-4">
+
+        {% for doctor in doctors %}
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    {% if doctor.image %}
+
+                    <img
+                        src="{{ doctor.image }}"
+                        class="rounded-circle shadow mb-3"
+                        style="width:100px;height:100px;object-fit:cover;">
+
+                    {% else %}
+
+                    <div
+                        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3 shadow"
+                        style="width:100px;height:100px;font-size:40px;">
+
+                        👨‍⚕️
+
+                    </div>
+
+                    {% endif %}
+
+                    <h5 class="fw-bold">
+
+                        {{ doctor.name }}
+
+                    </h5>
+
+                    <span class="badge bg-info mb-3">
+
+                        {{ doctor.specialty }}
+
+                    </span>
+
+                    {% if doctor.clinic %}
+
+                    <p class="mb-1">
+
+                        🏥 {{ doctor.clinic }}
+
+                    </p>
+
+                    {% endif %}
+
+                    {% if doctor.phone %}
+
+                    <p class="mb-3">
+
+                        📞 {{ doctor.phone }}
+
+                    </p>
+
+                    {% endif %}
+
+                    <div class="d-grid">
 
                         <a href="/chat/{{ doctor._id }}"
-                           class="btn btn-outline-primary">
+                           class="btn btn-primary">
 
-                            Bắt đầu trò chuyện
+                            💬 Bắt đầu trò chuyện
 
                         </a>
 
@@ -92,32 +183,41 @@ Nhắn tin bác sĩ
 
             </div>
 
-            {% endfor %}
-
         </div>
 
-        {% else %}
-
-        <div class="alert alert-warning text-center">
-
-            ⚠ Chưa có bác sĩ nào trong hệ thống
-
-        </div>
-
-        {% endif %}
-
-        <hr>
-
-        <a href="/dashboard"
-           class="btn btn-secondary">
-
-            ⬅ Quay lại Dashboard
-
-        </a>
+        {% endfor %}
 
     </div>
 
-</div>
+    {% else %}
+
+    <div class="card shadow border-0">
+
+        <div class="card-body text-center py-5">
+
+            <div style="font-size:70px;">
+
+                👨‍⚕️
+
+            </div>
+
+            <h4 class="mt-3">
+
+                Chưa có bác sĩ nào
+
+            </h4>
+
+            <p class="text-muted">
+
+                Hiện tại chưa có bác sĩ sẵn sàng tư vấn.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
 
 </div>
 

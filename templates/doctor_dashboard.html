@@ -6,69 +6,41 @@ Doctor Dashboard
 
 {% block content %}
 
-<div class="container py-4">
+<!-- HEADER -->
 
-    <!-- Header -->
-    <div class="card shadow-lg border-0 mb-4">
+<div class="card mb-4 fade-up">
 
-        <div class="card-body">
+    <div class="card-body">
 
-            <h2 class="mb-2">
-                👨‍⚕️ Xin chào bác sĩ {{ doctor.name }}
-            </h2>
+        <div class="row align-items-center">
 
-            <div class="alert alert-success mb-0">
-                Bạn đang đăng nhập với quyền <strong>BÁC SĨ</strong>
-            </div>
+            <div class="col-md-8">
 
-        </div>
+                <h2 class="fw-bold">
 
-    </div>
+                    <i class="bi bi-person-badge-fill text-primary"></i>
 
-    <!-- Thông tin bác sĩ -->
-    <div class="row mb-4">
+                    Xin chào bác sĩ {{ doctor.name }}
 
-        <div class="col-md-6 mb-3">
+                </h2>
 
-            <div class="card shadow-sm border-0 h-100">
+                <p class="text-muted mb-0">
 
-                <div class="card-body">
+                    Chúc bạn có một ngày làm việc hiệu quả.
 
-                    <h5 class="text-primary">
-                        🩺 Chuyên khoa
-                    </h5>
-
-                    <p class="mb-0">
-                        {{ doctor.specialty }}
-                    </p>
-
-                </div>
+                </p>
 
             </div>
 
-        </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
 
-        <div class="col-md-6 mb-3">
+                <span class="badge bg-success fs-6">
 
-            <div class="card shadow-sm border-0 h-100">
+                    <i class="bi bi-patch-check-fill"></i>
 
-                <div class="card-body">
+                    Tài khoản bác sĩ
 
-                    <h5 class="text-success">
-                        🏥 Phòng khám
-                    </h5>
-
-                    <p class="mb-0">
-
-                        {% if doctor.clinic %}
-                            {{ doctor.clinic }}
-                        {% else %}
-                            Chưa cập nhật
-                        {% endif %}
-
-                    </p>
-
-                </div>
+                </span>
 
             </div>
 
@@ -76,128 +48,41 @@ Doctor Dashboard
 
     </div>
 
-    <!-- Thống kê -->
-    <div class="row">
+</div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+<!-- THÔNG TIN -->
 
-            <div class="card bg-primary text-white shadow border-0">
+<div class="row g-4 mb-4">
 
-                <div class="card-body text-center">
+    <div class="col-md-6">
 
-                    <h1>📅</h1>
+        <div class="card h-100">
 
-                    <h3>{{ appointment_count }}</h3>
+            <div class="card-body">
 
-                    <p class="mb-0">Lịch khám</p>
+                <div class="d-flex align-items-center">
 
-                </div>
+                    <div class="icon-box bg-primary-soft me-3">
 
-            </div>
+                        <i class="bi bi-heart-pulse-fill"></i>
 
-        </div>
+                    </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+                    <div>
 
-            <div class="card bg-success text-white shadow border-0">
+                        <small class="text-muted">
 
-                <div class="card-body text-center">
+                            Chuyên khoa
 
-                    <h1>💬</h1>
+                        </small>
 
-                    <h3>{{ message_count }}</h3>
+                        <h5 class="mb-0">
 
-                    <p class="mb-0">Tin nhắn</p>
+                            {{ doctor.specialty }}
 
-                </div>
+                        </h5>
 
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-3">
-
-            <div class="card bg-warning text-dark shadow border-0">
-
-                <div class="card-body text-center">
-
-                    <h1>💊</h1>
-
-                    <h3>{{ medicine_count }}</h3>
-
-                    <p class="mb-0">Thuốc đã đăng</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-3">
-
-            <div class="card bg-dark text-white shadow border-0">
-
-                <div class="card-body text-center">
-
-                    <h1>📦</h1>
-
-                    <h3>{{ medicine_sold }}</h3>
-
-                    <p class="mb-0">Thuốc đã bán</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-3">
-
-            <div class="card bg-danger text-white shadow border-0">
-
-                <div class="card-body text-center">
-
-                    <h1>💰</h1>
-
-                    <h4>{{ "{:,}".format(total_income) }} VNĐ</h4>
-
-                    <p class="mb-0">Tổng doanh thu</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-4 col-md-6 mb-3">
-
-            <div class="card bg-success text-white shadow border-0">
-
-                <div class="card-body text-center">
-
-                    <h1>🏦</h1>
-
-                    <h4>{{ "{:,}".format(paid_income) }} VNĐ</h4>
-
-                    <p class="mb-0">Đã nhận</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-4 col-md-12 mb-3">
-
-            <div class="card bg-info text-white shadow border-0">
-
-                <div class="card-body text-center">
-
-                    <h1>⏳</h1>
-
-                    <h4>{{ "{:,}".format(unpaid_income) }} VNĐ</h4>
-
-                    <p class="mb-0">Chưa nhận</p>
+                    </div>
 
                 </div>
 
@@ -207,98 +92,389 @@ Doctor Dashboard
 
     </div>
 
-    <!-- Menu chức năng -->
+    <div class="col-md-6">
 
-    <div class="card shadow-lg border-0 mt-4">
+        <div class="card h-100">
 
-        <div class="card-header bg-primary text-white">
+            <div class="card-body">
 
-            <h4 class="mb-0">
-                ⚙ Chức năng bác sĩ
-            </h4>
+                <div class="d-flex align-items-center">
+
+                    <div class="icon-box bg-success-soft me-3">
+
+                        <i class="bi bi-hospital-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Phòng khám
+
+                        </small>
+
+                        <h5 class="mb-0">
+
+                            {% if doctor.clinic %}
+                                {{ doctor.clinic }}
+                            {% else %}
+                                Chưa cập nhật
+                            {% endif %}
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <div class="card-body">
+    </div>
 
-            <div class="row g-3">
+</div>
 
-                <div class="col-md-6">
+<!-- THỐNG KÊ -->
 
-                    <a href="/doctor-appointments"
-                       class="btn btn-primary w-100 p-3">
+<div class="row g-4">
 
-                        📅 Quản lý lịch khám
+    <div class="col-lg-3 col-md-6">
 
-                    </a>
+        <div class="card dashboard-card">
 
-                </div>
+            <div class="card-body">
 
-                <div class="col-md-6">
+                <div class="d-flex justify-content-between">
 
-                    <a href="/doctor-messages"
-                       class="btn btn-success w-100 p-3">
+                    <div>
 
-                        💬 Tin nhắn bệnh nhân
+                        <small class="text-muted">
 
-                    </a>
+                            Lịch khám
 
-                </div>
+                        </small>
 
-                <div class="col-md-6">
+                        <h2 class="dashboard-number">
 
-                    <a href="/add-medicine"
-                       class="btn btn-warning w-100 p-3">
+                            {{ appointment_count }}
 
-                        💊 Đăng bán thuốc
+                        </h2>
 
-                    </a>
+                    </div>
 
-                </div>
+                    <div class="icon-box bg-primary-soft">
 
-                <div class="col-md-6">
+                        <i class="bi bi-calendar-check-fill"></i>
 
-                    <a href="/my-medicines"
-                       class="btn btn-dark w-100 p-3">
-
-                        📦 Thuốc của tôi
-
-                    </a>
+                    </div>
 
                 </div>
 
-                <div class="col-md-6">
+            </div>
 
-                    <a href="/doctor-income"
-                    class="btn btn-danger w-100 p-3">
+        </div>
 
-                        💰 Thống kê doanh thu
+    </div>
 
-                    </a>
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Tin nhắn
+
+                        </small>
+
+                        <h2 class="dashboard-number">
+
+                            {{ message_count }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon-box bg-success-soft">
+
+                        <i class="bi bi-chat-dots-fill"></i>
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-6">
+            </div>
 
-                    <a href="/doctor-profile"
-                       class="btn btn-info w-100 p-3">
+        </div>
 
-                        👨‍⚕️ Hồ sơ bác sĩ
+    </div>
 
-                    </a>
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Thuốc
+
+                        </small>
+
+                        <h2 class="dashboard-number">
+
+                            {{ medicine_count }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon-box bg-warning-soft">
+
+                        <i class="bi bi-capsule-pill"></i>
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-12">
+            </div>
 
-                    <a href="/logout"
-                       class="btn btn-secondary w-100 p-3">
+        </div>
 
-                        🚪 Đăng xuất
+    </div>
 
-                    </a>
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Đã bán
+
+                        </small>
+
+                        <h2 class="dashboard-number">
+
+                            {{ medicine_sold }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon-box bg-danger-soft">
+
+                        <i class="bi bi-box-seam-fill"></i>
+
+                    </div>
 
                 </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- DOANH THU -->
+
+<div class="row g-4 mt-1">
+
+    <div class="col-lg-4">
+
+        <div class="card">
+
+            <div class="card-body text-center">
+
+                <i class="bi bi-cash-stack text-danger display-5"></i>
+
+                <h5 class="mt-3">
+
+                    Tổng doanh thu
+
+                </h5>
+
+                <h3 class="text-danger">
+
+                    {{ "{:,}".format(total_income) }} VNĐ
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card">
+
+            <div class="card-body text-center">
+
+                <i class="bi bi-bank text-success display-5"></i>
+
+                <h5 class="mt-3">
+
+                    Đã nhận
+
+                </h5>
+
+                <h3 class="text-success">
+
+                    {{ "{:,}".format(paid_income) }} VNĐ
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card">
+
+            <div class="card-body text-center">
+
+                <i class="bi bi-hourglass-split text-warning display-5"></i>
+
+                <h5 class="mt-3">
+
+                    Chưa nhận
+
+                </h5>
+
+                <h3 class="text-warning">
+
+                    {{ "{:,}".format(unpaid_income) }} VNĐ
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHỨC NĂNG -->
+
+<div class="card mt-5">
+
+    <div class="card-body">
+
+        <h4 class="fw-bold mb-4">
+
+            <i class="bi bi-grid-fill text-primary"></i>
+
+            Chức năng bác sĩ
+
+        </h4>
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/doctor-appointments" class="btn btn-primary w-100 py-3">
+
+                    <i class="bi bi-calendar-check-fill"></i><br>
+
+                    Lịch khám
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/doctor-messages" class="btn btn-success w-100 py-3">
+
+                    <i class="bi bi-chat-dots-fill"></i><br>
+
+                    Tin nhắn
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/add-medicine" class="btn btn-warning w-100 py-3">
+
+                    <i class="bi bi-capsule-pill"></i><br>
+
+                    Đăng thuốc
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/my-medicines" class="btn btn-dark w-100 py-3">
+
+                    <i class="bi bi-box-seam-fill"></i><br>
+
+                    Thuốc của tôi
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/doctor-income" class="btn btn-danger w-100 py-3">
+
+                    <i class="bi bi-cash-stack"></i><br>
+
+                    Doanh thu
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/doctor-profile" class="btn btn-info w-100 py-3">
+
+                    <i class="bi bi-person-vcard-fill"></i><br>
+
+                    Hồ sơ
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+
+                <a href="/logout" class="btn btn-outline-danger w-100 py-3">
+
+                    <i class="bi bi-box-arrow-right"></i><br>
+
+                    Đăng xuất
+
+                </a>
 
             </div>
 

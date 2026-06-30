@@ -10,54 +10,93 @@ Chat với bệnh nhân
 
 <div class="row justify-content-center">
 
-<div class="col-lg-8">
+<div class="col-lg-9">
 
-<div class="card shadow-lg border-0">
+<div class="card shadow-lg border-0 rounded-4 overflow-hidden">
 
     <!-- Header -->
-    <div class="card-header bg-success text-white">
 
-        <h4 class="mb-1">
-            👤 {{ patient.fullname }}
-        </h4>
+    <div class="card-header bg-primary text-white py-3">
 
-        <small>
-            Cuộc trò chuyện với bệnh nhân
-        </small>
+        <div class="d-flex align-items-center">
+
+            <div class="rounded-circle bg-white text-primary fw-bold d-flex justify-content-center align-items-center me-3"
+                 style="width:60px;height:60px;font-size:28px;">
+
+                {{ patient.fullname[0]|upper }}
+
+            </div>
+
+            <div>
+
+                <h4 class="mb-1">
+
+                    {{ patient.fullname }}
+
+                </h4>
+
+                <small>
+
+                    🟢 Đang hoạt động
+
+                </small>
+
+            </div>
+
+        </div>
 
     </div>
 
     <!-- Chat -->
+
     <div id="chat-box"
-         class="bg-white p-3"
-         style="height:500px;overflow-y:auto;">
+         style="height:550px;
+                overflow-y:auto;
+                background:#eef3f8;
+                padding:25px;">
 
         {% for msg in messages %}
 
             {% if msg.sender_role=="doctor" %}
 
-            <div class="mb-3 text-end">
+            <div class="d-flex justify-content-end mb-4">
 
-                <span class="badge bg-success">
-                    {{ msg.sender_name }}
-                </span>
+                <div style="max-width:70%;">
 
-                <div class="bg-success text-white p-2 rounded mt-1 d-inline-block">
-                    {{ msg.message }}
+                    <div class="small text-end text-muted mb-1">
+
+                        {{ msg.sender_name }}
+
+                    </div>
+
+                    <div class="bg-primary text-white p-3 rounded-4 shadow-sm">
+
+                        {{ msg.message }}
+
+                    </div>
+
                 </div>
 
             </div>
 
             {% else %}
 
-            <div class="mb-3 text-start">
+            <div class="d-flex justify-content-start mb-4">
 
-                <span class="badge bg-primary">
-                    {{ msg.sender_name }}
-                </span>
+                <div style="max-width:70%;">
 
-                <div class="bg-light border p-2 rounded mt-1 d-inline-block">
-                    {{ msg.message }}
+                    <div class="small text-muted mb-1">
+
+                        {{ msg.sender_name }}
+
+                    </div>
+
+                    <div class="bg-white border p-3 rounded-4 shadow-sm">
+
+                        {{ msg.message }}
+
+                    </div>
+
                 </div>
 
             </div>
@@ -68,35 +107,46 @@ Chat với bệnh nhân
 
     </div>
 
-    <!-- Nhập tin nhắn -->
+    <!-- Footer -->
 
-    <div class="card-footer">
+    <div class="card-footer bg-white">
 
         <div class="input-group">
 
             <input
                 id="message"
                 type="text"
-                class="form-control"
+                class="form-control form-control-lg"
                 placeholder="Nhập tin nhắn..."
                 autocomplete="off">
 
             <button
-                class="btn btn-success"
+                class="btn btn-primary px-4"
                 onclick="sendMessage()">
 
-                📤 Gửi
+                <i class="bi bi-send-fill"></i>
 
             </button>
 
         </div>
 
-        <div class="mt-3">
+        <div class="mt-3 d-flex justify-content-between">
 
             <a href="/doctor-messages"
                class="btn btn-secondary">
 
-                ⬅ Quay lại
+                <i class="bi bi-arrow-left-circle"></i>
+
+                Quay lại
+
+            </a>
+
+            <a href="/doctor-dashboard"
+               class="btn btn-outline-primary">
+
+                <i class="bi bi-house-door"></i>
+
+                Dashboard
 
             </a>
 
@@ -124,71 +174,99 @@ const socket = io({
 
 const room = "{{ doctor._id }}_{{ patient._id }}";
 
-// Tham gia phòng
-socket.emit("join_room", {
-    room: room
+socket.emit("join_room",{
+
+    room:room
+
 });
 
-const chatBox = document.getElementById("chat-box");
+const chatBox=document.getElementById("chat-box");
 
-chatBox.scrollTop = chatBox.scrollHeight;
+chatBox.scrollTop=chatBox.scrollHeight;
 
 
+// =========================
 // Nhận tin nhắn realtime
-socket.on("receive_message", function(data){
+// =========================
+
+socket.on("receive_message",function(data){
 
     let html="";
 
     if(data.sender_role=="doctor"){
 
         html=`
-        <div class="mb-3 text-end">
 
-            <span class="badge bg-success">
-                ${data.sender_name}
-            </span>
+        <div class="d-flex justify-content-end mb-4">
 
-            <div class="bg-success text-white p-2 rounded mt-1 d-inline-block">
-                ${data.message}
+            <div style="max-width:70%;">
+
+                <div class="small text-end text-muted mb-1">
+
+                    ${data.sender_name}
+
+                </div>
+
+                <div class="bg-primary text-white p-3 rounded-4 shadow-sm">
+
+                    ${data.message}
+
+                </div>
+
             </div>
 
         </div>
-        `;
 
-    }else{
-
-        html=`
-        <div class="mb-3 text-start">
-
-            <span class="badge bg-primary">
-                ${data.sender_name}
-            </span>
-
-            <div class="bg-light border p-2 rounded mt-1 d-inline-block">
-                ${data.message}
-            </div>
-
-        </div>
         `;
 
     }
 
-    chatBox.insertAdjacentHTML("beforeend", html);
+    else{
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+        html=`
+
+        <div class="d-flex justify-content-start mb-4">
+
+            <div style="max-width:70%;">
+
+                <div class="small text-muted mb-1">
+
+                    ${data.sender_name}
+
+                </div>
+
+                <div class="bg-white border p-3 rounded-4 shadow-sm">
+
+                    ${data.message}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+    chatBox.insertAdjacentHTML("beforeend",html);
+
+    chatBox.scrollTop=chatBox.scrollHeight;
 
 });
 
 
+// =========================
 // Gửi tin nhắn
+// =========================
+
 function sendMessage(){
 
     const input=document.getElementById("message");
 
     const message=input.value.trim();
 
-    if(message=="")
-        return;
+    if(message=="") return;
 
     socket.emit("send_message",{
 
@@ -208,6 +286,8 @@ function sendMessage(){
 
 }
 
+
+// Enter để gửi
 
 document.getElementById("message").addEventListener("keypress",function(e){
 
